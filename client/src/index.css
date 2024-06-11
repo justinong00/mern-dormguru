@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+button {
+  /* !important means it will override any other styles, in this case it's the Antd design */
+  box-shadow: none !important;
+  height: 45px !important;
+  border-radius: 2px;
+}
