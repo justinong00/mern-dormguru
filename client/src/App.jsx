@@ -1,12 +1,18 @@
-import React from 'react';
-import { Button, Flex } from 'antd';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+
 function App() {
   return (
     <>
-      <div className="p-10 flex gap-10">
-        <Button type="primary">Antd Button</Button>
-        <Button type="default">Antd Button</Button>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

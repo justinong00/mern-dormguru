@@ -1,10 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: normal;
+}
 
 button {
   /* !important means it will override any other styles, in this case it's the Antd design */
   box-shadow: none !important;
   height: 45px !important;
   border-radius: 2px;
+}
+
+input {
+  height: 45px !important;
+  width: 100%;
+  border: 1px solid #6d6d6d;
+  padding-left: 20px;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid #303030;
+}
+
+.ant-form-item {
+  margin-bottom: 0px !important;
+}
+
+a {
+  color: #303030;
+  text-decoration: underline !important;
+}
+
+a:hover {
+  color: #303030;
 }
