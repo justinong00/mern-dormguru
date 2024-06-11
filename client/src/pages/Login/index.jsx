@@ -9,7 +9,12 @@ function Login() {
 
   return (
     <div className="grid grid-cols-2 h-screen">
-      <div className="bg-primary"></div>
+      <div className="bg-primary flex flex-col items-center justify-center">
+        <h1 className="text-8xl text-orange-500 font-semibold">DormGuru</h1>
+        <span className="text-md text-gray-300 mt-2">
+          One stop for all your university dorm ratings and reviews in Malaysia
+        </span>
+      </div>
 
       <div className="flex items-center justify-center">
         <div className="w-[400px]">
@@ -21,11 +26,11 @@ function Login() {
             onFinish={onFinish}
           >
             <Form.Item label="Email" name="email">
-              <input />
+              <input type='email'/>
             </Form.Item>
 
             <Form.Item label="Password" name="password">
-              <input />
+              <input type="password" />
             </Form.Item>
 
             <div className="flex flex-col gap-5">
