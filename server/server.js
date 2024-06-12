@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import dbConfig from './config/dbConfig.js';
 
 // Load environment variables from the .env file into process.env
 dotenv.config();
@@ -22,6 +23,9 @@ app.use(cors());
  * For any incoming request, looks if there is data in the body that is sending to the server. If it does, then it will attach to the 'req' handler 
  */
 app.use(express.json());
+
+// Call the dbConfig function to connect to MongoDB
+dbConfig();
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
