@@ -1,10 +1,19 @@
 import React from 'react';
-import { Form, Button } from 'antd';
+import { Form, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
+import { RegisterUser } from '../../apis/users.js';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
-  const onFinish = (values) => {
-    console.log('Success:', values);
+  const navigate = useNavigate();
+  const onFinish = async (values) => {
+    try {
+      const response = await RegisterUser(values);
+      message.success(response.message);
+      navigate('/login');
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   return (
@@ -26,11 +35,11 @@ function Register() {
             onFinish={onFinish}
           >
             <Form.Item label="Name" name="name">
-              <input type='text'/>
+              <input type="text" />
             </Form.Item>
 
             <Form.Item label="Email" name="email">
-              <input type='email'/>
+              <input type="email" />
             </Form.Item>
 
             <Form.Item label="Password" name="password">
