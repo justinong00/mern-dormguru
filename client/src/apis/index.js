@@ -26,7 +26,10 @@ const apiRequest = async ({ method, endPoint, payload, queryStrings }) => {
         params: queryStrings, // Data to be sent as query strings (for GET requests)
       },
       {
-        headers: {}, // Headers for the request
+        headers: {
+          // Set the Authorization header to include the sign in token
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       }
     );
     return response.data; // Return the data from the API request

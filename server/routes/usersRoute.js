@@ -32,7 +32,7 @@ router.post('/login', async (req, res) => {
   try {
     // Check if user exists
     const user = await User.findOne({ email: req.body.email });
-    if (!user) throw new Error('User does not exist');
+    if (!user) throw new Error('User with this email does not exist');
 
     // Check if password is correct
     const validPassword = await brcypt.compare(

@@ -4,14 +4,28 @@ import { Link } from 'react-router-dom';
 import { RegisterUser } from '../../apis/users.js';
 import { useNavigate } from 'react-router-dom';
 
+/** Register component for user registration. * 
+ *
+ * @returns {JSX.Element} The rendered Register component.
+ */
 function Register() {
   const navigate = useNavigate();
+
+  /** Handles the form submission event.
+   *
+   * @param {Object} values - The form values.
+   * @return {Promise<void>} - A promise that resolves when the registration is successful.
+   */
   const onFinish = async (values) => {
     try {
+      // Call the RegisterUser function from users.js to register the user
       const response = await RegisterUser(values);
+
+      // Display a success message using ant design's message component if registration is successful
       message.success(response.message);
       navigate('/login');
     } catch (error) {
+      // Display an error message using ant design's message component if registration fails
       message.error(error.message);
     }
   };
