@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
   try {
     // Check if user already exists
     const userExists = await User.findOne({ email: req.body.email });
-    if (userExists) throw new Error('User already exists');
+    if (userExists) throw new Error('User with this email already exists');
 
     // Hash Password
     const salt = await brcypt.genSalt(10);
@@ -32,7 +32,7 @@ router.post('/login', async (req, res) => {
   try {
     // Check if user exists
     const user = await User.findOne({ email: req.body.email });
-    if (!user) throw new Error('User does not exist');
+    if (!user) throw new Error('User with this email does not exist');
 
     // Check if password is correct
     const validPassword = await brcypt.compare(

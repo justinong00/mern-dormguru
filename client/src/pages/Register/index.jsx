@@ -1,11 +1,42 @@
-import React from 'react';
-import { Form, Button } from 'antd';
+import React, { useEffect } from 'react';
+import { Form, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
+import { RegisterUser } from '../../apis/users.js';
+import { useNavigate } from 'react-router-dom';
+import { antValidationError } from '../../helpers/index.js';
 
+/** Register component for user registration. *
+ *
+ * @returns {JSX.Element} The rendered Register component.
+ */
 function Register() {
-  const onFinish = (values) => {
-    console.log('Success:', values);
+  const navigate = useNavigate();
+
+  /** Handles the form submission event.
+   *
+   * @param {Object} values - The form values.
+   * @return {Promise<void>} - A promise that resolves when the registration is successful.
+   */
+  const onFinish = async (values) => {
+    try {
+      // Call the RegisterUser function from users.js to register the user
+      const response = await RegisterUser(values);
+
+      // Display a success message using ant design's message component if registration is successful
+      message.success(response.message);
+      navigate('/login');
+    } catch (error) {
+      // Display an error message using ant design's message component if registration fails
+      message.error(error.message);
+    }
   };
+
+  // If the user is already logged in, don't allow them to access the register page
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/');
+    }
+  }, []);
 
   return (
     <div className="grid grid-cols-2 h-screen">
@@ -25,15 +56,19 @@ function Register() {
             className="flex flex-col gap-5 mt-3"
             onFinish={onFinish}
           >
-            <Form.Item label="Name" name="name">
-              <input type='text'/>
+            <Form.Item label="Name" name="name" rules={antValidationError}>
+              <input type="text" />
             </Form.Item>
 
-            <Form.Item label="Email" name="email">
-              <input type='email'/>
+            <Form.Item label="Email" name="email" rules={antValidationError}>
+              <input type="email" />
             </Form.Item>
 
-            <Form.Item label="Password" name="password">
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={antValidationError}
+            >
               <input type="password" />
             </Form.Item>
 
