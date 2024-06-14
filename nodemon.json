@@ -1,0 +1,7 @@
+{
+  "verbose": true,
+  "ignore": [
+    "./client"
+  ],
+  "_comment": "Prevent nodemon from restarting the server on client file changes. By default, Vite allows client file changes but this is on the safe side."
+}

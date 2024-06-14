@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { LoginUser } from '../../apis/users.js';
+import { useNavigate } from 'react-router-dom';
+import { antValidationError } from '../../helpers/index.js';
 
 /** Login component for user login.
  *
  * @returns {JSX.Element} The rendered Login component.
  */
 function Login() {
-  /** Handles the form submission event.
+  const navigate = useNavigate();
+  /** Handles the form submission event.   * 
    *
    * @param {Object} values - The form values.
    * @return {Promise<void>} - A promise that resolves when the login is successful.
@@ -17,15 +20,25 @@ function Login() {
     try {
       // Call the LoginUser function from users.js to log in the user
       const response = await LoginUser(values);
+
       // Store the JWT token in the local storage
       localStorage.setItem('token', response.data);
-      // Display a success message using ant design's message component
+
+      // Displays a success message using ant design's message component upon successful login
       message.success(response.message);
+      navigate('/');
     } catch (error) {
-      // Display an error message using ant design's message component
+      // Displays an error message using ant design's message component upon failed login
       message.error(error.message);
     }
   };
+
+  // If the user is already logged in, don't allow them to access the login page
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/');
+    }
+  }, []);
 
   return (
     <div className="grid grid-cols-2 h-screen">
@@ -49,12 +62,16 @@ function Login() {
             onFinish={onFinish}
           >
             {/* Form item for email */}
-            <Form.Item label="Email" name="email">
-              <input type='email'/>
+            <Form.Item label="Email" name="email" rules={antValidationError}>
+              <input type="email" />
             </Form.Item>
 
             {/* Form item for password */}
-            <Form.Item label="Password" name="password">
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={antValidationError}
+            >
               <input type="password" />
             </Form.Item>
 

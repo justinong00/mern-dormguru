@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { RegisterUser } from '../../apis/users.js';
 import { useNavigate } from 'react-router-dom';
+import { antValidationError } from '../../helpers/index.js';
 
-/** Register component for user registration. * 
+/** Register component for user registration. *
  *
  * @returns {JSX.Element} The rendered Register component.
  */
@@ -30,6 +31,13 @@ function Register() {
     }
   };
 
+  // If the user is already logged in, don't allow them to access the register page
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/');
+    }
+  }, []);
+
   return (
     <div className="grid grid-cols-2 h-screen">
       <div className="bg-primary flex flex-col items-center justify-center">
@@ -48,15 +56,19 @@ function Register() {
             className="flex flex-col gap-5 mt-3"
             onFinish={onFinish}
           >
-            <Form.Item label="Name" name="name">
+            <Form.Item label="Name" name="name" rules={antValidationError}>
               <input type="text" />
             </Form.Item>
 
-            <Form.Item label="Email" name="email">
+            <Form.Item label="Email" name="email" rules={antValidationError}>
               <input type="email" />
             </Form.Item>
 
-            <Form.Item label="Password" name="password">
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={antValidationError}
+            >
               <input type="password" />
             </Form.Item>
 
