@@ -42,6 +42,7 @@ function ProtectedPage({ children }) {
   // Renders the current user's name and the children components
   return (
     <div>
+      {/* Only authenticated user can access this page */}
       {user && <h1>Welcome {user.name}</h1>}
       {children}
     </div>
