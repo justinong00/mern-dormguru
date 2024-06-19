@@ -42,9 +42,33 @@ function ProtectedPage({ children }) {
   // Renders the current user's name and the children components
   return (
     <div>
-      {/* Only authenticated user can access this page */}
-      {user && <h1>Welcome {user.name}</h1>}
-      {children}
+      <div className="flex items-center justify-between bg-primary p-5">
+        <span
+          className="font-semibold text-orange-500 text-2xl cursor-pointer"
+          onClick={() => navigate('/')}
+        >
+          DormGuru
+        </span>
+
+        <div className="bg-white rounded px-5 py-2 flex gap-2 items-center">
+          <i className="ri-shield-user-line"></i>
+          <span
+            className="text- text-sm cursor-pointer underline"
+            onClick={() => navigate('/profile')}
+          >
+            {user?.name}
+          </span>
+          <i
+            className="ri-logout-box-r-line ml-8"
+            onClick={() => {
+              localStorage.removeItem('token');
+              navigate('/login');
+            }}
+          ></i>
+        </div>
+      </div>
+
+      <div className="p-5">{children}</div>
     </div>
   );
 }
