@@ -2,6 +2,7 @@ import User from '../models/userModel.js';
 import express from 'express';
 import brcypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import authMiddleware from '../middlewares/authMiddleware.js';
 
 // Router is an instance of the express.Router class. It is responsible for handling HTTP requests and defining routes.
 const router = express.Router();
@@ -52,6 +53,17 @@ router.post('/login', async (req, res) => {
       success: true,
       data: token,
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message, success: false });
+  }
+});
+
+// Get Current User (for protected routes) - By passing authMiddleware as a parameter to router.get, you are instructing Express to execute this middleware function before the route handler function is called. This ensures that only authenticated users can access the /get-current-user endpoint.
+router.get('/get-current-user', authMiddleware , async (req, res) => {
+  try {
+    // Find user by ID and exclude password
+    const user = await User.findById(req.user._id).select('-password');
+    res.status(200).json({ message: 'User fetched successfully', success: true, data: user });
   } catch (err) {
     res.status(500).json({ message: err.message, success: false });
   }
