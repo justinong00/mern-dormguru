@@ -2,6 +2,8 @@ import { message } from 'antd';
 import { useState, useEffect } from 'react';
 import { GetCurrentUser } from '../apis/users.js';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUsers } from '../redux/usersSlice.js';
 
 /** ProtectedPage component is a higher-order component that wraps a route or a section of the application and provides authentication and authorization functionality.
  *
@@ -10,7 +12,8 @@ import { useNavigate } from 'react-router-dom';
  * @returns {ReactNode} The rendered ProtectedPage component.
  */
 function ProtectedPage({ children }) {
-  const [user, setUser] = useState(null); // State to store the current user
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.users);
   const navigate = useNavigate(); // Hook to navigate to different routes
 
   /** Fetches the current user from the server and updates the state.
@@ -20,7 +23,7 @@ function ProtectedPage({ children }) {
   const getCurrentUser = async () => {
     try {
       const response = await GetCurrentUser();
-      setUser(response.data);
+      dispatch(setUsers(response.data));
     } catch (error) {
       message.error(error.message);
     }
@@ -53,7 +56,7 @@ function ProtectedPage({ children }) {
         <div className="bg-white rounded px-5 py-2 flex gap-2 items-center">
           <i className="ri-shield-user-line"></i>
           <span
-            className="text- text-sm cursor-pointer underline"
+            className="text-primary text-sm cursor-pointer underline"
             onClick={() => navigate('/profile')}
           >
             {user?.name}
