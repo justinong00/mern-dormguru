@@ -1,5 +1,5 @@
-import apiRequest from "./index.js";
-import axios from "axios";
+import apiRequest from './index.js';
+import axios from 'axios';
 /** @fileoverview
  * @fileoverview Utility module for making API requests related to user management.
  * This module provides two functions, `LoginUser` and `RegisterUser`, which abstract the logic for making HTTP requests to the "/api/user/login" and "/api/user/register" endpoints, respectively.
@@ -7,7 +7,7 @@ import axios from "axios";
  */
 
 /** Sends a POST request to the "/api/user/register" endpoint with the provided data to register a new user.
- * 
+ *
  * @param {Object} data - The data to be sent in the request body.
  * @return {Promise<Object>} A promise that resolves to the response data from the server.
  * @throws {Error} If there is an error during the request.
@@ -15,15 +15,15 @@ import axios from "axios";
 export const RegisterUser = async (data) => {
   try {
     const response = await apiRequest({
-      method: "POST",
-      endPoint: "/api/user/register",
+      method: 'POST',
+      endPoint: '/api/user/register',
       payload: data,
     });
     return response;
   } catch (error) {
     throw error;
   }
-}
+};
 /** Sends a POST request to the "/api/user/login" endpoint with the provided data to log in a user.
  *
  * @param {Object} data - The data to be sent in the request body.
@@ -33,38 +33,29 @@ export const RegisterUser = async (data) => {
 export const LoginUser = async (data) => {
   try {
     const response = await apiRequest({
-      method: "POST",
-      endPoint: "/api/user/login",
+      method: 'POST',
+      endPoint: '/api/user/login',
       payload: data,
     });
     return response;
   } catch (error) {
     throw error;
   }
-}
+};
 
+/** Sends a GET request to fetch the current user data from the server.
+ *
+ * @return {Promise<Object>} A promise that resolves to the response data of the current user.
+ * @throws {Error} If there is an error during the request.
+ */
 export const GetCurrentUser = async () => {
   try {
     const response = await apiRequest({
-      method: "GET",
-      endPoint: "/api/user/current",
+      method: 'GET',
+      endPoint: '/api/user/get-current-user',
     });
     return response;
   } catch (error) {
     throw error;
-  }
-}
-
-// Function to fetch the user's name based on the token
-export const GetUserName = async (token) => {
-  try {
-    const response = await axios.get('api/user/name', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error('Failed to fetch user name.');
   }
 };

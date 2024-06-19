@@ -7,7 +7,7 @@ import axios from 'axios';
  */
 
 /** Makes an API request using axios.
- * 
+ *
  * @param {Object} options - The options for the API request.
  * @param {string} options.method - The HTTP method for the request.
  * @param {string} options.endPoint - The endpoint for the request.
@@ -18,20 +18,16 @@ import axios from 'axios';
  */
 const apiRequest = async ({ method, endPoint, payload, queryStrings }) => {
   try {
-    const response = await axios(
-      {
-        method, // HTTP method for the request
-        url: endPoint, // Endpoint for the request
-        data: payload, // Data to be sent in the request body (for POST, PUT requests)
-        params: queryStrings, // Data to be sent as query strings (for GET requests)
+    const response = await axios({
+      method, // HTTP method for the request
+      url: endPoint, // Endpoint for the request
+      data: payload, // Data to be sent in the request body (for POST, PUT requests)
+      params: queryStrings, // Data to be sent as query strings (for GET requests)
+      headers: {
+        // Set the Authorization header to include the sign in token
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
-      {
-        headers: {
-          // Set the Authorization header to include the sign in token
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      }
-    );
+    });
     return response.data; // Return the data from the API request
   } catch (error) {
     throw new Error( // Throw an error with the appropriate message

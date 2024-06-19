@@ -22,7 +22,7 @@ const authMiddleware = (req, res, next) => {
     // Verify token with secret key from .env
     const decryptedToken = jwt.verify(token, process.env.JWT_SECRET);
     // Add user id to request
-    req.user._id = decryptedToken._id;
+    req.userId = decryptedToken._id;
     // pass the authenticated user to the req object to be used in other routes
     next();
   } catch (error) {
