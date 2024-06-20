@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import dbConfig from './config/dbConfig.js';
 // Import routes
 import usersRoute from './routes/usersRoute.js';
+import unisRoute from './routes/unisRoute.js';
 
 // Load environment variables from the .env file into process.env
 dotenv.config();
@@ -26,8 +27,8 @@ app.use(cors());
  */
 app.use(express.json());
 
-// Mount the user routes at the '/api/user' path
-app.use('/api/user', usersRoute);
+app.use('/api/user', usersRoute); // Mount the user routes at the '/api/user' path
+app.use('/api/unis', unisRoute) // Mount the uni routes at the '/api/unis' path
 
 // Call the dbConfig function to connect to MongoDB
 dbConfig();
