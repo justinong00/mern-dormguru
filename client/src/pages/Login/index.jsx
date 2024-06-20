@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { LoginUser } from '../../apis/users.js';
 import { useNavigate } from 'react-router-dom';
 import { antValidationError } from '../../helpers/index.js';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '../../redux/loadersSlice.js';
 
 /** Login component for user login.
  *
@@ -11,16 +13,23 @@ import { antValidationError } from '../../helpers/index.js';
  */
 function Login() {
   const navigate = useNavigate();
-  /** Handles the form submission event.   * 
+  const dispatch = useDispatch();
+
+  /** Handles the form submission event.   *
    *
    * @param {Object} values - The form values.
    * @return {Promise<void>} - A promise that resolves when the login is successful.
    */
   const onFinish = async (values) => {
     try {
+      dispatch(setLoading(true)); // Sets the loading state to true
+
+      // Simulates a delay of 1 second to show the loading spinner. This creates a new Promise that resolves after a 1-second delay (1000 milliseconds). setTimeout is a built-in function that executes the resolve function after the specified delay. resolve is a function that, when called, will settle the promise and allow the code to continue */
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Call the LoginUser function from users.js to log in the user
       const response = await LoginUser(values);
-
+      dispatch(setLoading(false));  // Sets the loading state to false
       // Store the JWT token in the local storage
       localStorage.setItem('token', response.data);
 
@@ -28,6 +37,7 @@ function Login() {
       message.success(response.message);
       navigate('/');
     } catch (error) {
+      dispatch(setLoading(false));  // Sets the loading state to false
       // Displays an error message using ant design's message component upon failed login
       message.error(error.message);
     }
@@ -93,3 +103,4 @@ function Login() {
 }
 
 export default Login;
+

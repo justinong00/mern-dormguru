@@ -4,12 +4,15 @@ import { Link } from 'react-router-dom';
 import { RegisterUser } from '../../apis/users.js';
 import { useNavigate } from 'react-router-dom';
 import { antValidationError } from '../../helpers/index.js';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '../../redux/loadersSlice.js';
 
 /** Register component for user registration. *
  *
  * @returns {JSX.Element} The rendered Register component.
  */
 function Register() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   /** Handles the form submission event.
@@ -19,13 +22,20 @@ function Register() {
    */
   const onFinish = async (values) => {
     try {
+      dispatch(setLoading(true)); // Sets the loading state to true
+
+      // Simulates a delay of 1 second to show the loading spinner.
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Call the RegisterUser function from users.js to register the user
       const response = await RegisterUser(values);
-
+      
+      dispatch(setLoading(false));  // Set the loading state to false
       // Display a success message using ant design's message component if registration is successful
       message.success(response.message);
       navigate('/login');
     } catch (error) {
+      dispatch(setLoading(false));  // Set the loading state to false
       // Display an error message using ant design's message component if registration fails
       message.error(error.message);
     }
@@ -39,7 +49,9 @@ function Register() {
   }, []);
 
   return (
+    // The main container for the registration page
     <div className="grid grid-cols-2 h-screen">
+      {/* Background section */}
       <div className="bg-primary flex flex-col items-center justify-center">
         <h1 className="text-8xl text-orange-500 font-semibold">DormGuru</h1>
         <span className="text-md text-gray-300 mt-2">
@@ -47,6 +59,7 @@ function Register() {
         </span>
       </div>
 
+      {/* Form section */}
       <div className="flex items-center justify-center">
         <div className="w-[400px]">
           <h1 className="text-2xl my-5 mb-2">Register Your Account</h1>
@@ -77,6 +90,7 @@ function Register() {
                 Register
               </Button>
 
+              {/* Link to login page */}
               <Link to="/login">Already have an account? Login here</Link>
             </div>
           </Form>

@@ -2,6 +2,9 @@ import { message } from 'antd';
 import { useState, useEffect } from 'react';
 import { GetCurrentUser } from '../apis/users.js';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUsers } from '../redux/usersSlice.js';
+import { setLoading } from '../redux/loadersSlice.js';
 
 /** ProtectedPage component is a higher-order component that wraps a route or a section of the application and provides authentication and authorization functionality.
  *
@@ -10,7 +13,8 @@ import { useNavigate } from 'react-router-dom';
  * @returns {ReactNode} The rendered ProtectedPage component.
  */
 function ProtectedPage({ children }) {
-  const [user, setUser] = useState(null); // State to store the current user
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const navigate = useNavigate(); // Hook to navigate to different routes
 
   /** Fetches the current user from the server and updates the state.
@@ -19,8 +23,10 @@ function ProtectedPage({ children }) {
    */
   const getCurrentUser = async () => {
     try {
+      dispatch(setLoading(true));
       const response = await GetCurrentUser();
-      setUser(response.data);
+      dispatch(setLoading(false));
+      dispatch(setUsers(response.data));  // Update the users state in the Redux store
     } catch (error) {
       message.error(error.message);
     }
@@ -42,9 +48,33 @@ function ProtectedPage({ children }) {
   // Renders the current user's name and the children components
   return (
     <div>
-      {/* Only authenticated user can access this page */}
-      {user && <h1>Welcome {user.name}</h1>}
-      {children}
+      <div className="flex items-center justify-between bg-primary p-5">
+        <span
+          className="font-semibold text-orange-500 text-2xl cursor-pointer"
+          onClick={() => navigate('/')}
+        >
+          DormGuru
+        </span>
+
+        <div className="bg-white rounded px-5 py-2 flex gap-2 items-center">
+          <i className="ri-shield-user-line"></i>
+          <span
+            className="text-primary text-sm cursor-pointer underline"
+            onClick={() => navigate('/profile')}
+          >
+            {user?.name}
+          </span>
+          <i
+            className="ri-logout-box-r-line ml-8"
+            onClick={() => {
+              localStorage.removeItem('token');
+              navigate('/login');
+            }}
+          ></i>
+        </div>
+      </div>
+
+      <div className="p-5">{children}</div>
     </div>
   );
 }
