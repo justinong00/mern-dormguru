@@ -4,6 +4,7 @@ import { GetCurrentUser } from '../apis/users.js';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUsers } from '../redux/usersSlice.js';
+import { setLoading } from '../redux/loadersSlice.js';
 
 /** ProtectedPage component is a higher-order component that wraps a route or a section of the application and provides authentication and authorization functionality.
  *
@@ -13,7 +14,7 @@ import { setUsers } from '../redux/usersSlice.js';
  */
 function ProtectedPage({ children }) {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.users);
+  const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const navigate = useNavigate(); // Hook to navigate to different routes
 
   /** Fetches the current user from the server and updates the state.
@@ -22,8 +23,10 @@ function ProtectedPage({ children }) {
    */
   const getCurrentUser = async () => {
     try {
+      dispatch(setLoading(true));
       const response = await GetCurrentUser();
-      dispatch(setUsers(response.data));
+      dispatch(setLoading(false));
+      dispatch(setUsers(response.data));  // Update the users state in the Redux store
     } catch (error) {
       message.error(error.message);
     }
