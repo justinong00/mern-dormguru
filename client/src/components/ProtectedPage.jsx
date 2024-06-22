@@ -74,7 +74,8 @@ function ProtectedPage({ children }) {
         </div>
       </div>
 
-      <div className="p-5">{children}</div>
+      {/* Renders the children components if there is a current user */}
+      {user && <div className="p-5">{children}</div>}
     </div>
   );
 }
