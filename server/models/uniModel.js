@@ -10,15 +10,7 @@ const uniSchema = new Schema(
       type: String,
       required: true,
     },
-    establishedYear: {
-      type: Number,
-      required: true,
-    },
     bio: {
-      type: String,
-      required: true,
-    },
-    logoPic: {
       type: String,
       required: true,
     },
@@ -30,17 +22,29 @@ const uniSchema = new Schema(
       type: String,
       required: true,
     },
-    latitude: {
+    postalCode: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },    
+    establishedYear: {
       type: Number,
       required: true,
     },
-    longitude: {
-      type: Number,
-      required: true,
-    },
-    relatedDorms: {
-      type: mongoose.Schema.Types.Array,
-      type: [String],
+    // relatedDorms: {
+    //   type: mongoose.Schema.Types.Array,
+    //   type: [String],
+    //   required: true,
+    // },
+    logoPic: {
+      type: String,
       required: true,
     },
     createdBy: {
