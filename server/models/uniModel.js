@@ -22,6 +22,14 @@ const uniSchema = new Schema(
       type: String,
       required: true,
     },
+    logoPic: {
+      type: String,
+      required: true,
+    },
+    establishedYear: {
+      type: Number,
+      required: true,
+    },
     postalCode: {
       type: String,
       required: true,
@@ -33,20 +41,12 @@ const uniSchema = new Schema(
     state: {
       type: String,
       required: true,
-    },    
-    establishedYear: {
-      type: Number,
-      required: true,
     },
     // relatedDorms: {
     //   type: mongoose.Schema.Types.Array,
     //   type: [String],
     //   required: true,
     // },
-    logoPic: {
-      type: String,
-      required: true,
-    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

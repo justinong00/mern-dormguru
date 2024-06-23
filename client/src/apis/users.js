@@ -1,5 +1,5 @@
 import apiRequest from './index.js';
-import axios from 'axios';
+
 /** @fileoverview
  * @fileoverview Utility module for making API requests related to user management.
  * This module provides two functions, `LoginUser` and `RegisterUser`, which abstract the logic for making HTTP requests to the "/api/user/login" and "/api/user/register" endpoints, respectively.

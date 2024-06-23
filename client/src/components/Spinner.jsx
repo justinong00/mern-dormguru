@@ -7,7 +7,7 @@ import React from 'react';
 function Spinner() {
   return (
     // The spinner container
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[10000]">
       {/* The spinner itself */}
       <div className="h-10 w-10 border-solid border-4 border-t-transparent border-gray-50 rounded-full animate-spin"></div>
     </div>

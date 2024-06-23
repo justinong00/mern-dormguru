@@ -30,6 +30,7 @@ function Login() {
       // Call the LoginUser function from users.js to log in the user
       const response = await LoginUser(values);
       dispatch(setLoading(false));  // Sets the loading state to false
+      console.log(values); // Log form values on submission
       // Store the JWT token in the local storage
       localStorage.setItem('token', response.data);
 
@@ -38,6 +39,7 @@ function Login() {
       navigate('/');
     } catch (error) {
       dispatch(setLoading(false));  // Sets the loading state to false
+      console.error(error); // Log error on submission
       // Displays an error message using ant design's message component upon failed login
       message.error(error.message);
     }
