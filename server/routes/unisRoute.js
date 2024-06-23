@@ -33,7 +33,7 @@ router.post('/', authMiddleware, async (req, res) => {
 router.get('/', authMiddleware, async (req, res) => {
   try {
     // Find all universities
-    const universities = await Uni.find();
+    const universities = await Uni.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: universities });
   } catch (err) {
     res.status(500).json({ message: err.message, success: false });

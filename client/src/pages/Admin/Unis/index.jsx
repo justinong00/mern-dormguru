@@ -4,21 +4,21 @@ import { Button, Table, message } from "antd";
 import UniForm from "./UniForm.jsx";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
-import { GetAllUnis } from "../../../apis/unis.js";
-import { isFulfilled } from "@reduxjs/toolkit";
+import { DeleteUni, GetAllUnis } from "../../../apis/unis.js";
 
 function Unis() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); // Redux dispatch function
   const navigate = useNavigate();
 
   const [unis, setUnis] = useState([]);
   const [showUniForm, setShowUniForm] = useState(false);
   const [selectedUni, setSelectedUni] = useState(null);
 
+  // Fetch all universities from the server
   const fetchUnis = async () => {
     try {
       dispatch(setLoading(true));
-      const response = await GetAllUnis();
+      const response = await GetAllUnis(); // API call to get all universities
       setUnis(response.data);
       dispatch(setLoading(false));
     } catch (error) {
@@ -27,6 +27,21 @@ function Unis() {
     }
   };
 
+  // Delete a university by ID
+  const deleteUni = async (id) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await DeleteUni(id); // API call to delete a university
+      message.success(response.message);
+      fetchUnis(); // Refresh university list by calling the fetchUnis function
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      message.error(error.message);
+    }
+  };
+
+  // Table columns definition
   const columns = [
     {
       title: "University",
@@ -73,11 +88,12 @@ function Unis() {
       render: (text, record) => {
         return (
           <div className="flex gap-2">
-            <i className="ri-delete-bin-line"></i>
+            <i className="ri-delete-bin-line" onClick={() => deleteUni(record._id)}></i>
             <i
               className="ri-pencil-line"
               onClick={() => {
-                setSelectedUni(record), setShowUniForm(true);
+                setSelectedUni(record); // Set the selected university for editing
+                setShowUniForm(true); // Show the UniForm
               }}
             ></i>
           </div>
@@ -86,6 +102,7 @@ function Unis() {
     },
   ];
 
+  // Fetch universities when component mounts
   useEffect(() => {
     fetchUnis();
   }, []);
@@ -95,21 +112,28 @@ function Unis() {
       <div className="flex justify-end">
         <Button
           onClick={() => {
-            setSelectedUni(null), setShowUniForm(true);
+            setSelectedUni(null); // Reset selected university
+            setShowUniForm(true); // Show the UniForm
           }}
         >
           Add University
         </Button>
       </div>
 
-      <Table dataSource={unis} columns={columns} rowKey={(record) => record.logoPic} />
+      {/* rowKey provides unique key for each row */}
+      <Table
+        dataSource={unis}
+        columns={columns}
+        rowKey={(record) => record.logoPic}
+        className="mt-5"
+      />
 
       {showUniForm && (
         <UniForm
-          showUniForm={showUniForm}
-          setShowUniForm={setShowUniForm}
-          selectedUni={selectedUni}
-          reloadUnis={fetchUnis}
+        showUniForm={showUniForm} // Control the visibility of the UniForm
+        setShowUniForm={setShowUniForm} // Function to hide the UniForm
+        selectedUni={selectedUni} // Selected university for editing
+        reloadUnis={fetchUnis} // Function to reload universities
         />
       )}
     </div>

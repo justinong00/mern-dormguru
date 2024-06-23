@@ -64,3 +64,8 @@ i {
 :disabled {
   color: #303030 !important;
 }
+
+table { 
+  border: 1px solid #c0c0c0 !important;
+
+}

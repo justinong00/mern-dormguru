@@ -14,11 +14,11 @@ import "../../../../src/index.css";
  * @param {function} setShowUniForm - Function to set the visibility of the form modal.
  */
 function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); // Redux dispatch function
 
   // Create a form instance using Ant Design's useForm hook
   const [form] = Form.useForm();
-  const postcodes = allPostcodes;
+  const postcodes = allPostcodes; // List of all postcodes
 
   // Flatten the postcodes data into an array of objects, each containing a postcode value and label. This array is used to populate the options in the Postal Code Select component of the UniForm.
   const allPostcodeOptions = postcodes.reduce((acc, state) => {
@@ -65,6 +65,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
     }
   };
 
+  // Limit the input for the established year to 4 characters
   const handleYearInput = (e) => {
     const value = e.target.value;
     if (value.length > 4) {
@@ -88,7 +89,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
         // Call the UpdateUni function from unis.js to update the university
         response = await UpdateUni(selectedUni._id, values);
       }
-      reloadUnis();
+      reloadUnis(); // Reload the list of universities
       dispatch(setLoading(false)); // Set the loading state to false
 
       // Display a success message using ant design's message component if university addition is successful
@@ -107,7 +108,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
     <Modal
       open={showUniForm} // Control the visibility of the modal
       onCancel={() => setShowUniForm(false)} // Close the modal
-      title={selectedUni ? "Edit University" : "Add University"} // Title of the modal
+      title=""
       centered // Center the modal on the screen
       width={800} // Set the width of the modal
       okText={selectedUni ? "Update" : "Add"} // Text for the Modal's OK button
@@ -124,8 +125,11 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
         onFinish={onFinish} // Handle form submission
         // Pass the form instance to the Form component. This connects the form instance created with useForm to the actual Form component. This linkage is crucial because it enables the modal's OK button to control the form's submission process.
         form={form}
-        initialValues={selectedUni}
+        initialValues={selectedUni} // Set the initial values of the form
       >
+        <div className="h1 text-center font-semibold text-gray-600 text-xl uppercase">
+          {selectedUni ? "Update University" : "Add University"}
+        </div>
         <Form.Item label="University Name" name="name" rules={antValidationError}>
           <Input type="text" />
         </Form.Item>
