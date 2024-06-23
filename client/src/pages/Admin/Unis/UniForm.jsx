@@ -3,6 +3,8 @@ import { antValidationError } from "../../../helpers/index.js";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { AddUni } from "../../../apis/unis.js";
+const { TextArea } = Input;
+
 
 /** UniForm component for adding a university.
  *
@@ -69,8 +71,8 @@ function UniForm({ showUniForm, setShowUniForm }) {
           <Input type="text" />
         </Form.Item>
 
-        <Form.Item label="Bio" name="bio" >
-          <Input.TextArea rows={4} /> {/* Text area for bio */}
+        <Form.Item label="Bio" name="bio" rules={antValidationError}>
+          <TextArea rows={4} />
         </Form.Item>
 
         <Form.Item label="Website URL" name="websiteURL" rules={antValidationError}>
