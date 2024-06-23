@@ -1,10 +1,10 @@
-import { Form, Input, Modal, message } from "antd";
+import { Form, Input, Modal, Select, message } from "antd";
 import { antValidationError } from "../../../helpers/index.js";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { AddUni } from "../../../apis/unis.js";
-const { TextArea } = Input;
-
+import { allPostcodes, findPostcode } from "malaysia-postcodes";
+import "../../../../src/index.css";
 
 /** UniForm component for adding a university.
  *
@@ -17,6 +17,59 @@ function UniForm({ showUniForm, setShowUniForm }) {
   // Create a form instance using Ant Design's useForm hook
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const postcodes = allPostcodes;
+
+  // Flatten the postcodes data into an array of objects, each containing a postcode value and label. This array is used to populate the options in the Postal Code Select component of the UniForm.
+  const allPostcodeOptions = postcodes.reduce((acc, state) => {
+    // Iterate over each state's cities
+    state.city.forEach((city) => {
+      // Iterate over each city's postcodes
+      city.postcode.forEach((postcode) => {
+        // Create an object with the postcode value and label
+        const option = {
+          value: postcode,
+          label: `${postcode}`,
+        };
+        // Add the option to the accumulator array
+        acc.push(option);
+      });
+    });
+    // Return the accumulator array
+    return acc;
+  }, []);
+
+  /** Update the city and state fields in the form based on the provided postcode.
+   *
+   * @param {string} value - The postcode to search for in the Malaysia Postcodes data.
+   * @returns {Promise<void>} - A promise that resolves when the city and state fields have been updated in the form.
+   */
+  const updateCityAndStateFromPostcode = async (value) => {
+    // Find the location associated with the postcode
+    const location = findPostcode(value);
+
+    // If the postcode is found in the data
+    if (location.found) {
+      // Update the city and state fields in the form
+      form.setFieldsValue({
+        city: location.city, // Update the city field with the location's city
+        state: location.state, // Update the state field with the location's state
+      });
+    } else {
+      // Display an error message and clear the city and state fields
+      message.error("Postcode not found"); // Display an error message to the user
+      form.setFieldsValue({
+        city: "", // Clear the city field
+        state: "", // Clear the state field
+      });
+    }
+  };
+
+  const handleYearInput = (e) => {
+    const value = e.target.value;
+    if (value.length > 4) {
+      e.target.value = value.slice(0, 4);
+    }
+  };
 
   // Function to handle form submission
   const onFinish = async (values) => {
@@ -24,7 +77,7 @@ function UniForm({ showUniForm, setShowUniForm }) {
       dispatch(setLoading(true)); // Sets the loading state to true
 
       // Simulates a delay of 1 second to show the loading spinner. This creates a new Promise that resolves after a 1-second delay (1000 milliseconds). setTimeout is a built-in function that executes the resolve function after the specified delay. resolve is a function that, when called, will settle the promise and allow the code to continue */
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log(values); // Log form values on submission
 
       // Call the AddUni function from unis.js to add the university
@@ -72,7 +125,7 @@ function UniForm({ showUniForm, setShowUniForm }) {
         </Form.Item>
 
         <Form.Item label="Bio" name="bio" rules={antValidationError}>
-          <TextArea rows={4} />
+          <Input.TextArea rows={4} />
         </Form.Item>
 
         <Form.Item label="Website URL" name="websiteURL" rules={antValidationError}>
@@ -89,21 +142,26 @@ function UniForm({ showUniForm, setShowUniForm }) {
 
         <div className="grid grid-cols-2 gap-5">
           <Form.Item label="Established Year" name="establishedYear" rules={antValidationError}>
-            <Input type="number" />
+            <Input type="number" maxLength={4} onInput={handleYearInput} onIn />
           </Form.Item>
 
           <Form.Item label="Postal Code" name="postalCode" rules={antValidationError}>
-            <Input type="number" />
+            <Select
+              className="h-[45px]"
+              showSearch
+              options={allPostcodeOptions}
+              onChange={updateCityAndStateFromPostcode}
+            />
           </Form.Item>
         </div>
 
         <div className="grid grid-cols-2 gap-5">
           <Form.Item label="City" name="city" rules={antValidationError}>
-            <Input type="text" />
+            <Input type="text" disabled />
           </Form.Item>
 
           <Form.Item label="State" name="state" rules={antValidationError}>
-            <Input type="text" />
+            <Input type="text" disabled />
           </Form.Item>
         </div>
 

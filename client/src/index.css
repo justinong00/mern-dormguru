@@ -28,13 +28,16 @@ textarea {
   border-radius: 2px !important;
 }
 
-input:focus,
-select:focus,
+.ant-select-selector {
+  border-radius: 2px !important;
+}
+
+/* input:focus,
 textarea:focus {
   outline: none !important;
   border: 1px solid #303030 !important;
   box-shadow: none !important;
-}
+} */
 
 .ant-form-item {
   margin-bottom: 0px !important;
@@ -56,4 +59,8 @@ i {
 
 .ant-form-item-label {
   padding: 0% !important;
+}
+
+:disabled {
+  color: #303030 !important;
 }
