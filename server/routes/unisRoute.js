@@ -1,6 +1,8 @@
 import Uni from '../models/uniModel.js';
 import express from 'express';
 import authMiddleware from '../middlewares/authMiddleware.js';
+import mongoose from 'mongoose';
+
 
 // Router is an instance of the express.Router class. It is responsible for handling HTTP requests and defining routes.
 const router = express.Router();
@@ -31,7 +33,7 @@ router.post('/', authMiddleware, async (req, res) => {
 router.get('/', authMiddleware, async (req, res) => {
   try {
     // Find all universities
-    const universities = await Uni.find();
+    const universities = await Uni.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: universities });
   } catch (err) {
     res.status(500).json({ message: err.message, success: false });
