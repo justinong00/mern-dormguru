@@ -1,6 +1,8 @@
 import Uni from '../models/uniModel.js';
 import express from 'express';
 import authMiddleware from '../middlewares/authMiddleware.js';
+import mongoose from 'mongoose';
+
 
 // Router is an instance of the express.Router class. It is responsible for handling HTTP requests and defining routes.
 const router = express.Router();

@@ -2,7 +2,7 @@ import { Form, Input, Modal, Select, message } from "antd";
 import { antValidationError } from "../../../helpers/index.js";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
-import { AddUni } from "../../../apis/unis.js";
+import { AddUni, UpdateUni } from "../../../apis/unis.js";
 import { allPostcodes, findPostcode } from "malaysia-postcodes";
 import "../../../../src/index.css";
 
@@ -13,10 +13,11 @@ import "../../../../src/index.css";
  * @param {boolean} showUniForm - State to control the visibility of the form modal.
  * @param {function} setShowUniForm - Function to set the visibility of the form modal.
  */
-function UniForm({ showUniForm, setShowUniForm }) {
+function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
+  const dispatch = useDispatch();
+
   // Create a form instance using Ant Design's useForm hook
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
   const postcodes = allPostcodes;
 
   // Flatten the postcodes data into an array of objects, each containing a postcode value and label. This array is used to populate the options in the Postal Code Select component of the UniForm.
@@ -78,17 +79,21 @@ function UniForm({ showUniForm, setShowUniForm }) {
 
       // Simulates a delay of 1 second to show the loading spinner. This creates a new Promise that resolves after a 1-second delay (1000 milliseconds). setTimeout is a built-in function that executes the resolve function after the specified delay. resolve is a function that, when called, will settle the promise and allow the code to continue */
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log(values); // Log form values on submission
 
-      // Call the AddUni function from unis.js to add the university
-      const response = await AddUni(values);
-
-      console.log(values); // Log form values on submission
+      let response;
+      if (!selectedUni) {
+        // Call the AddUni function from unis.js to add the university
+        response = await AddUni(values);
+      } else {
+        // Call the UpdateUni function from unis.js to update the university
+        response = await UpdateUni(selectedUni._id, values);
+      }
+      reloadUnis();
       dispatch(setLoading(false)); // Set the loading state to false
 
       // Display a success message using ant design's message component if university addition is successful
       message.success(response.message);
-
+      console.log(values); // Log form values on submission
       // Close the modal
       setShowUniForm(false);
     } catch (error) {
@@ -102,10 +107,10 @@ function UniForm({ showUniForm, setShowUniForm }) {
     <Modal
       open={showUniForm} // Control the visibility of the modal
       onCancel={() => setShowUniForm(false)} // Close the modal
-      title="Add University" // Title of the modal
+      title={selectedUni ? "Edit University" : "Add University"} // Title of the modal
       centered // Center the modal on the screen
       width={800} // Set the width of the modal
-      okText="Add" // Text for the Modal's OK button
+      okText={selectedUni ? "Update" : "Add"} // Text for the Modal's OK button
       /** Connecting the Form to the Modal's OK Button:
        *
        * - Why: Normally, the form submission is triggered by a submit button inside the form. However, in this case, the submit action is linked to the OK button of the modal, which is outside the form.
@@ -119,6 +124,7 @@ function UniForm({ showUniForm, setShowUniForm }) {
         onFinish={onFinish} // Handle form submission
         // Pass the form instance to the Form component. This connects the form instance created with useForm to the actual Form component. This linkage is crucial because it enables the modal's OK button to control the form's submission process.
         form={form}
+        initialValues={selectedUni}
       >
         <Form.Item label="University Name" name="name" rules={antValidationError}>
           <Input type="text" />

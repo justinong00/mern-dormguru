@@ -8,10 +8,12 @@ import { GetAllUnis } from "../../../apis/unis.js";
 import { isFulfilled } from "@reduxjs/toolkit";
 
 function Unis() {
-  const [unis, setUnis] = useState([]);
   const dispatch = useDispatch();
-  const [showUniForm, setShowUniForm] = useState(false);
   const navigate = useNavigate();
+
+  const [unis, setUnis] = useState([]);
+  const [showUniForm, setShowUniForm] = useState(false);
+  const [selectedUni, setSelectedUni] = useState(null);
 
   const fetchUnis = async () => {
     try {
@@ -72,7 +74,12 @@ function Unis() {
         return (
           <div className="flex gap-2">
             <i className="ri-delete-bin-line"></i>
-            <i className="ri-pencil-line"></i>
+            <i
+              className="ri-pencil-line"
+              onClick={() => {
+                setSelectedUni(record), setShowUniForm(true);
+              }}
+            ></i>
           </div>
         );
       },
@@ -86,12 +93,25 @@ function Unis() {
   return (
     <div>
       <div className="flex justify-end">
-        <Button onClick={() => setShowUniForm(true)}>Add University</Button>
+        <Button
+          onClick={() => {
+            setSelectedUni(null), setShowUniForm(true);
+          }}
+        >
+          Add University
+        </Button>
       </div>
 
       <Table dataSource={unis} columns={columns} rowKey={(record) => record.logoPic} />
 
-      {showUniForm && <UniForm showUniForm={showUniForm} setShowUniForm={setShowUniForm} />}
+      {showUniForm && (
+        <UniForm
+          showUniForm={showUniForm}
+          setShowUniForm={setShowUniForm}
+          selectedUni={selectedUni}
+          reloadUnis={fetchUnis}
+        />
+      )}
     </div>
   );
 }
