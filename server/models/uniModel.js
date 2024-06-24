@@ -26,6 +26,10 @@ const uniSchema = new Schema(
       type: String,
       required: true,
     },
+    // images: {
+    //   type: [],
+    //   required: false,
+    // },
     establishedYear: {
       type: Number,
       required: true,

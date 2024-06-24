@@ -47,7 +47,7 @@ function Unis() {
       title: "University",
       dataIndex: "logoPic",
       render: (text, record) => {
-        return <img src={record?.logoPic} alt="logoPic" className="w-20 h-20 rounded" />;
+        return <img src={record?.logoPic || ""} alt="logoPic" className="w-20 h-20 rounded" />;
       },
     },
     {

@@ -33,11 +33,11 @@ app.use(express.json());
  * It is the first code that runs between sending a request and receiving a response before other middleware code runs. You must state next() at the end to pass control to the next middleware or route handler or else other middleware code cannot run 
  */
 app.use((req, res, next) => {
+  console.log('=======================')
   console.log('Path:', req.path); // logs the request path
   console.log('Method:', req.method); // logs the request method
   console.log('Params:', req.params); // logs the request parameters
   console.log('Body:', req.body); // logs the request body
-  console.log('=======================')
   next();
 });
 
@@ -50,5 +50,6 @@ dbConfig();
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
+   console.log('=======================')
   console.log(`Node JS Server started on port ${port}`);
 });
