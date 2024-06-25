@@ -1,10 +1,13 @@
-import { Form, Input, Modal, Select, message } from "antd";
+import { Button, Form, Input, Modal, Select, Tabs, message } from "antd";
 import { antValidationError } from "../../../helpers/index.js";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { AddUni, UpdateUni } from "../../../apis/unis.js";
 import { allPostcodes, findPostcode } from "malaysia-postcodes";
 import "../../../../src/index.css";
+import Upload from "antd/es/upload/Upload.js";
+import { useState } from "react";
+import { AddUniLogoPic } from "../../../apis/images.js";
 
 /** UniForm component for adding a university.
  *
@@ -15,10 +18,10 @@ import "../../../../src/index.css";
  */
 function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
   const dispatch = useDispatch(); // Redux dispatch function
-
-  // Create a form instance using Ant Design's useForm hook
-  const [form] = Form.useForm();
+  const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const postcodes = allPostcodes; // List of all postcodes
+  const [imageFile, setImageFile] = useState(null); // State to store the uploaded image file
+  const [selectedTab, setSelectedTab] = useState("1"); // State to store the selected tab in the Modal
 
   // Flatten the postcodes data into an array of objects, each containing a postcode value and label. This array is used to populate the options in the Postal Code Select component of the UniForm.
   const allPostcodeOptions = postcodes.reduce((acc, state) => {
@@ -104,6 +107,72 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
     }
   };
 
+  /** Function to handle upload of university logo
+   *
+   * This function creates a FormData object and appends the selected image file and the university name to it.
+   * It then calls the AddUniLogoPic function to upload the image and update the university's logoPic field.
+   * Finally, it reloads the list of universities and displays a success message.
+   *
+   * @return {Promise<void>} - A promise that resolves when the image has been uploaded and the university's logoPic field has been updated.
+   */
+  const uploadUniLogo = async () => {
+    try {
+      // The formData object is created using the FormData constructor, which is a built-in JavaScript object that allows you to easily construct a set of key/value pairs representing form fields and their values.
+      const formData = new FormData();
+      formData.append("image", imageFile); // Append the selected image file to the formData object
+      formData.append("uniName", form.getFieldValue("name")); // Append the university name to the formData object
+      dispatch(setLoading(true));
+
+      // Call the AddUniLogoPic function to upload the image and get the response
+      const response = await AddUniLogoPic(formData);
+
+      // If the upload is successful, update the university's logoPic field
+      if (response.success) {
+        await UpdateUni(selectedUni._id, {
+          logoPic: response.data, // Update the logoPic field with the response data from the AddUniLogoPic function
+        });
+      }
+
+      reloadUnis(); // Reload the list of universities to update the image
+      console.log(response); 
+      dispatch(setLoading(false)); 
+      message.success(response.message); 
+      setShowUniForm(false);  // Close the modal
+    } catch (error) {
+      message.error(error.message); 
+      console.error(error);
+      dispatch(setLoading(false));
+    }
+  };
+
+  /**  Function to delete the university's logo
+   *
+   * This function calls the UpdateUni function to update the logoPic field of the selected university to an empty string.
+   * Then it reloads the list of universities to update the image, displays a success message, and closes the modal.
+   *
+   * @return {Promise<void>} - A promise that resolves when the university's logo has been deleted.
+   */
+  const deleteUniLogo = async () => {
+    try {
+      dispatch(setLoading(true));
+
+      // Call the UpdateUni function to update the logoPic field of the selected university to an empty string
+      const response = await UpdateUni(selectedUni._id, {
+        logoPic: "", // Set the logoPic field of the selected university to an empty string
+      });
+
+      reloadUnis(); // Reload the list of universities to update the image
+      console.log(response); 
+      dispatch(setLoading(false)); 
+      message.success(response.message);
+      setShowUniForm(false); // Close the modal
+    } catch (error) {
+      message.error(error.message); 
+      console.error(error); 
+      dispatch(setLoading(false)); 
+    }
+  };
+
   return (
     <Modal
       open={showUniForm} // Control the visibility of the modal
@@ -117,75 +186,111 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
        * - Why: Normally, the form submission is triggered by a submit button inside the form. However, in this case, the submit action is linked to the OK button of the modal, which is outside the form.
        * - How: By using form.submit(), you manually trigger the form's submit event when the modal's OK button is clicked.
        */
-      onOk={() => form.submit()} // Submit the form when the Modal's OK button is clicked
+      onOk={() => {
+        if (selectedTab === "1") {
+          form.submit(); // Submit the Basic Info form when the Modal's OK button is clicked
+        } else {
+          uploadUniLogo(); // Upload the image when the Modal's OK button is clicked
+        }
+      }}
     >
-      <Form
-        layout="vertical" // Vertical layout for form items
-        className="flex flex-col gap-2" // Custom class for styling
-        onFinish={onFinish} // Handle form submission
-        // Pass the form instance to the Form component. This connects the form instance created with useForm to the actual Form component. This linkage is crucial because it enables the modal's OK button to control the form's submission process.
-        form={form}
-        initialValues={selectedUni} // Set the initial values of the form
-      >
+      <>
         <div className="h1 text-center font-semibold text-gray-600 text-xl uppercase">
           {selectedUni ? "Update University" : "Add University"}
         </div>
-        <Form.Item label="University Name" name="name" rules={antValidationError}>
-          <Input type="text" />
-        </Form.Item>
+        <Tabs defaultActiveKey="1" onChange={(key) => setSelectedTab(key)}>
+          <Tabs.TabPane tab="Basic Info" key="1">
+            <Form
+              layout="vertical" // Vertical layout for form items
+              className="flex flex-col gap-2" // Custom class for styling
+              onFinish={onFinish} // Handle form submission
+              // Pass the form instance to the Form component. This connects the form instance created with useForm to the actual Form component. This linkage is crucial because it enables the modal's OK button to control the form's submission process.
+              form={form}
+              initialValues={selectedUni} // Set the initial values of the form
+            >
+              <Form.Item label="University Name" name="name" rules={antValidationError}>
+                <Input type="text" />
+              </Form.Item>
 
-        <Form.Item label="Bio" name="bio" rules={antValidationError}>
-          <Input.TextArea rows={4} />
-        </Form.Item>
+              <Form.Item label="Bio" name="bio" rules={antValidationError}>
+                <Input.TextArea rows={4} />
+              </Form.Item>
 
-        <Form.Item label="Website URL" name="websiteURL" rules={antValidationError}>
-          <Input type="text" />
-        </Form.Item>
+              <Form.Item label="Website URL" name="websiteURL" rules={antValidationError}>
+                <Input type="text" />
+              </Form.Item>
 
-        <Form.Item label="Address" name="address" rules={antValidationError}>
-          <Input type="text" />
-        </Form.Item>
+              <Form.Item label="Address" name="address" rules={antValidationError}>
+                <Input type="text" />
+              </Form.Item>
 
-        <Form.Item label="Logo" name="logoPic" rules={antValidationError}>
-          <Input type="text" />
-        </Form.Item>
+              <Form.Item label="Logo" name="logoPic" rules={antValidationError}>
+                <Input type="text" />
+              </Form.Item>
 
-        <div className="grid grid-cols-2 gap-5">
-          <Form.Item label="Established Year" name="establishedYear" rules={antValidationError}>
-            <Input type="number" maxLength={4} onInput={handleYearInput} onIn />
-          </Form.Item>
+              <div className="grid grid-cols-2 gap-5">
+                <Form.Item
+                  label="Established Year"
+                  name="establishedYear"
+                  rules={antValidationError}
+                >
+                  <Input type="number" maxLength={4} onInput={handleYearInput} onIn />
+                </Form.Item>
 
-          <Form.Item label="Postal Code" name="postalCode" rules={antValidationError}>
-            <Select
-              className="h-[45px]"
-              showSearch
-              options={allPostcodeOptions}
-              onChange={updateCityAndStateFromPostcode}
-            />
-          </Form.Item>
-        </div>
+                <Form.Item label="Postal Code" name="postalCode" rules={antValidationError}>
+                  <Select
+                    className="h-[45px]"
+                    showSearch
+                    options={allPostcodeOptions}
+                    onChange={updateCityAndStateFromPostcode}
+                  />
+                </Form.Item>
+              </div>
 
-        <div className="grid grid-cols-2 gap-5">
-          <Form.Item label="City" name="city" rules={antValidationError}>
-            <Input type="text" disabled />
-          </Form.Item>
+              <div className="grid grid-cols-2 gap-5">
+                <Form.Item label="City" name="city" rules={antValidationError}>
+                  <Input type="text" disabled />
+                </Form.Item>
 
-          <Form.Item label="State" name="state" rules={antValidationError}>
-            <Input type="text" disabled />
-          </Form.Item>
-        </div>
+                <Form.Item label="State" name="state" rules={antValidationError}>
+                  <Input type="text" disabled />
+                </Form.Item>
+              </div>
 
-        {/* Placeholder for related dorms input field */}
-        {/* <Form.Item
-          label="Related Dorms"
-          name="relatedDorms"
-          rules={antValidationError}
-        >
-          <Input type="text" />
-        </Form.Item> */}
-      </Form>
+              {/* Placeholder for related dorms input field */}
+              {/* <Form.Item label="Related Dorms" name="relatedDorms" rules={antValidationError}>
+                <Input type="text" />
+              </Form.Item> */}
+            </Form>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Images" key="2" disabled={!selectedUni}>
+            <div className="flex flex-wrap gap-5 mb-10">
+              {selectedUni?.logoPic && (
+                <div className="flex gap-5 border border-dashed p-3" key={selectedUni.logoPic}>
+                  <img
+                    src={selectedUni.logoPic}
+                    alt="University Logo"
+                    className="w-20 h-20 rounded"
+                  />
+                  <i
+                    className="ri-delete-bin-line"
+                    onClick={() => deleteUniLogo(selectedUni.logoPic)}
+                  ></i>
+                </div>
+              )}
+            </div>
+
+            <Upload
+              onChange={(info) => setImageFile(info.file)}
+              beforeUpload={() => false}
+              listType="picture"
+            >
+              <Button>Click to Upload</Button>
+            </Upload>
+          </Tabs.TabPane>
+        </Tabs>
+      </>
     </Modal>
   );
 }
-
 export default UniForm;
