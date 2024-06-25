@@ -1,12 +1,13 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ProtectedPage from './components/ProtectedPage.jsx';
-import Profile from './pages/Profile/index.jsx';
-import Spinner from './components/Spinner.jsx';
-import { useSelector } from 'react-redux';
-import Admin from './pages/Admin/index.jsx';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ProtectedPage from "./components/ProtectedPage.jsx";
+import Profile from "./pages/Profile/index.jsx";
+import Spinner from "./components/Spinner.jsx";
+import { useSelector } from "react-redux";
+import Admin from "./pages/Admin/index.jsx";
+import DormForm from "./pages/Admin/Dorms/DormForm.jsx";
 
 function App() {
   const { loading } = useSelector((state) => state.loaders);
@@ -39,6 +40,24 @@ function App() {
             element={
               <ProtectedPage>
                 <Admin />
+              </ProtectedPage>
+            }
+          />
+          {/* Protected page route for adding a new dorm*/}
+          <Route
+            path="/admin/dorms/add"
+            element={
+              <ProtectedPage>
+                <DormForm />
+              </ProtectedPage>
+            }
+          />
+          {/* Protected page route for editing a new dorm*/}
+          <Route
+            path="/admin/dorms/edit/:id"
+            element={
+              <ProtectedPage>
+                <DormForm />
               </ProtectedPage>
             }
           />

@@ -1,9 +1,13 @@
-import React from 'react'
+import { Button } from "antd";
+import { useNavigate } from "react-router-dom";
 
 function Dorms() {
+  const navigate = useNavigate();
   return (
-    <div>Dorms</div>
-  )
+    <div className="flex justify-end">
+      <Button onClick={() => navigate("/admin/dorms/add")}>Add Dorm</Button>
+    </div>
+  );
 }
 
-export default Dorms
+export default Dorms;
