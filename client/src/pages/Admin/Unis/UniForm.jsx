@@ -134,12 +134,12 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
       }
 
       reloadUnis(); // Reload the list of universities to update the image
-      console.log(response); 
-      dispatch(setLoading(false)); 
-      message.success(response.message); 
-      setShowUniForm(false);  // Close the modal
+      console.log(response);
+      dispatch(setLoading(false));
+      message.success(response.message);
+      setShowUniForm(false); // Close the modal
     } catch (error) {
-      message.error(error.message); 
+      message.error(error.message);
       console.error(error);
       dispatch(setLoading(false));
     }
@@ -162,14 +162,14 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
       });
 
       reloadUnis(); // Reload the list of universities to update the image
-      console.log(response); 
-      dispatch(setLoading(false)); 
+      console.log(response);
+      dispatch(setLoading(false));
       message.success(response.message);
       setShowUniForm(false); // Close the modal
     } catch (error) {
-      message.error(error.message); 
-      console.error(error); 
-      dispatch(setLoading(false)); 
+      message.error(error.message);
+      console.error(error);
+      dispatch(setLoading(false));
     }
   };
 
@@ -198,97 +198,115 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
         <div className="h1 text-center font-semibold text-gray-600 text-xl uppercase">
           {selectedUni ? "Update University" : "Add University"}
         </div>
-        <Tabs defaultActiveKey="1" onChange={(key) => setSelectedTab(key)}>
-          <Tabs.TabPane tab="Basic Info" key="1">
-            <Form
-              layout="vertical" // Vertical layout for form items
-              className="flex flex-col gap-2" // Custom class for styling
-              onFinish={onFinish} // Handle form submission
-              // Pass the form instance to the Form component. This connects the form instance created with useForm to the actual Form component. This linkage is crucial because it enables the modal's OK button to control the form's submission process.
-              form={form}
-              initialValues={selectedUni} // Set the initial values of the form
-            >
-              <Form.Item label="University Name" name="name" rules={antValidationError}>
-                <Input type="text" />
-              </Form.Item>
-
-              <Form.Item label="Bio" name="bio" rules={antValidationError}>
-                <Input.TextArea rows={4} />
-              </Form.Item>
-
-              <Form.Item label="Website URL" name="websiteURL" rules={antValidationError}>
-                <Input type="text" />
-              </Form.Item>
-
-              <Form.Item label="Address" name="address" rules={antValidationError}>
-                <Input type="text" />
-              </Form.Item>
-
-              <Form.Item label="Logo" name="logoPic" rules={antValidationError}>
-                <Input type="text" />
-              </Form.Item>
-
-              <div className="grid grid-cols-2 gap-5">
-                <Form.Item
-                  label="Established Year"
-                  name="establishedYear"
-                  rules={antValidationError}
+        <Tabs
+          defaultActiveKey="1"
+          onChange={(key) => setSelectedTab(key)}
+          items={[
+            {
+              key: "1",
+              label: "Basic Info",
+              children: (
+                <Form
+                  layout="vertical" // Vertical layout for form items
+                  className="flex flex-col gap-2" // Custom class for styling
+                  onFinish={onFinish} // Handle form submission
+                  // Pass the form instance to the Form component. This connects the form instance created with useForm to the actual Form component. This linkage is crucial because it enables the modal's OK button to control the form's submission process.
+                  form={form}
+                  initialValues={selectedUni} // Set the initial values of the form
                 >
-                  <Input type="number" maxLength={4} onInput={handleYearInput} onIn />
-                </Form.Item>
+                  <Form.Item label="University Name" name="name" rules={antValidationError}>
+                    <Input type="text" />
+                  </Form.Item>
 
-                <Form.Item label="Postal Code" name="postalCode" rules={antValidationError}>
-                  <Select
-                    className="h-[45px]"
-                    showSearch
-                    options={allPostcodeOptions}
-                    onChange={updateCityAndStateFromPostcode}
-                  />
-                </Form.Item>
-              </div>
+                  <Form.Item label="Bio" name="bio" rules={antValidationError}>
+                    <Input.TextArea rows={4} />
+                  </Form.Item>
 
-              <div className="grid grid-cols-2 gap-5">
-                <Form.Item label="City" name="city" rules={antValidationError}>
-                  <Input type="text" disabled />
-                </Form.Item>
+                  <Form.Item label="Website URL" name="websiteURL" rules={antValidationError}>
+                    <Input type="text" />
+                  </Form.Item>
 
-                <Form.Item label="State" name="state" rules={antValidationError}>
-                  <Input type="text" disabled />
-                </Form.Item>
-              </div>
+                  <Form.Item label="Address" name="address" rules={antValidationError}>
+                    <Input type="text" />
+                  </Form.Item>
 
-              {/* Placeholder for related dorms input field */}
-              {/* <Form.Item label="Related Dorms" name="relatedDorms" rules={antValidationError}>
-                <Input type="text" />
-              </Form.Item> */}
-            </Form>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Images" key="2" disabled={!selectedUni}>
-            <div className="flex flex-wrap gap-5 mb-10">
-              {selectedUni?.logoPic && (
-                <div className="flex gap-5 border border-dashed p-3" key={selectedUni.logoPic}>
-                  <img
-                    src={selectedUni.logoPic}
-                    alt="University Logo"
-                    className="w-20 h-20 rounded"
-                  />
-                  <i
-                    className="ri-delete-bin-line"
-                    onClick={() => deleteUniLogo(selectedUni.logoPic)}
-                  ></i>
-                </div>
-              )}
-            </div>
+                  <Form.Item label="Logo" name="logoPic" rules={antValidationError}>
+                    <Input type="text" />
+                  </Form.Item>
 
-            <Upload
-              onChange={(info) => setImageFile(info.file)}
-              beforeUpload={() => false}
-              listType="picture"
-            >
-              <Button>Click to Upload</Button>
-            </Upload>
-          </Tabs.TabPane>
-        </Tabs>
+                  <div className="grid grid-cols-2 gap-5">
+                    <Form.Item
+                      label="Established Year"
+                      name="establishedYear"
+                      rules={antValidationError}
+                    >
+                      <Input type="number" maxLength={4} onInput={handleYearInput} />
+                    </Form.Item>
+
+                    <Form.Item label="Postal Code" name="postalCode" rules={antValidationError}>
+                      <Select
+                        className="h-[45px]"
+                        showSearch
+                        options={allPostcodeOptions}
+                        onChange={updateCityAndStateFromPostcode}
+                      />
+                    </Form.Item>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-5">
+                    <Form.Item label="City" name="city" rules={antValidationError}>
+                      <Input type="text" disabled />
+                    </Form.Item>
+
+                    <Form.Item label="State" name="state" rules={antValidationError}>
+                      <Input type="text" disabled />
+                    </Form.Item>
+                  </div>
+
+                  {/* Placeholder for related dorms input field */}
+                  {/* <Form.Item label="Related Dorms" name="relatedDorms" rules={antValidationError}>
+                  <Input type="text" />
+                  </Form.Item> */}
+                </Form>
+              ),
+            },
+            {
+              key: "2",
+              label: "Images",
+              disabled: !selectedUni,
+              children: (
+                <>
+                  {" "}
+                  <div className="flex flex-wrap gap-5 mb-10">
+                    {selectedUni?.logoPic && (
+                      <div
+                        className="flex gap-5 border border-dashed p-3"
+                        key={selectedUni.logoPic}
+                      >
+                        <img
+                          src={selectedUni.logoPic}
+                          alt="University Logo"
+                          className="w-20 h-20 rounded"
+                        />
+                        <i
+                          className="ri-delete-bin-line"
+                          onClick={() => deleteUniLogo(selectedUni.logoPic)}
+                        ></i>
+                      </div>
+                    )}
+                  </div>
+                  <Upload
+                    onChange={(info) => setImageFile(info.file)}
+                    beforeUpload={() => false}
+                    listType="picture"
+                  >
+                    <Button>Click to Upload</Button>
+                  </Upload>
+                </>
+              ),
+            },
+          ]}
+        />
       </>
     </Modal>
   );
