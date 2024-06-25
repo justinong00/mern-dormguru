@@ -24,6 +24,3 @@ logs
 
 # Environment variables
 .env*
-
-# uniLogos images
-public/uniLogos
