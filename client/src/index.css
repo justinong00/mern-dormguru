@@ -18,9 +18,7 @@ button {
   border-radius: 2px;
 }
 
-input,
-select,
-textarea {
+input {
   height: 45px;
   width: 100%;
   border: 1px solid #6d6d6d;
@@ -28,16 +26,10 @@ textarea {
   border-radius: 2px !important;
 }
 
-.ant-select-selector {
+.ant-select-selector,
+.ant-input-textarea-affix-wrapper {
   border-radius: 2px !important;
 }
-
-/* input:focus,
-textarea:focus {
-  outline: none !important;
-  border: 1px solid #303030 !important;
-  box-shadow: none !important;
-} */
 
 .ant-form-item {
   margin-bottom: 0px !important;
@@ -67,5 +59,22 @@ i {
 
 table { 
   border: 1px solid #c0c0c0 !important;
+}
 
+/*remove arrow from number input*/
+@layer base {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number'] {
+    -webkit-appearance: none;
+    margin: 0;
+    -moz-appearance: textfield !important;
+  }
+}
+
+.ant-modal-title {
+  text-align: center;
+  font-size: 1.5rem !important;
+  color: #0b2447 !important;
+  text-transform: uppercase;
 }
