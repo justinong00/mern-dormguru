@@ -1,102 +1,73 @@
 import { Button, Form, Input, Select, Tabs, Upload } from "antd";
-import React, { useState } from "react";
-import { antValidationError } from "../../../helpers/index.js";
-import { allPostcodes, findPostcode } from "malaysia-postcodes";
+import { UploadOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import {
+  allowNumbersOnly,
+  antValidationError,
+  customValidateEstablishedYear,
+  customValidateFileList,
+  limitInputLengthTo,
+  validationRules,
+} from "../../../helpers/index.js";
+import { GetAllUnis } from "../../../apis/unis.js";
+import {
+  getAllPostcodeOptions,
+  updateCityAndStateInputFieldsFromPostcode,
+} from "../../../helpers/postalCodeHelper.js";
+import dayjs from "dayjs";
 
 function DormForm() {
-  const postcodes = allPostcodes; // List of all postcodes
-  const [imageFile, setImageFile] = useState(null); // State to store the uploaded image file
+  const [ParentUniversityOptions, setParentUniversityOptions] = useState([]);
+  const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
+  const [selectedDorm, setSelectedDorm] = useState(null);
 
-  const tempOptions = [
-    {
-      value: "1",
-      label: "Option 1",
-    },
-    {
-      value: "2",
-      label: "Option 2",
-    },
-    {
-      value: "3",
-      label: "Option 3",
-    },
-  ];
+  useEffect(() => {
+    const fetchParentUniversityOptions = async () => {
+      try {
+        const response = await GetAllUnis();
+        setParentUniversityOptions(response.data);
+      } catch (error) {
+        console.error("Error fetching Parent Universities:", error);
+      }
+    };
 
-  const roomOptions = [
-    {
-      value: "private",
-      label: "Private Room",
-    },
-    {
-      value: "shared",
-      label: "Shared Room",
-    },
-    {
-      value: "luxury",
-      label: "Luxury Room",
-    },
-  ];
-
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-  const onSearch = (value) => {
-    console.log("search:", value);
-  };
-
-  // Flatten the postcodes data into an array of objects, each containing a postcode value and label. This array is used to populate the options in the Postal Code Select component of the UniForm.
-  const allPostcodeOptions = postcodes.reduce((acc, state) => {
-    // Iterate over each state's cities
-    state.city.forEach((city) => {
-      // Iterate over each city's postcodes
-      city.postcode.forEach((postcode) => {
-        // Create an object with the postcode value and label
-        const option = {
-          value: postcode,
-          label: `${postcode}`,
-        };
-        // Add the option to the accumulator array
-        acc.push(option);
-      });
-    });
-    // Return the accumulator array
-    return acc;
+    fetchParentUniversityOptions();
   }, []);
 
-  /** Update the city and state fields in the form based on the provided postcode.
-   *
-   * @param {string} value - The postcode to search for in the Malaysia Postcodes data.
-   * @returns {Promise<void>} - A promise that resolves when the city and state fields have been updated in the form.
-   */
-  const updateCityAndStateFromPostcode = async (value) => {
-    // Find the location associated with the postcode
-    const location = findPostcode(value);
+  const dormTypeOptions = [
+    {
+      value: "onCampus",
+      label: "On-Campus Accommodation",
+    },
+    {
+      value: "offCampus",
+      label: "Off-Campus Accommodation",
+    },
+  ];
 
-    // If the postcode is found in the data
-    if (location.found) {
-      // Update the city and state fields in the form
-      form.setFieldsValue({
-        city: location.city, // Update the city field with the location's city
-        state: location.state, // Update the state field with the location's state
-      });
-    } else {
-      // Display an error message and clear the city and state fields
-      message.error("Postcode not found"); // Display an error message to the user
-      form.setFieldsValue({
-        city: "", // Clear the city field
-        state: "", // Clear the state field
-      });
-    }
-  };
-
-  // Limit the input for the established year to 4 characters
-  const handleYearInput = (e) => {
-    const value = e.target.value;
-    if (value.length > 4) {
-      e.target.value = value.slice(0, 4);
-    }
-  };
+  const roomsOfferedOptions = [
+    {
+      value: "master-premium-twin-sharing",
+      label: "Master Premium with attached bathroom - Twin Sharing",
+    },
+    {
+      value: "master-premium-single",
+      label: "Master Premium with attached bathroom - Single Occupant",
+    },
+    {
+      value: "medium-premium-twin-sharing",
+      label: "Medium Premium Twin with common bathroom - Twin Sharing",
+    },
+    {
+      value: "medium-premium-single",
+      label: "Medium Premium Single with common bathroom - Single Occupant",
+    },
+    {
+      value: "small-single",
+      label: "Small Single with common bathroom - Single Occupant",
+    },
+  ];
 
   return (
     <>
@@ -110,95 +81,147 @@ function DormForm() {
             key: "1",
             label: "Details",
             children: (
-              <Form layout="vertical" className="flex flex-col gap-5">
-                <div className="grid grid-cols-3 gap-5">
-                  <Form.Item
-                    label="Dorm Name"
-                    name="name"
-                    rules={antValidationError}
-                    className="col-span-2"
-                  >
+              <Form layout="vertical" className="flex flex-col gap-5" form={form}>
+                <div className="grid grid-cols-2 gap-5">
+                  <Form.Item label="Dorm Name" name="name" rules={validationRules["name"]}>
                     <Input type="text" />
                   </Form.Item>
 
-                  <Form.Item label="Description" name="description" rules={antValidationError}>
-                    <Input.TextArea rows={4} />
-                  </Form.Item>
-
-                  <div className="grid grid-cols-2 gap-5">
-                    <Form.Item
-                      label="Parent University"
-                      name="parentUniversity"
-                      rules={antValidationError}
-                    >
-                      <Select
-                        showSearch
-                        placeholder="Select a parent university"
-                        optionFilterProp="label"
-                        onChange={onChange}
-                        onSearch={onSearch}
-                        options={tempOptions}
-                      />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Established Year"
-                      name="establishedYear"
-                      rules={antValidationError}
-                    >
-                      <Input type="number" maxLength={4} onInput={handleYearInput} />
-                    </Form.Item>
-                  </div>
-
-                  <Form.Item label="Postal Code" name="postalCode" rules={antValidationError}>
+                  <Form.Item label="Dorm Type" name="dormType" rules={validationRules["dormType"]}>
                     <Select
                       className="h-[45px]"
                       showSearch
-                      options={allPostcodeOptions}
-                      onChange={updateCityAndStateFromPostcode}
+                      placeholder="Select a dorm type"
+                      options={dormTypeOptions}
+                    />
+                  </Form.Item>
+                </div>
+
+                <Form.Item
+                  label="Description"
+                  name="description"
+                  rules={validationRules["description"]}
+                >
+                  <Input.TextArea rows={4} showCount maxLength={250} />
+                </Form.Item>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <Form.Item
+                    label="Parent University"
+                    name="parentUniversity"
+                    rules={antValidationError}
+                  >
+                    <Select
+                      className="h-[45px]"
+                      showSearch
+                      placeholder="Select a parent university"
+                      optionFilterProp="label"
+                      // onChange={onChange}
+                      // onSearch={onSearch}
+                      options={ParentUniversityOptions.map((university) => ({
+                        value: university.name,
+                        label: university.name,
+                      }))}
                     />
                   </Form.Item>
 
-                  <div className="grid grid-cols-2 gap-5">
-                    <Form.Item label="City" name="city" rules={antValidationError}>
-                      <Input type="text" disabled />
-                    </Form.Item>
-
-                    <Form.Item label="State" name="state" rules={antValidationError}>
-                      <Input type="text" disabled />
-                    </Form.Item>
-                  </div>
+                  <Form.Item label="Rooms Offered" name="roomsOffered" rules={antValidationError}>
+                    <Select
+                      className="h-[45px]"
+                      mode="multiple"
+                      showSearch
+                      placeholder="Select rooms available"
+                      optionFilterProp="label"
+                      // onChange={onChange}
+                      // onSearch={onSearch}
+                      options={roomsOfferedOptions}
+                    />
+                  </Form.Item>
                 </div>
 
-                <Form.Item label="Cover Photos" name="coverPhotos" rules={antValidationError}>
+                <div className="grid grid-cols-2 gap-5">
+                  <Form.Item
+                    label="Established Year"
+                    name="establishedYear"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Required",
+                      },
+                      {
+                        validator: (_, value) =>
+                          // Custom validator for establishedYear in index.js in helper folder
+                          customValidateEstablishedYear(_, 1000, dayjs().year(), value),
+                      },
+                    ]}
+                  >
+                    <Input type="number" onInput={(e) => limitInputLengthTo(4, e)} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Postal Code"
+                    name="postalCode"
+                    rules={validationRules["postalCode"]}
+                  >
+                    <Select
+                      className="h-[45px]"
+                      showSearch
+                      options={getAllPostcodeOptions()}
+                      onChange={(value) => updateCityAndStateInputFieldsFromPostcode(value, form)}
+                      onInput={(e) => limitInputLengthTo(5, e)}
+                      onKeyPress={(e) => allowNumbersOnly(e)}
+                    />
+                  </Form.Item>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <Form.Item label="City" name="city">
+                    <Input type="text" disabled />
+                  </Form.Item>
+
+                  <Form.Item label="State" name="state">
+                    <Input type="text" disabled />
+                  </Form.Item>
+                </div>
+
+                <Form.Item
+                  label="Cover Photos"
+                  name="coverPhotos"
+                  rules={[
+                    {
+                      required: true,
+                      // Custom validator to check if fileList is not empty from index.js in helper folder
+                      validator: (_, value) => customValidateFileList(fileList, selectedDorm),
+                    },
+                  ]}
+                >
                   <Upload
-                    // This prop passes the current list of files to the Upload component. When the component renders, it will display the files in this list.
-                    fileList={fileList}
-                    /** This prop is a function that is called whenever the file list changes, either by adding new files or removing existing ones.
-                     * 
-                     * - The function receives an event object as its argument, which contains the new file list in the fileList property.
-                     * - The code ({ fileList: newFileList }) is using object destructuring to extract the fileList property from the event object and assign it to a new variable called newFileList.
-                     * - Then, the function setFileList(newFileList) is called, which updates the fileList state with the new file list. This is how the component keeps track of the files that have been uploaded or removed.
-                     */
-                    onChange={({ fileList: newFileList }) => setFileList(newFileList)}
+                    // fileList prop is used to display the list of uploaded files. If selectedDorm has a logoPic URL, it creates a fileList with that URL. Otherwise, it uses the fileList state
+                    fileList={selectedDorm?.logoPic ? [{ url: selectedDorm.logoPic }] : fileList}
+                    // onChange prop is a function that handles changes in the fileList. It receives an object with the new fileList and the file that triggered the change
+                    onChange={({ fileList: newFileList, file }) => {
+                      // Handle file removal
+                      if (file.status === "removed") {
+                        setFileList([]);
+                        if (selectedDorm?.logoPic) {
+                          selectedDorm.logoPic = ""; // If selectedDorm has a logoPic URL, remove it from the selectedDorm statee
+                        }
+                      } else {
+                        // Otherwise, update the fileList state with the new fileList
+                        setFileList(newFileList);
+                      }
+                    }}
                     // This prop is a function that is called before each file is uploaded. In this case, it always returns false, which means that the files won't be uploaded to the server automatically. You'll need to handle the file upload manually, typically by sending the file data to a server API.
-                    beforeUpload={() => false} 
+                    beforeUpload={() => false}
                     listType="picture"
                   >
-                    {fileList.length === 0 && <Button>Click to Upload</Button>}
+                    {/* If selectedDorm doesn't have a logoPic URL and the fileList is empty, render a Button component with an UploadOutlined icon */}
+                    {!selectedDorm?.logoPic && fileList.length === 0 && (
+                      <Button block icon={<UploadOutlined />}>
+                        Click to Upload
+                      </Button>
+                    )}
                   </Upload>
-                </Form.Item>
-
-                <Form.Item label="Rooms Offered" name="roomsOffered" rules={antValidationError}>
-                  <Select
-                    mode="multiple"
-                    showSearch
-                    placeholder="Select rooms available"
-                    optionFilterProp="label"
-                    onChange={onChange}
-                    onSearch={onSearch}
-                    options={roomOptions}
-                  />
                 </Form.Item>
 
                 <div className="flex justify-end gap-5">

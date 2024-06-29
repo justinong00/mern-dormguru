@@ -57,6 +57,34 @@ export const validationRules = {
       message: "Required",
     },
   ],
+  dormType: [
+    {
+      required: true,
+      message: "Required",
+    },
+  ],
+  description: [
+    {
+      required: true,
+      message: "Required",
+    },
+    {
+      min: 20,
+      message: "Description must be at least 20 characters",
+    },
+  ],
+  parentUniversity: [
+    {
+      required: true,
+      message: "Required",
+    }
+  ],
+  roomsOffered: [
+    {
+      required: true,
+      message: "Required",
+    }
+  ],
 };
 
 // Custom validation function for established year
@@ -75,8 +103,8 @@ export const customValidateEstablishedYear = (_, minYear, maxYear, value) => {
 };
 
 // Custom validation function for file list
-export const customValidateFileList = (fileList, selectedUni) => {
-  if (selectedUni?.logoPic) {
+export const customValidateFileList = (fileList, selectedUniorDorm) => {
+  if (selectedUniorDorm?.logoPic) {
     return Promise.resolve();
   }
   if (fileList.length === 0) {
