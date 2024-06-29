@@ -64,23 +64,13 @@ function Unis() {
     },
     {
       title: "Address",
-      dataIndex: "address",
+      render: (_, record) => (
+        `${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`
+      ),
     },
     {
       title: "Established Year",
       dataIndex: "establishedYear",
-    },
-    {
-      title: "Postal Code",
-      dataIndex: "postalCode",
-    },
-    {
-      title: "City",
-      dataIndex: "city",
-    },
-    {
-      title: "State",
-      dataIndex: "state",
     },
     {
       title: "Action",
@@ -130,10 +120,10 @@ function Unis() {
 
       {showUniForm && (
         <UniForm
-        showUniForm={showUniForm} // Control the visibility of the UniForm
-        setShowUniForm={setShowUniForm} // Function to hide the UniForm
-        selectedUni={selectedUni} // Selected university for editing
-        reloadUnis={fetchUnis} // Function to reload universities
+          showUniForm={showUniForm} // Control the visibility of the UniForm
+          setShowUniForm={setShowUniForm} // Function to hide the UniForm
+          selectedUni={selectedUni} // Selected university for editing
+          reloadUnis={fetchUnis} // Function to reload universities
         />
       )}
     </div>
