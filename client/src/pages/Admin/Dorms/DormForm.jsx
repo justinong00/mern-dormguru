@@ -22,19 +22,6 @@ function DormForm() {
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
   const [selectedDorm, setSelectedDorm] = useState(null);
 
-  useEffect(() => {
-    const fetchParentUniversityOptions = async () => {
-      try {
-        const response = await GetAllUnis();
-        setParentUniversityOptions(response.data);
-      } catch (error) {
-        console.error("Error fetching Parent Universities:", error);
-      }
-    };
-
-    fetchParentUniversityOptions();
-  }, []);
-
   const dormTypeOptions = [
     {
       value: "onCampus",
@@ -45,6 +32,24 @@ function DormForm() {
       label: "Off-Campus Accommodation",
     },
   ];
+
+  const fetchParentUniversityOptions = async () => {
+    try {
+      const response = await GetAllUnis();
+      setParentUniversityOptions(
+        response.data.map((uni) => ({
+          value: uni._id,
+          label: uni.name,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching Parent Universities:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchParentUniversityOptions();
+  }, []);
 
   const roomsOfferedOptions = [
     {
@@ -69,6 +74,14 @@ function DormForm() {
     },
   ];
 
+  const onFinish = async (values) => {
+    try {
+      console.log(values);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
   return (
     <>
       <div>
@@ -81,10 +94,15 @@ function DormForm() {
             key: "1",
             label: "Details",
             children: (
-              <Form layout="vertical" className="flex flex-col gap-5" form={form}>
+              <Form
+                layout="vertical"
+                className="flex flex-col gap-5"
+                form={form}
+                onFinish={onFinish}
+              >
                 <div className="grid grid-cols-2 gap-5">
                   <Form.Item label="Dorm Name" name="name" rules={validationRules["name"]}>
-                    <Input type="text" />
+                    <Input type="text" placeholder="Enter a dorm name" />
                   </Form.Item>
 
                   <Form.Item label="Dorm Type" name="dormType" rules={validationRules["dormType"]}>
@@ -102,7 +120,12 @@ function DormForm() {
                   name="description"
                   rules={validationRules["description"]}
                 >
-                  <Input.TextArea rows={4} showCount maxLength={250} />
+                  <Input.TextArea
+                    rows={4}
+                    showCount
+                    maxLength={250}
+                    placeholder="Enter a description"
+                  />
                 </Form.Item>
 
                 <div className="grid grid-cols-2 gap-5">
@@ -118,10 +141,7 @@ function DormForm() {
                       optionFilterProp="label"
                       // onChange={onChange}
                       // onSearch={onSearch}
-                      options={ParentUniversityOptions.map((university) => ({
-                        value: university.name,
-                        label: university.name,
-                      }))}
+                      options={ParentUniversityOptions}
                     />
                   </Form.Item>
 
@@ -139,6 +159,10 @@ function DormForm() {
                   </Form.Item>
                 </div>
 
+                <Form.Item label="Address" name="address" rules={validationRules["address"]}>
+                  <Input type="text" />
+                </Form.Item>
+
                 <div className="grid grid-cols-2 gap-5">
                   <Form.Item
                     label="Established Year"
@@ -155,7 +179,11 @@ function DormForm() {
                       },
                     ]}
                   >
-                    <Input type="number" onInput={(e) => limitInputLengthTo(4, e)} />
+                    <Input
+                      type="number"
+                      onInput={(e) => limitInputLengthTo(4, e)}
+                      placeholder="Enter a year"
+                    />
                   </Form.Item>
 
                   <Form.Item
@@ -170,6 +198,7 @@ function DormForm() {
                       onChange={(value) => updateCityAndStateInputFieldsFromPostcode(value, form)}
                       onInput={(e) => limitInputLengthTo(5, e)}
                       onKeyPress={(e) => allowNumbersOnly(e)}
+                      placeholder="Enter a postal code"
                     />
                   </Form.Item>
                 </div>
