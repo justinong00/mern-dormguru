@@ -47,8 +47,8 @@ export const validationRules = {
       message: "Required",
     },
     {
-      min: 10,
-      message: "Address must be at least 10 characters",
+      min: 5,
+      message: "Address must be at least 5 characters",
     },
   ],
   postalCode: [

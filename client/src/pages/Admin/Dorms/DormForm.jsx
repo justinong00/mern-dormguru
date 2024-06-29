@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select, Tabs, Upload } from "antd";
+import { Button, Form, Input, Select, Tabs, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,13 +15,21 @@ import {
   updateCityAndStateInputFieldsFromPostcode,
 } from "../../../helpers/postalCodeHelper.js";
 import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+import { AddDorm } from "../../../apis/dorms.js";
+import { setLoading } from "../../../redux/loadersSlice.js";
+import { AddImage } from "../../../apis/images.js";
+import { useNavigate } from "react-router-dom";
 
 function DormForm() {
-  const [ParentUniversityOptions, setParentUniversityOptions] = useState([]);
+  const dispatch = useDispatch(); // Redux dispatch function
+  const [ParentUniversityOptions, setParentUniversityOptions] = useState([]); // State to store university options
   const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
-  const [selectedDorm, setSelectedDorm] = useState(null);
+  const [selectedDorm, setSelectedDorm] = useState(null); // State to store selected dorm data (if editing)
+  const navigate = useNavigate(); // Hook to navigate programmatically
 
+  // Options for dorm types
   const dormTypeOptions = [
     {
       value: "onCampus",
@@ -33,6 +41,7 @@ function DormForm() {
     },
   ];
 
+  // Function to fetch university options from the backend
   const fetchParentUniversityOptions = async () => {
     try {
       const response = await GetAllUnis();
@@ -47,38 +56,71 @@ function DormForm() {
     }
   };
 
+  // Fetch university options when the component mounts
   useEffect(() => {
     fetchParentUniversityOptions();
   }, []);
 
+  // Options for types of rooms offered
   const roomsOfferedOptions = [
     {
-      value: "master-premium-twin-sharing",
-      label: "Master Premium with attached bathroom - Twin Sharing",
+      value: "master-twin-sharing",
+      label: "Master - Twin Sharing",
     },
     {
-      value: "master-premium-single",
-      label: "Master Premium with attached bathroom - Single Occupant",
+      value: "master-single",
+      label: "Master - Single Occupant",
     },
     {
-      value: "medium-premium-twin-sharing",
-      label: "Medium Premium Twin with common bathroom - Twin Sharing",
+      value: "medium-twin-sharing",
+      label: "Medium - Twin Sharing",
     },
     {
-      value: "medium-premium-single",
-      label: "Medium Premium Single with common bathroom - Single Occupant",
+      value: "medium-single",
+      label: "Medium - Single Occupant",
     },
     {
       value: "small-single",
-      label: "Small Single with common bathroom - Single Occupant",
+      label: "Small - Single Occupant",
     },
   ];
 
+  // Function to handle form submission
   const onFinish = async (values) => {
     try {
+      // Set the loading state to true to indicate the form is processing
+      dispatch(setLoading(true));
+
+      // If a file is selected, upload the image
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        const formData = new FormData();
+        // Append the selected image file and dorm name to the FormData object
+        formData.append("image", fileList[0].originFileObj);
+        formData.append("dormName", values.name);
+        // Log FormData contents
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        }
+        const uploadResponse = await AddImage(formData); // Upload the image
+
+        // If the upload is successful, update the coverPhotos value object with the new cloudinary URL
+        if (uploadResponse.success) {
+          values.coverPhotos = uploadResponse.data;
+        } else {
+          // If the upload fails, throw an error to be caught in the catch block
+          throw new Error("Failed to upload image");
+        }
+      }
+      const response = await AddDorm(values); // Submit the dorm data
+      message.success(response.message);
       console.log(values);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      // Display an error message if something goes wrong
+      message.error(error.message);
+      console.error(error);
+    } finally {
+      // Set the loading state back to false once the form processing is done
+      dispatch(setLoading(false));
     }
   };
 
@@ -121,7 +163,8 @@ function DormForm() {
                   rules={validationRules["description"]}
                 >
                   <Input.TextArea
-                    rows={4}
+                    autoSize={{ minRows: 2 }}
+                    allowClear
                     showCount
                     maxLength={250}
                     placeholder="Enter a description"
@@ -139,8 +182,6 @@ function DormForm() {
                       showSearch
                       placeholder="Select a parent university"
                       optionFilterProp="label"
-                      // onChange={onChange}
-                      // onSearch={onSearch}
                       options={ParentUniversityOptions}
                     />
                   </Form.Item>
@@ -149,11 +190,10 @@ function DormForm() {
                     <Select
                       className="h-[45px]"
                       mode="multiple"
+                      maxTagCount={"responsive"}
                       showSearch
                       placeholder="Select rooms available"
                       optionFilterProp="label"
-                      // onChange={onChange}
-                      // onSearch={onSearch}
                       options={roomsOfferedOptions}
                     />
                   </Form.Item>
@@ -225,15 +265,17 @@ function DormForm() {
                   ]}
                 >
                   <Upload
-                    // fileList prop is used to display the list of uploaded files. If selectedDorm has a logoPic URL, it creates a fileList with that URL. Otherwise, it uses the fileList state
-                    fileList={selectedDorm?.logoPic ? [{ url: selectedDorm.logoPic }] : fileList}
+                    // fileList prop is used to display the list of uploaded files. If selectedDorm has a coverPhotos URL, it creates a fileList with that URL. Otherwise, it uses the fileList state
+                    fileList={
+                      selectedDorm?.coverPhotos ? [{ url: selectedDorm.coverPhotos }] : fileList
+                    }
                     // onChange prop is a function that handles changes in the fileList. It receives an object with the new fileList and the file that triggered the change
                     onChange={({ fileList: newFileList, file }) => {
                       // Handle file removal
                       if (file.status === "removed") {
                         setFileList([]);
-                        if (selectedDorm?.logoPic) {
-                          selectedDorm.logoPic = ""; // If selectedDorm has a logoPic URL, remove it from the selectedDorm statee
+                        if (selectedDorm?.coverPhotos) {
+                          selectedDorm.coverPhotos = ""; // If selectedDorm has a coverPhotos URL, remove it from the selectedDorm state
                         }
                       } else {
                         // Otherwise, update the fileList state with the new fileList
@@ -244,8 +286,8 @@ function DormForm() {
                     beforeUpload={() => false}
                     listType="picture"
                   >
-                    {/* If selectedDorm doesn't have a logoPic URL and the fileList is empty, render a Button component with an UploadOutlined icon */}
-                    {!selectedDorm?.logoPic && fileList.length === 0 && (
+                    {/* If selectedDorm doesn't have a coverPhotos URL and the fileList is empty, render a Button component with an UploadOutlined icon */}
+                    {!selectedDorm?.coverPhotos && fileList.length === 0 && (
                       <Button block icon={<UploadOutlined />}>
                         Click to Upload
                       </Button>
@@ -254,7 +296,7 @@ function DormForm() {
                 </Form.Item>
 
                 <div className="flex justify-end gap-5">
-                  <Button>Cancel</Button>
+                  <Button onClick={() => navigate("/admin")}>Cancel</Button>
                   <Button htmlType="submit" type="primary">
                     Add
                   </Button>
