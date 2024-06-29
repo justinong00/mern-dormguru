@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Select, Upload, message } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Select, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import {
   validationRules,
@@ -15,7 +15,7 @@ import {
   updateCityAndStateInputFieldsFromPostcode,
 } from "../../../helpers/postalCodeHelper";
 import { useState } from "react";
-import { AddUniLogoPic } from "../../../apis/images.js";
+import { AddImage } from "../../../apis/images.js";
 import dayjs from "dayjs";
 
 /** UniForm component for adding/updating a university.
@@ -44,8 +44,13 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
         formData.append("image", fileList[0].originFileObj);
         formData.append("uniName", values.name);
 
-        // Call the AddUniLogoPic function to upload the image and get the response
-        const uploadResponse = await AddUniLogoPic(formData);
+        // Log FormData contents
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        }
+
+        // Call the AddImage function to upload the image and get the response
+        const uploadResponse = await AddImage(formData);
 
         // If the upload is successful, update the values object with the new logoPic URL
         if (uploadResponse.success) {
@@ -83,7 +88,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
   /** Function to handle upload of university logo
    *
    * This function creates a FormData object and appends the selected image file and the university name to it.
-   * It then calls the AddUniLogoPic function to upload the image and update the university's logoPic field.
+   * It then calls the AddImage function to upload the image and update the university's logoPic field.
    * Finally, it reloads the list of universities and displays a success message.
    *
    * @return {Promise<void>} - A promise that resolves when the image has been uploaded and the university's logoPic field has been updated.
@@ -96,13 +101,13 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
   //     formData.append("uniName", form.getFieldValue("name")); // Append the university name to the formData object
   //     dispatch(setLoading(true));
 
-  //     // Call the AddUniLogoPic function to upload the image and get the response
-  //     const response = await AddUniLogoPic(formData);
+  //     // Call the AddImage function to upload the image and get the response
+  //     const response = await AddImage(formData);
 
   //     // If the upload is successful, update the university's logoPic field
   //     if (response.success) {
   //       await UpdateUni(selectedUni._id, {
-  //         logoPic: response.data, // Update the logoPic field with the response data from the AddUniLogoPic function
+  //         logoPic: response.data, // Update the logoPic field with the response data from the AddImage function
   //       });
   //     }
 
@@ -151,16 +156,15 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
       onCancel={() => setShowUniForm(false)} // Close the modal
       title={selectedUni ? "Update University" : "Add University"}
       centered // Center the modal on the screen
-      width={800} // Set the width of the modal
+      width="90%" // Set the width of the modal for smaller screens
+      style={{ maxWidth: 800 }} // Set a maximum width for larger screens
       okText={selectedUni ? "Update" : "Add"} // Text for the Modal's OK button
       /** Connecting the Form to the Modal's OK Button:
        *
        * - Why: Normally, the form submission is triggered by a submit button inside the form. However, in this case, the submit action is linked to the OK button of the modal, which is outside the form.
        * - How: By using form.submit(), you manually trigger the form's submit event when the modal's OK button is clicked.
        */
-      onOk={() => {
-        form.submit();
-      }}
+      onOk={() => form.submit()}
     >
       <Form
         layout="vertical" // Vertical layout for form items
@@ -170,104 +174,139 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
         form={form}
         initialValues={selectedUni} // Set the initial values of the form
       >
-        <Form.Item label="University Name" name="name" rules={validationRules["name"]}>
-          <Input type="text" />
-        </Form.Item>
+        <Row gutter={16}>
+          {" "}
+          {/* This creates a row with 16 pixels of space between each column. */}
+          <Col xs={24} sm={12}>
+            {" "}
+            {/* This structure ensures that on smaller screens, each input field takes the full width of the row, but on larger screens, two input fields can be displayed side by side. */}
+            <Form.Item label="University Name" name="name" rules={validationRules["name"]}>
+              <Input type="text" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item label="Website URL" name="websiteURL" rules={validationRules["websiteURL"]}>
+              <Input type="text" />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item label="Bio" name="bio" rules={validationRules["bio"]}>
-          <Input.TextArea rows={4} showCount maxLength={250} />
-        </Form.Item>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item label="Bio" name="bio" rules={validationRules["bio"]}>
+              <Input.TextArea
+                autoSize={{ minRows: 2 }}
+                allowClear
+                showCount
+                maxLength={250}
+                placeholder="Enter a bio"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item label="Website URL" name="websiteURL" rules={validationRules["websiteURL"]}>
-          <Input type="text" />
-        </Form.Item>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item label="Address" name="address" rules={validationRules["address"]}>
+              <Input type="text" />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item label="Address" name="address" rules={validationRules["address"]}>
-          <Input type="text" />
-        </Form.Item>
+        <Row gutter={16}>
+          <Col span={24}>
+            {" "}
+            <Form.Item
+              label="Logo"
+              name="logoPic"
+              rules={[
+                {
+                  required: true,
+                  // Custom validator to check if fileList is not empty from index.js in helper folder
+                  validator: (_, value) => customValidateFileList(fileList, selectedUni),
+                },
+              ]}
+            >
+              <Upload
+                // fileList prop is used to display the list of uploaded files. If selectedUni has a logoPic URL, it creates a fileList with that URL. Otherwise, it uses the fileList state
+                fileList={selectedUni?.logoPic ? [{ url: selectedUni.logoPic }] : fileList}
+                // onChange prop is a function that handles changes in the fileList. It receives an object with the new fileList and the file that triggered the change
+                onChange={({ fileList: newFileList, file }) => {
+                  // Handle file removal
+                  if (file.status === "removed") {
+                    setFileList([]);
+                    if (selectedUni?.logoPic) {
+                      selectedUni.logoPic = ""; // If selectedUni has a logoPic URL, remove it from the selectedUni statee
+                    }
+                  } else {
+                    // Otherwise, update the fileList state with the new fileList
+                    setFileList(newFileList);
+                  }
+                }}
+                // This prop is a function that is called before each file is uploaded. In this case, it always returns false, which means that the files won't be uploaded to the server automatically. You'll need to handle the file upload manually, typically by sending the file data to a server API.
+                beforeUpload={() => false}
+                listType="picture"
+              >
+                {/* If selectedUni doesn't have a logoPic URL and the fileList is empty, render a Button component with an UploadOutlined icon */}
+                {!selectedUni?.logoPic && fileList.length === 0 && (
+                  <Button block icon={<UploadOutlined />}>
+                    Click to Upload
+                  </Button>
+                )}
+              </Upload>
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item
-          label="Logo"
-          name="logoPic"
-          rules={[
-            {
-              required: true,
-              // Custom validator to check if fileList is not empty from index.js in helper folder
-              validator: (_, value) => customValidateFileList(fileList, selectedUni),
-            },
-          ]}
-        >
-          <Upload
-            // fileList prop is used to display the list of uploaded files. If selectedUni has a logoPic URL, it creates a fileList with that URL. Otherwise, it uses the fileList state
-            fileList={selectedUni?.logoPic ? [{ url: selectedUni.logoPic }] : fileList}
-            // onChange prop is a function that handles changes in the fileList. It receives an object with the new fileList and the file that triggered the change
-            onChange={({ fileList: newFileList, file }) => {
-              // Handle file removal
-              if (file.status === "removed") {
-                setFileList([]);
-                if (selectedUni?.logoPic) {
-                  selectedUni.logoPic = ""; // If selectedUni has a logoPic URL, remove it from the selectedUni statee
-                }
-              } else {
-                // Otherwise, update the fileList state with the new fileList
-                setFileList(newFileList);
-              }
-            }}
-            // This prop is a function that is called before each file is uploaded. In this case, it always returns false, which means that the files won't be uploaded to the server automatically. You'll need to handle the file upload manually, typically by sending the file data to a server API.
-            beforeUpload={() => false}
-            listType="picture"
-          >
-            {/* If selectedUni doesn't have a logoPic URL and the fileList is empty, render a Button component with an UploadOutlined icon */}
-            {!selectedUni?.logoPic && fileList.length === 0 && (
-              <Button block icon={<UploadOutlined />}>
-                Click to Upload
-              </Button>
-            )}
-          </Upload>
-        </Form.Item>
+        <Row gutter={16}>
+          <Col xs={24} sm={12}>
+            <Form.Item
+              label="Established Year"
+              name="establishedYear"
+              rules={[
+                {
+                  required: true,
+                  message: "Required",
+                },
+                {
+                  validator: (_, value) =>
+                    // Custom validator for establishedYear in index.js in helper folder
+                    customValidateEstablishedYear(_, 1000, dayjs().year(), value),
+                },
+              ]}
+            >
+              <Input type="number" onInput={(e) => limitInputLengthTo(4, e)} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item label="Postal Code" name="postalCode" rules={validationRules["postalCode"]}>
+              <Select
+                className="h-[45px]"
+                showSearch
+                options={getAllPostcodeOptions()}
+                onChange={(value) => updateCityAndStateInputFieldsFromPostcode(value, form)}
+                onInput={(e) => limitInputLengthTo(5, e)}
+                onKeyPress={(e) => allowNumbersOnly(e)}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <div className="grid grid-cols-2 gap-5">
-          <Form.Item
-            label="Established Year"
-            name="establishedYear"
-            rules={[
-              {
-                required: true,
-                message: "Required",
-              },
-              {
-                validator: (_, value) =>
-                  // Custom validator for establishedYear in index.js in helper folder
-                  customValidateEstablishedYear(_, 1000, dayjs().year(), value),
-              },
-            ]}
-          >
-            <Input type="number" onInput={(e) => limitInputLengthTo(4, e)} />
-          </Form.Item>
-
-          <Form.Item label="Postal Code" name="postalCode" rules={validationRules["postalCode"]}>
-            <Select
-              className="h-[45px]"
-              showSearch
-              options={getAllPostcodeOptions()}
-              onChange={(value) => updateCityAndStateInputFieldsFromPostcode(value, form)}
-              onInput={(e) => limitInputLengthTo(5, e)}
-              onKeyPress={(e) => allowNumbersOnly(e)}
-            />
-          </Form.Item>
-        </div>
-
-        <div className="grid grid-cols-2 gap-5">
-          <Form.Item label="City" name="city">
-            <Input type="text" disabled />
-          </Form.Item>
-
-          <Form.Item label="State" name="state">
-            <Input type="text" disabled />
-          </Form.Item>
-        </div>
+        <Row gutter={16}>
+          <Col xs={24} sm={12}>
+            <Form.Item label="City" name="city">
+              <Input type="text" disabled />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item label="State" name="state">
+              <Input type="text" disabled />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );
 }
+
 export default UniForm;
