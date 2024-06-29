@@ -14,7 +14,7 @@ const dormSchema = new Schema(
       type: String,
       required: true,
     },
-    parentUniversity: {
+    address: {
       type: String,
       required: true,
     },
@@ -22,7 +22,11 @@ const dormSchema = new Schema(
       type: [],
       required: true,
     },
-    address: {
+    parentUniversity: {
+      type: String,
+      required: true,
+    },
+    dormType: {
       type: String,
       required: true,
     },
@@ -44,7 +48,7 @@ const dormSchema = new Schema(
     },
     coverPhotos: {
       type: String,
-      required: true,
+      required: false,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
