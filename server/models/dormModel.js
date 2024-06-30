@@ -23,7 +23,8 @@ const dormSchema = new Schema(
       required: true,
     },
     parentUniversity: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Uni', // Referencing the 'Uni' model
       required: true,
     },
     dormType: {
@@ -52,7 +53,7 @@ const dormSchema = new Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'User', // Referencing the 'User' model
       required: true,
     },
   },

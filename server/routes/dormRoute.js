@@ -29,12 +29,9 @@ router.post("/", authMiddleware, async (req, res) => {
 // Get all dorms
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    const dorms = await Dorm.find()
-      .sort({ createdAt: -1 })
-      // Replaces the 'parentUniversity' field in the Dorm documents with the actual University document data
-      .populate("parentUniversity")
-      // Replaces the 'createdBy' field in the Dorm documents with the actual User document data
-      .populate("createdBy");
+    // Since the form submission only stores the _id of the parentUniversity in the Dorm collection, we use populate() to replace the parentUniversity field when displaying them in the Dorm-related pages. The populate() method is used to reference the actual university name from the Uni collection, specifically fetching the 'name' field. This is necessary to display the name of the parent university when listing the dorms.
+    const dorms = await Dorm.find().sort({ createdAt: -1 }).populate("parentUniversity");
+
     res.status(200).json({ success: true, data: dorms });
   } catch (err) {
     res.status(500).json({ message: err.message, success: false });
@@ -49,8 +46,8 @@ router.get("/:id", authMiddleware, async (req, res) => {
       throw new Error("Invalid dorm ID");
     }
 
-    // populate means 
-    const dorm = await Dorm.findById(id).populate("parentUniversity").populate("createdBy");
+    // Since the form submission only stores the _id of the parentUniversity in the Dorm collection, we use populate() to replace the parentUniversity field when displaying them in the Dorm-related pages. The populate() method is used to reference the actual university name from the Uni collection, specifically fetching the 'name' field. This is necessary to display the name of the parent university when listing the dorms.
+    const dorm = await Dorm.findById(id).populate("parentUniversity");
     if (!dorm) throw new Error("Dorm not found");
 
     res.status(200).json({ success: true, data: dorm });
