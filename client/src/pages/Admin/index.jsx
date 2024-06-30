@@ -1,39 +1,37 @@
-import React from 'react';
-import Dorms from './Dorms/index.jsx';
-import Unis from './Unis/index.jsx';
-import Users from './Users/index.jsx';
-import { useSelector } from 'react-redux';
-import { Tabs } from 'antd';
+import React, { useState } from "react";
+import Dorms from "./Dorms/index.jsx";
+import Unis from "./Unis/index.jsx";
+import Users from "./Users/index.jsx";
+import { useSelector } from "react-redux";
+import { Tabs } from "antd";
+import { useNavigate } from "react-router-dom";
 
-/** Admin component responsible for rendering the admin interface 
- * 
- * This page includes three tabs for managing Dorms, Unis, and Users. 
+/** Admin component responsible for rendering the admin interface
+ *
+ * This page includes three tabs for managing Dorms, Unis, and Users.
  * The component uses Ant Design's Tabs component for tab navigation and Redux for user state management.
  */
 function Admin() {
+  const [activeTab, setActiveTab] = useState("1");
   // Retrieve the current user from the Redux store
   const { user } = useSelector((state) => state.users);
-
-  // Handler function for tab change events
-  const onChange = (key) => {
-    console.log(key); // Log the key of the selected tab
-  };
+  const navigate = useNavigate();
 
   // Define the tab items with keys, labels, and content components
   const items = [
     {
-      key: '1',
-      label: 'Dorms', // Label for the tab
+      key: "1",
+      label: "Dorms", // Label for the tab
       children: <Dorms />, // Content component for the tab
     },
     {
-      key: '2',
-      label: 'University', // Label for the tab
+      key: "2",
+      label: "University", // Label for the tab
       children: <Unis />, // Content component for the tab
     },
     {
-      key: '3',
-      label: 'Users', // Label for the tab
+      key: "3",
+      label: "Users", // Label for the tab
       children: <Users />, // Content component for the tab
     },
   ];
@@ -42,7 +40,15 @@ function Admin() {
     <div>
       {user?.isAdmin ? (
         // Render the Tabs component if the user is an admin
-        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+        <Tabs
+          defaultActiveKey="1"
+          items={items}
+          onChange={(key) => {
+            const label = items.find((item) => item.key === key)?.label.toLowerCase(); // Find the label based on the key
+            setActiveTab(key);
+            navigate(`/admin/?tab=${encodeURIComponent(label)}`); // Use the label as the URL parameter
+          }}
+        />
       ) : (
         // Show a message if the user is not authorized
         <div className="text-gray-600 text-md text-center mt-20">
