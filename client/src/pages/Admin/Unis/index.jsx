@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button, Table, message } from "antd";
 import UniForm from "./UniForm.jsx";
 import { useDispatch } from "react-redux";
@@ -8,8 +7,6 @@ import { DeleteUni, GetAllUnis } from "../../../apis/unis.js";
 
 function Unis() {
   const dispatch = useDispatch(); // Redux dispatch function
-  const navigate = useNavigate();
-
   const [unis, setUnis] = useState([]);
   const [showUniForm, setShowUniForm] = useState(false);
   const [selectedUni, setSelectedUni] = useState(null);
@@ -47,42 +44,62 @@ function Unis() {
       title: "University",
       dataIndex: "logoPic",
       key: "logoPic",
+      width: 100,
       render: (_, record) => {
-        return <img src={record?.logoPic || ""} alt="logoPic" className="w-20 h-20 object-contain" />;
+        return (
+          <img src={record?.logoPic || ""} alt="logoPic" className="w-20 h-20 object-contain " />
+        );
       },
     },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      fixed: "left",
+      width: 100,
+      className: " name-column",
     },
     {
       title: "Bio",
       dataIndex: "bio",
       key: "bio",
+      width: 200,
+      className: "",
     },
     {
       title: "Website URL",
       dataIndex: "websiteURL",
       key: "websiteURL",
+      width: 150,
+      className: "",
     },
     {
       title: "Address",
-      render: (_, record) =>
-        `${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`,
+      dataIndex: "address",
+      key: "address",
+      width: 150,
+      render: (_, record) => (
+        <div className="">
+          {`${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`}
+        </div>
+      ),
     },
     {
       title: "Established Year",
       dataIndex: "establishedYear",
       key: "establishedYear",
+      width: 100,
+      className: "",
     },
     {
       title: "Action",
       dataIndex: "action",
       key: "action",
+      fixed: "right",
+      width: 60,
       render: (_, record) => {
         return (
-          <div className="flex gap-2">
+          <div className="flex gap-2 ">
             <i className="ri-delete-bin-line" onClick={() => deleteUni(record._id)}></i>
             <i
               className="ri-pencil-line"
@@ -121,6 +138,7 @@ function Unis() {
         columns={columns}
         rowKey={(record) => record.logoPic}
         className="mt-5"
+        scroll={{ x: 1300 }}
       />
 
       {showUniForm && (
