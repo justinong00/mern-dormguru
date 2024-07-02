@@ -57,12 +57,13 @@ i {
   color: #303030 !important;
 }
 
-table { 
+table {
   border: 1px solid #c0c0c0 !important;
 }
 
 /*remove arrow from number input*/
 @layer base {
+
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button,
   input[type='number'] {
@@ -77,4 +78,72 @@ table {
   font-size: 1.5rem !important;
   color: #0b2447 !important;
   text-transform: uppercase;
+}
+
+.ant-image-preview-operations {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.ant-image-preview-operations-operation-flipY,
+.ant-image-preview-operations-operation-flipX,
+.ant-image-preview-operations-operation-rotateLeft,
+.ant-image-preview-operations-operation-rotateRight {
+  display: none;
+}
+
+.ant-upload.ant-upload-select {
+  width: 100% !important;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+
+  .ant-table-cell,
+  i {
+    font-size: 10px !important;
+  }
+
+  .ant-table-wrapper .ant-table-cell-fix-right {
+    position: static !important;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+
+  .ant-table-cell,
+  i {
+    font-size: 11px !important;
+  }
+
+  .ant-table-cell-fix-right {
+    position: static !important;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+
+  .ant-table-cell,
+  i {
+    font-size: 12px !important;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+
+  .ant-table-cell,
+  i {
+    font-size: 13px !important;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+
+  .ant-table-cell,
+  i {
+    font-size: 14px !important;
+  }
 }
