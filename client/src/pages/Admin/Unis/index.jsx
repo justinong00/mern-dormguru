@@ -46,46 +46,41 @@ function Unis() {
     {
       title: "University",
       dataIndex: "logoPic",
-      render: (text, record) => {
-        return <img src={record?.logoPic || ""} alt="logoPic" className="w-20 h-20 rounded" />;
+      key: "logoPic",
+      render: (_, record) => {
+        return <img src={record?.logoPic || ""} alt="logoPic" className="w-20 h-20 object-contain" />;
       },
     },
     {
       title: "Name",
       dataIndex: "name",
+      key: "name",
     },
     {
       title: "Bio",
       dataIndex: "bio",
+      key: "bio",
     },
     {
       title: "Website URL",
       dataIndex: "websiteURL",
+      key: "websiteURL",
     },
     {
       title: "Address",
-      dataIndex: "address",
+      render: (_, record) =>
+        `${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`,
     },
     {
       title: "Established Year",
       dataIndex: "establishedYear",
-    },
-    {
-      title: "Postal Code",
-      dataIndex: "postalCode",
-    },
-    {
-      title: "City",
-      dataIndex: "city",
-    },
-    {
-      title: "State",
-      dataIndex: "state",
+      key: "establishedYear",
     },
     {
       title: "Action",
       dataIndex: "action",
-      render: (text, record) => {
+      key: "action",
+      render: (_, record) => {
         return (
           <div className="flex gap-2">
             <i className="ri-delete-bin-line" onClick={() => deleteUni(record._id)}></i>
@@ -130,10 +125,10 @@ function Unis() {
 
       {showUniForm && (
         <UniForm
-        showUniForm={showUniForm} // Control the visibility of the UniForm
-        setShowUniForm={setShowUniForm} // Function to hide the UniForm
-        selectedUni={selectedUni} // Selected university for editing
-        reloadUnis={fetchUnis} // Function to reload universities
+          showUniForm={showUniForm} // Control the visibility of the UniForm
+          setShowUniForm={setShowUniForm} // Function to hide the UniForm
+          selectedUni={selectedUni} // Selected university for editing
+          reloadUnis={fetchUnis} // Function to reload universities
         />
       )}
     </div>
