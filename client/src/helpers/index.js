@@ -1,5 +1,4 @@
 import moment from "moment";
-import dayjs from "dayjs";
 
 // Required field validation rule
 export const antValidationError = [
@@ -77,13 +76,13 @@ export const validationRules = {
     {
       required: true,
       message: "Required",
-    }
+    },
   ],
   roomsOffered: [
     {
       required: true,
       message: "Required",
-    }
+    },
   ],
 };
 
@@ -100,17 +99,6 @@ export const customValidateEstablishedYear = (_, minYear, maxYear, value) => {
   }
 
   return Promise.reject(new Error(`Valid only between ${minYear} and ${maxYear}`));
-};
-
-// Custom validation function for file list
-export const customValidateFileList = (fileList, selectedUniorDorm) => {
-  if (selectedUniorDorm?.logoPic) {
-    return Promise.resolve();
-  }
-  if (fileList.length === 0) {
-    return Promise.reject("Required");
-  }
-  return Promise.resolve();
 };
 
 // Function to allow only number inputs
