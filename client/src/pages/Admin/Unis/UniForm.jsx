@@ -1,9 +1,7 @@
-import { Button, Col, Form, Input, Modal, Row, Select, Upload, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Col, Form, Input, Modal, Row, Select, message } from "antd";
 import {
   validationRules,
   customValidateEstablishedYear,
-  customValidateFileList,
   allowNumbersOnly,
   limitInputLengthTo,
 } from "../../../helpers/index.js";
@@ -14,9 +12,10 @@ import {
   getAllPostcodeOptions,
   updateCityAndStateInputFieldsFromPostcode,
 } from "../../../helpers/postalCodeHelper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddImage } from "../../../apis/images.js";
 import dayjs from "dayjs";
+import ImageUpload, { customValidateFileList } from "../../../components/ImageUpload.jsx";
 
 /** UniForm component for adding/updating a university.
  * @param {boolean} showUniForm - State to control the visibility of the form modal.
@@ -28,6 +27,11 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
   const dispatch = useDispatch(); // Redux dispatch function
   const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
+
+  // To handle the case of when user deletes the existing image in Modal during Edit state, and then closes the Modal without uploading a new one. Reloading the unis prevent the cover photo from reflecting empty as it is removed in ImageUpload.js
+  useEffect(() => {
+    reloadUnis();
+  }, [selectedUni?.logoPic]);
 
   /** Function to handle form submission
    * @param {Object} values - Form values
@@ -73,6 +77,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
       reloadUnis();
       // Display a success message with the response message
       message.success(response.message);
+      console.log(values);
       // Hide the university form
       setShowUniForm(false);
     } catch (error) {
@@ -223,37 +228,17 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
                 {
                   required: true,
                   // Custom validator to check if fileList is not empty from index.js in helper folder
-                  validator: (_, value) => customValidateFileList(fileList, selectedUni),
+                  validator: (_, value) => customValidateFileList(fileList, value),
                 },
               ]}
             >
-              <Upload
-                // fileList prop is used to display the list of uploaded files. If selectedUni has a logoPic URL, it creates a fileList with that URL. Otherwise, it uses the fileList state
-                fileList={selectedUni?.logoPic ? [{ url: selectedUni.logoPic }] : fileList}
-                // onChange prop is a function that handles changes in the fileList. It receives an object with the new fileList and the file that triggered the change
-                onChange={({ fileList: newFileList, file }) => {
-                  // Handle file removal
-                  if (file.status === "removed") {
-                    setFileList([]);
-                    if (selectedUni?.logoPic) {
-                      selectedUni.logoPic = ""; // If selectedUni has a logoPic URL, remove it from the selectedUni statee
-                    }
-                  } else {
-                    // Otherwise, update the fileList state with the new fileList
-                    setFileList(newFileList);
-                  }
-                }}
-                // This prop is a function that is called before each file is uploaded. In this case, it always returns false, which means that the files won't be uploaded to the server automatically. You'll need to handle the file upload manually, typically by sending the file data to a server API.
-                beforeUpload={() => false}
-                listType="picture"
-              >
-                {/* If selectedUni doesn't have a logoPic URL and the fileList is empty, render a Button component with an UploadOutlined icon */}
-                {!selectedUni?.logoPic && fileList.length === 0 && (
-                  <Button block icon={<UploadOutlined />}>
-                    Click to Upload
-                  </Button>
-                )}
-              </Upload>
+              <ImageUpload
+                fileList={fileList}
+                setFileList={setFileList}
+                selectedItem={selectedUni}
+                form={form}
+                fieldName="logoPic"
+              />
             </Form.Item>
           </Col>
         </Row>

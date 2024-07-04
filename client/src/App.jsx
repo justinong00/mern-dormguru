@@ -44,23 +44,23 @@ function App() {
             }
           />
           {/* Protected page route for adding a new dorm*/}
-          <Route
+          {/* <Route
             path="/admin/dorms/add"
             element={
               <ProtectedPage>
                 <DormForm />
               </ProtectedPage>
             }
-          />
+          /> */}
           {/* Protected page route for editing a new dorm*/}
-          <Route
+          {/* <Route
             path="/admin/dorms/edit/:id"
             element={
               <ProtectedPage>
                 <DormForm />
               </ProtectedPage>
             }
-          />
+          /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

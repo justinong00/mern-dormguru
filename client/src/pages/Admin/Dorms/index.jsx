@@ -1,15 +1,16 @@
 import { Button, Table, message } from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { DeleteDorm, GetAllDorms } from "../../../apis/dorms.js";
+import DormForm from "./DormForm.jsx";
 
 function Dorms() {
-  // State to store the list of dorms
-  const [dorms, setDorms] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [dorms, setDorms] = useState([]);
+  const [showDormForm, setShowDormForm] = useState(false);
+  const [selectedDorm, setSelectedDorm] = useState(null);
 
   // Function to fetch all dorms from the backend
   const fetchDorms = async () => {
@@ -43,12 +44,13 @@ function Dorms() {
     }
   };
 
-   // Define columns for the Table component
+  // Define columns for the Table component
   const columns = [
     {
       title: "Dorm",
       dataIndex: "coverPhotos",
       key: "coverPhotos",
+      width: 100,
       render: (_, record) => {
         return (
           <img
@@ -63,24 +65,32 @@ function Dorms() {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      fixed: "left",
+      width: 100,
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      width: 200,
     },
     {
       title: "Address",
       dataIndex: "address",
       key: "address",
-      render: (_, record) =>
-        `${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`,
+      width: 150,
+      render: (_, record) => (
+        <div className="">
+          {`${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`}
+        </div>
+      ),
     },
     {
       title: "Rooms Offered",
       dataIndex: "roomsOffered",
       key: "roomsOffered",
-      render: (_, record) => record.roomsOffered.join(", "),
+      width: 150,
+      render: (_, record) => <div className="">{record.roomsOffered.join(", ")}</div>,
       // display on each line
       /*       render: (_, record) => (
         <div>
@@ -95,28 +105,35 @@ function Dorms() {
       // Since the parentUniversity field in each dorm document is an object that includes the university's details. After being populated, we use dataIndex as an array to access the nested 'name' field within the 'parentUniversity' object.
       dataIndex: ["parentUniversity", "name"],
       key: "parentUniversity",
+      width: 100,
     },
     {
       title: "Dorm Type",
       dataIndex: "dormType",
       key: "dormType",
+      width: 100,
     },
     {
       title: "Established Year",
       dataIndex: "establishedYear",
       key: "establishedYear",
+      width: 100,
     },
     {
       title: "Action",
       dataIndex: "action",
       key: "action",
+      fixed: "right",
+      width: 60,
       render: (_, record) => (
         <div className="flex gap-2">
           <i className="ri-delete-bin-line" onClick={() => deleteDorm(record._id)}></i>
           <i
             className="ri-pencil-line"
             onClick={() => {
-              navigate(`/admin/dorms/edit/${record._id}`);
+              setSelectedDorm(record);
+              setShowDormForm(true);
+              // navigate(`/admin/dorms/edit/${record._id}`);
             }}
           ></i>
         </div>
@@ -127,7 +144,15 @@ function Dorms() {
   return (
     <div>
       <div className="flex justify-end">
-        <Button onClick={() => navigate("/admin/dorms/add")}>Add Dorm</Button>
+        <Button
+          onClick={() => {
+            setSelectedDorm(null);
+            setShowDormForm(true);
+            // navigate("/admin/dorms/add");
+          }}
+        >
+          Add Dorm
+        </Button>
       </div>
 
       {/* rowKey provides unique key for each row */}
@@ -136,7 +161,17 @@ function Dorms() {
         columns={columns}
         rowKey={(record) => record._id}
         className="mt-5"
+        scroll={{ x: 1500 }}
       />
+
+      {showDormForm && (
+        <DormForm
+          showDormForm={showDormForm}
+          setShowDormForm={setShowDormForm}
+          selectedDorm={selectedDorm}
+          reloadDorms={fetchDorms}
+        />
+      )}
     </div>
   );
 }
