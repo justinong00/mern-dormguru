@@ -35,7 +35,8 @@ function Home() {
           <div
             key={dorm._id}
             className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-transform ease-in-out transform hover:scale-105"
-            onClick={() => navigate(`/dorm/${dorm.name.replace(/\s+/g, '_').toLowerCase()}`)}
+            onClick={() => navigate(`/dorm/${dorm._id}`)}
+            //name.replace(/\s+/g, '_').toLowerCase()}
           >
             <img
               src={dorm.coverPhotos}
