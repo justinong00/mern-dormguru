@@ -8,6 +8,7 @@ import Spinner from "./components/Spinner.jsx";
 import { useSelector } from "react-redux";
 import Admin from "./pages/Admin/index.jsx";
 import DormForm from "./pages/Admin/Dorms/DormForm.jsx";
+import DormInfo from "./pages/DormInfo/index.jsx";
 
 function App() {
   const { loading } = useSelector((state) => state.loaders);
@@ -22,6 +23,15 @@ function App() {
             element={
               <ProtectedPage>
                 <Home />
+              </ProtectedPage>
+            }
+          />
+          {/* Protected page route for accessing a specific dorm*/}
+          <Route
+            path="/dorm/:id"
+            element={
+              <ProtectedPage>
+                <DormInfo />
               </ProtectedPage>
             }
           />
