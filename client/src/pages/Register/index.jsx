@@ -53,7 +53,7 @@ function Register() {
     <div className="grid grid-cols-2 h-screen">
       {/* Background section */}
       <div className="bg-primary flex flex-col items-center justify-center">
-        <h1 className="text-8xl text-orange-500 font-semibold">DormGuru</h1>
+        <h1 className="text-8xl text-yellow-500 font-semibold">DormGuru</h1>
         <span className="text-md text-gray-300 mt-2">
           One stop for all your university dorm ratings and reviews in Malaysia
         </span>
@@ -123,7 +123,7 @@ export default Register;
   return (
     <div className="grid grid-cols-2 h-screen">
       <div className="bg-primary flex flex-col items-center justify-center">
-        <h1 className="text-8xl text-orange-500 font-semibold">DormGuru</h1>
+        <h1 className="text-8xl text-yellow-500 font-semibold">DormGuru</h1>
         <span className="text-md text-gray-300 mt-2">
           One stop for all your university dorm ratings and reviews in Malaysia
         </span>

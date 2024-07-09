@@ -50,7 +50,7 @@ function ProtectedPage({ children }) {
     <div>
       <div className="flex items-center justify-between bg-primary p-5">
         <span
-          className="font-semibold text-orange-500 text-2xl cursor-pointer"
+          className="font-semibold text-yellow-500 text-2xl cursor-pointer"
           onClick={() => navigate('/')}
         >
           DormGuru
