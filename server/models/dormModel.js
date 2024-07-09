@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 // Create a new Mongoose schema
 const Schema = mongoose.Schema;
@@ -24,7 +24,7 @@ const dormSchema = new Schema(
     },
     parentUniversity: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Uni', // Referencing the 'Uni' model
+      ref: "Uni", // Referencing the 'Uni' model
       required: true,
     },
     dormType: {
@@ -53,8 +53,18 @@ const dormSchema = new Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Referencing the 'User' model
+      ref: "User", // Referencing the 'User' model
       required: true,
+    },
+    numberOfReviews: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    averageRating: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   {
@@ -68,4 +78,4 @@ const dormSchema = new Schema(
  * 'Dorm' will be imported in other files to interact with the database collection
  * Mongoose automatically pluralizes 'Dorm' to 'dorms' for the collection name
  */
-export default mongoose.model('Dorm', dormSchema);
+export default mongoose.model("Dorm", dormSchema);
