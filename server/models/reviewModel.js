@@ -23,6 +23,14 @@ const reviewSchema = new Schema(
       type: [],
       required: true,
     },
+    fromDate: {
+      type: Date,
+      required: true,
+    },
+    toDate: {
+      type: Date,
+      required: true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

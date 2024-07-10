@@ -1,4 +1,4 @@
-import moment from "moment";
+import dayjs from "dayjs";
 
 // Required field validation rule
 export const antValidationError = [
@@ -84,6 +84,28 @@ export const validationRules = {
       message: "Required",
     },
   ],
+  roomsStayed: [
+    {
+      required: true,
+      message: "Required",
+    },
+  ],
+  rating: [
+    {
+      required: true,
+      message: "Required",
+    },
+  ],
+  comment: [
+    {
+      required: true,
+      message: "Required",
+    },
+    {
+      min: 20,
+      message: "Bio must be at least 20 characters",
+    },
+  ],
 };
 
 // Custom validation function for established year
@@ -101,6 +123,36 @@ export const customValidateEstablishedYear = (_, minYear, maxYear, value) => {
   return Promise.reject(new Error(`Valid only between ${minYear} and ${maxYear}`));
 };
 
+// Custom validation function for fromDate
+export const customValidateFromDate = (dormEstablishedYear, value) => {
+  const minDate = dayjs(`${dormEstablishedYear}-01-01`);
+  
+  if (!value) {
+    return Promise.resolve();
+  }
+
+  if (value.isBefore(minDate)) {
+    return Promise.reject(new Error(`From date cannot be before the dorm's established year of ${dormEstablishedYear}`));
+  }
+
+  if (value.isAfter(dayjs(), 'day')) {
+    return Promise.reject(new Error("From date cannot be in the future"));
+  }
+
+  return Promise.resolve();
+};
+
+// Custom validation function for toDate
+export const customValidateToDate = (value) => {
+  const currentDate = dayjs();
+  if (!value || value.isBefore(currentDate, 'day') || value.isSame(currentDate, 'day')) {
+    return Promise.resolve();
+  }
+  return Promise.reject(new Error("To date cannot be in the future"));
+};
+
+// Custom validation function for 
+
 // Function to allow only number inputs
 export const allowNumbersOnly = (e) => {
   var code = e.which ? e.which : e.keyCode;
@@ -115,22 +167,4 @@ export const limitInputLengthTo = (maxLength, e) => {
   if (value.length > maxLength) {
     e.target.value = value.slice(0, maxLength);
   }
-};
-
-/** Returns a formatted date string based on the provided date.
- *
- * @param {Date} date - The date to format.
- * @return {string} The formatted date string.
- */
-export const getDateFormat = (date) => {
-  return moment(date).format("MMMM-Do-YYYY, h:mm:ss a");
-};
-
-/** Returns a formatted date and time string based on the provided date.
- *
- * @param {Date} date - The date to format.
- * @return {string} The formatted date and time string.
- */
-export const getDateTimeFormat = (date) => {
-  return moment(date).format("MMMM-Do-YYYY, h:mm:ss a");
 };

@@ -31,8 +31,11 @@ input {
   border-radius: 2px !important;
 }
 
-.ant-select {
-  height: 45px ;
+.ant-select,
+.ant-picker {
+  height: 45px;
+  border-radius: 2px !important;
+  width: 100%;
 }
 
 .ant-form-item {
