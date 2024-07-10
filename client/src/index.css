@@ -31,6 +31,10 @@ input {
   border-radius: 2px !important;
 }
 
+.ant-select {
+  height: 45px ;
+}
+
 .ant-form-item {
   margin-bottom: 0px !important;
 }
@@ -94,6 +98,10 @@ table {
 
 .ant-upload.ant-upload-select {
   width: 100% !important;
+}
+
+.reviewModalStyle .ant-modal-footer {
+  margin-top: 30px;
 }
 
 /* Extra small devices (phones, 640px and down) */

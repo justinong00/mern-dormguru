@@ -17,6 +17,7 @@ import { AddDorm, UpdateDorm } from "../../../apis/dorms.js";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { AddImage } from "../../../apis/images.js";
 import ImageUpload, { customValidateFileList } from "../../../components/ImageUpload.jsx";
+import { roomOptions } from "../../../helpers/roomOptions.js"; // Options for Rooms Offered
 
 function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) {
   const dispatch = useDispatch(); // Redux dispatch function
@@ -33,30 +34,6 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
     {
       value: "Off-Campus",
       label: "Off-Campus",
-    },
-  ];
-
-  // Options for types of rooms offered
-  const roomsOfferedOptions = [
-    {
-      value: "master-twin-sharing",
-      label: "Master - Twin Sharing",
-    },
-    {
-      value: "master-single",
-      label: "Master - Single Occupant",
-    },
-    {
-      value: "medium-twin-sharing",
-      label: "Medium - Twin Sharing",
-    },
-    {
-      value: "medium-single",
-      label: "Medium - Single Occupant",
-    },
-    {
-      value: "small-single",
-      label: "Small - Single Occupant",
     },
   ];
 
@@ -171,12 +148,7 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
           </Col>
           <Col xs={24} md={12}>
             <Form.Item label="Dorm Type" name="dormType" rules={validationRules["dormType"]}>
-              <Select
-                className="h-[45px]"
-                showSearch
-                placeholder="Select a dorm type"
-                options={dormTypeOptions}
-              />
+              <Select showSearch placeholder="Select a dorm type" options={dormTypeOptions} />
             </Form.Item>
           </Col>
         </Row>
@@ -199,7 +171,6 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
               rules={validationRules["parentUniversity"]}
             >
               <Select
-                className="h-[45px]"
                 showSearch
                 placeholder="Select a parent university"
                 optionFilterProp="label"
@@ -214,13 +185,12 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
               rules={validationRules["roomsOffered"]}
             >
               <Select
-                className="h-[45px]"
                 mode="multiple"
                 maxTagCount={"responsive"}
                 showSearch
                 placeholder="Select rooms available"
                 optionFilterProp="label"
-                options={roomsOfferedOptions}
+                options={roomOptions}
               />
             </Form.Item>
           </Col>
@@ -276,7 +246,6 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
           <Col xs={24} md={12}>
             <Form.Item label="Postal Code" name="postalCode" rules={validationRules["postalCode"]}>
               <Select
-                className="h-[45px]"
                 showSearch
                 options={getAllPostcodeOptions()}
                 onChange={(value) => updateCityAndStateInputFieldsFromPostcode(value, form)}

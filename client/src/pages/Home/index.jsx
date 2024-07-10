@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, message, Rate } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetAllDorms } from "../../apis/dorms.js";
+import { roundToHalf } from "../../helpers/roundToHalf.js";
 
 function Home() {
   const [dorms, setDorms] = useState([]);
@@ -60,7 +61,12 @@ function Home() {
 
             <div className="flex justify-between text-sm">
               <span>Rating:</span>
-              <Rate disabled defaultValue={dorm.rating || 0} showScore={false} />
+              <Rate disabled allowHalf defaultValue={roundToHalf(dorm?.averageRating || 0)} />
+            </div>
+
+            <div className="flex justify-between text-sm">
+              <span>Score:</span>
+              <span>{dorm?.averageRating}</span>
             </div>
           </div>
         ))}

@@ -266,7 +266,6 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
           <Col xs={24} sm={12}>
             <Form.Item label="Postal Code" name="postalCode" rules={validationRules["postalCode"]}>
               <Select
-                className="h-[45px]"
                 showSearch
                 options={getAllPostcodeOptions()}
                 onChange={(value) => updateCityAndStateInputFieldsFromPostcode(value, form)}

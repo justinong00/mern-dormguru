@@ -4,9 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button, message, Rate } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
+import ReviewForm from "./ReviewForm.jsx";
 
 function DormInfo() {
   const [dorm, setDorm] = useState([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -31,11 +33,7 @@ function DormInfo() {
     dorm && (
       <div>
         <div className="flex flex-col lg:flex-row gap-10">
-          <img
-            src={dorm.coverPhotos}
-            alt="dorm-image"
-            className="h-72 rounded-lg object-cover"
-          />
+          <img src={dorm.coverPhotos} alt="dorm-image" className="h-72 rounded-lg object-cover" />
 
           <div className="flex flex-col w-full">
             <h1 className="text-2xl font-semibold text-gray-600 mb-2">{dorm?.name}</h1>
@@ -101,6 +99,23 @@ function DormInfo() {
             <span className="font-semibold">Bio:</span>
             <span>{dorm?.parentUniversity?.bio}</span>
           </div>
+        </div>
+        <hr />
+
+        <div className="flex justify-between items-center mt-5">
+          <span className="text font-semibold">Reviews</span>
+          <Button type="default" onClick={() => setShowReviewForm(true)}>
+            Add Review
+          </Button>
+
+          {showReviewForm && (
+            <ReviewForm
+              dorm={dorm}
+              reloadData={fetchSpecificDorm}
+              showReviewForm={showReviewForm}
+              setShowReviewForm={setShowReviewForm}
+            />
+          )}
         </div>
       </div>
     )

@@ -19,8 +19,8 @@ const reviewSchema = new Schema(
       ref: 'Dorm',
       required: true,
     },
-    typeOfRoom: {
-      type: String,
+    roomsStayed: {
+      type: [],
       required: true,
     },
     createdBy: {
@@ -55,4 +55,4 @@ const reviewSchema = new Schema(
  * 'Review' will be imported in other files to interact with the database collection
  * Mongoose automatically pluralizes 'Uni' to 'unis' for the collection name
  */
-export default mongoose.model('Review', uniSchema);
+export default mongoose.model('Review', reviewSchema);

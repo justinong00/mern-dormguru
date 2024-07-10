@@ -10,8 +10,9 @@ const router = express.Router();
 // Add review
 router.post("/", authMiddleware, async (req, res) => {
   try {
+    req.body.createdBy = req.userId; // Add user id from authMiddleware to the request body
     const newReview = new Review(req.body);
-    await newReview.save(); // Save new review
+    await newReview.save(); // Save new review, save() bypasses schema validation
 
     /** Aggregate reviews to calculate the average rating for the specified dorm.
      *
@@ -25,7 +26,7 @@ router.post("/", authMiddleware, async (req, res) => {
      */
     const averageRating = await Review.aggregate([
       {
-        $match: { dorm: mongoose.Types.ObjectId(req.body.dorm) },
+        $match: { dorm: mongoose.Types.ObjectId.createFromHexString(req.body.dorm) },
       },
       {
         $group: {
@@ -33,9 +34,14 @@ router.post("/", authMiddleware, async (req, res) => {
           averageRating: { $avg: "$rating" },
         },
       },
+      {
+        $addFields: { averageRating: { $round: ["$averageRating", 1] } },
+      }
     ]);
 
-    // Extract the average rating value, defaulting to 0 if no reviews are found
+    console.log(averageRating);
+
+    // Extract the average rating value from the array, defaulting to 0 if no reviews are found
     const averageRatingValue = averageRating[0]?.averageRating || 0;
 
     // Count the number of reviews for the specified dorm
