@@ -6,7 +6,8 @@ import dbConfig from './config/dbConfig.js';
 import usersRoute from './routes/usersRoute.js';
 import unisRoute from './routes/unisRoute.js';
 import imagesRoute from './routes/imagesRoute.js';
-import dormRoute from './routes/dormRoute.js';
+import dormsRoute from './routes/dormsRoute.js';
+import reviewsRoute from './routes/reviewsRoute.js';
 
 
 // Load environment variables from the .env file into process.env
@@ -46,7 +47,8 @@ app.use((req, res, next) => {
 app.use('/api/user', usersRoute); // Mount the user routes at the '/api/user' path
 app.use('/api/unis', unisRoute) // Mount the uni routes at the '/api/unis' path
 app.use('/api/images', imagesRoute) // Mount the image routes at the '/api/images' path
-app.use('/api/dorms', dormRoute) // Mount the dorm routes at the '/api/dorms' path
+app.use('/api/dorms', dormsRoute) // Mount the dorm routes at the '/api/dorms' path
+app.use('/api/reviews', reviewsRoute) // Mount the review routes at the '/api/reviews' path
 
 // Call the dbConfig function to connect to MongoDB
 dbConfig();

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,7 +7,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif !important;
+  font-family: "Manrope", sans-serif;
   font-weight: normal;
 }
 
@@ -29,6 +29,13 @@ input {
 .ant-select-selector,
 .ant-input-textarea-affix-wrapper {
   border-radius: 2px !important;
+}
+
+.ant-select,
+.ant-picker {
+  height: 45px;
+  border-radius: 2px !important;
+  width: 100%;
 }
 
 .ant-form-item {
@@ -96,6 +103,10 @@ table {
   width: 100% !important;
 }
 
+.reviewModalStyle .ant-modal-footer {
+  margin-top: 30px;
+}
+
 /* Extra small devices (phones, 640px and down) */
 @media only screen and (max-width: 640px) {
 
@@ -147,4 +158,10 @@ table {
   i {
     font-size: 14px !important;
   }
+}
+
+.malaysia-state-flag-icon {
+  background-size: cover;
+  background-position: 50%;
+  background-repeat: no-repeat;
 }
