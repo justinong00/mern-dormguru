@@ -36,7 +36,7 @@ router.post("/", authMiddleware, async (req, res) => {
       },
       {
         $addFields: { averageRating: { $round: ["$averageRating", 1] } },
-      }
+      },
     ]);
 
     console.log(averageRating);

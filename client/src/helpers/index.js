@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 // Required field validation rule
 export const antValidationError = [
@@ -96,6 +97,16 @@ export const validationRules = {
       message: "Required",
     },
   ],
+  title: [
+    {
+      required: true,
+      message: "Required",
+    },
+    {
+      min: 20,
+      message: "Title must be at least 20 characters",
+    },
+  ],
   comment: [
     {
       required: true,
@@ -126,16 +137,18 @@ export const customValidateEstablishedYear = (_, minYear, maxYear, value) => {
 // Custom validation function for fromDate
 export const customValidateFromDate = (dormEstablishedYear, value) => {
   const minDate = dayjs(`${dormEstablishedYear}-01-01`);
-  
+
   if (!value) {
     return Promise.resolve();
   }
 
   if (value.isBefore(minDate)) {
-    return Promise.reject(new Error(`From date cannot be before the dorm's established year of ${dormEstablishedYear}`));
+    return Promise.reject(
+      new Error(`From date cannot be before the dorm's established year of ${dormEstablishedYear}`)
+    );
   }
 
-  if (value.isAfter(dayjs(), 'day')) {
+  if (value.isAfter(dayjs(), "day")) {
     return Promise.reject(new Error("From date cannot be in the future"));
   }
 
@@ -145,13 +158,40 @@ export const customValidateFromDate = (dormEstablishedYear, value) => {
 // Custom validation function for toDate
 export const customValidateToDate = (value) => {
   const currentDate = dayjs();
-  if (!value || value.isBefore(currentDate, 'day') || value.isSame(currentDate, 'day')) {
+  if (!value || value.isBefore(currentDate, "day") || value.isSame(currentDate, "day")) {
     return Promise.resolve();
   }
   return Promise.reject(new Error("To date cannot be in the future"));
 };
 
-// Custom validation function for 
+// Function to format date to YYYY-MM-DD
+export const formatDateToYYYY_MM_DD = (date) => {
+  return dayjs(date).format("YYYY-MM-DD");
+};
+
+// Function to format date to MMM Do, YYYY
+export const formatDateToMonthDayYear = (date) => {
+  return dayjs(date).format("MMM Do, YYYY");
+};
+
+dayjs.extend(relativeTime);
+
+// Function to get relative time
+export const getRelativeTime = (date) => {
+  const now = dayjs();
+  const createdAt = dayjs(date);
+  const diffInSeconds = now.diff(createdAt, 'second');
+
+  if (diffInSeconds < 60) return 'Just now';
+  if (diffInSeconds < 3600) return createdAt.fromNow(); // This will show "X minutes ago"
+  if (diffInSeconds < 86400) return createdAt.fromNow(); // This will show "X hours ago"
+  if (diffInSeconds < 604800) return createdAt.fromNow(); // This will show "X days ago"
+  if (diffInSeconds < 2592000) return createdAt.fromNow(); // This will show "X weeks ago"
+  if (diffInSeconds < 31536000) return createdAt.fromNow(); // This will show "X months ago"
+  return createdAt.fromNow(); // This will show "X years ago"
+};
+
+// Custom validation function for
 
 // Function to allow only number inputs
 export const allowNumbersOnly = (e) => {
@@ -168,3 +208,4 @@ export const limitInputLengthTo = (maxLength, e) => {
     e.target.value = value.slice(0, maxLength);
   }
 };
+

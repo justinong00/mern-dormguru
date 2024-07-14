@@ -10,6 +10,10 @@ const reviewSchema = new Schema(
       type: Number,
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+    },
     comment: {
       type: String,
       required: true,

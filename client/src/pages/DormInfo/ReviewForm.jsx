@@ -124,7 +124,6 @@ function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
             <Form.Item label="Rating" name="rating" rules={validationRules["rating"]}>
               <div>
                 <Rate
-                  allowHalf
                   value={rating}
                   onChange={(value) => {
                     setRating(value);
@@ -135,6 +134,14 @@ function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
                   <span className="ml-2 text-xs italic">{getRatingDescription(rating)}</span>
                 ) : null}
               </div>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item label="Title" name="title" rules={validationRules["title"]}>
+              <Input type="text" />
             </Form.Item>
           </Col>
         </Row>
