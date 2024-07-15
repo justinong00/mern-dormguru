@@ -108,4 +108,26 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Get all dorms by university id
+router.get("/get-dorms-by-uni/:id", authMiddleware, async (req, res) => {
+
+  try {
+    const uniId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(uniId)) {
+      throw new Error("Invalid university ID");
+    }
+    const dorms = await Dorm.find({ parentUniversity: uniId }).sort({ createdAt: -1 }).populate("parentUniversity");
+    if (!dorms) throw new Error("Dorm not found");
+    res.status(200).json({ success: true, data: dorms });
+  } catch (error) {
+    if (error.message === "Invalid university ID") {
+      res.status(400).json({ message: error.message, success: false });
+    } else if (error.message === "Dorm not found") {
+      res.status(404).json({ message: error.message, success: false });
+    } else {
+      res.status(500).json({ message: error.message, success: false });
+    }
+  }
+});
+
 export default router;

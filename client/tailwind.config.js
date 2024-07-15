@@ -34,11 +34,15 @@ export default {
         "10/12": "83.333333%",
         "11/12": "91.666667%",
       },
+      screens: {
+        xs: "400px",
+      },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/aspect-ratio")],
   // Disables Tailwind CSS preflight styles to allow us to use both Antd components and Tailwind classes
   corePlugins: {
     preflight: false,
+    aspectRatio: false,
   },
 };
