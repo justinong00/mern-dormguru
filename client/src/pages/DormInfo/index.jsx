@@ -36,6 +36,7 @@ function DormInfo() {
   const [isLiked, setIsLiked] = useState(false);
   const [isFlagged, setIsFlagged] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   // Toggle like status
