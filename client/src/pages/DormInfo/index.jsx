@@ -147,7 +147,7 @@ function DormInfo() {
                 {/* ... */}
 
                 {/* Postal Code */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-x-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Postal Code</span>
                   </div>
@@ -167,12 +167,12 @@ function DormInfo() {
                 </div>
 
                 {/* State */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">State</span>
                   </div>
                   <div className="flex h-full flex-col items-center justify-center lg:flex-1 lg:items-start">
-                    <div className="flex w-full justify-start gap-5">
+                    <div className="flex w-full flex-col items-center gap-4 lg:flex-row">
                       <span
                         className={`malaysia-state-flag-icon h-10 w-20 shadow-md transition-shadow duration-300 hover:shadow-lg malaysia-state-flag-icon-${getStateCode(dorm?.state)}`}
                       ></span>
@@ -182,7 +182,7 @@ function DormInfo() {
                 </div>
 
                 {/* Established Year */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between md:border-x-2 md:border-y-0 md:border-solid md:border-gray-200 md:px-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Established Year</span>
                   </div>
@@ -194,7 +194,7 @@ function DormInfo() {
                 </div>
 
                 {/* Rooms Offered */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Rooms Offered</span>
                   </div>
@@ -236,7 +236,7 @@ function DormInfo() {
         {/* Parent University Content */}
         <div className="mb-10 grid grid-cols-12 gap-4">
           {/* University Logo */}
-          <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-3">
+          <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-4 lg:px-2">
             <p className="text-2xl font-semibold">Logo</p>
             <div className="flex flex-1 flex-col items-center justify-center">
               <div
@@ -253,7 +253,7 @@ function DormInfo() {
           </div>
 
           {/* University Name */}
-          <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-6">
+          <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-4 lg:border-x-2 lg:border-y-0 lg:border-solid lg:border-gray-200 lg:px-2">
             <p className="text-2xl font-semibold">Name</p>
             <div className="flex flex-1 flex-col items-center justify-center">
               <p className="transform cursor-pointer text-center text-lg transition-transform ease-in-out hover:scale-105 hover:underline">
@@ -263,7 +263,7 @@ function DormInfo() {
           </div>
 
           {/* University Bio */}
-          <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-3">
+          <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-4 lg:px-2">
             <p className="text-2xl font-semibold">Bio</p>
             <div className="flex flex-1 flex-col items-center justify-center">
               <p className="text-center text-lg">{dorm?.parentUniversity?.bio}</p>
@@ -344,7 +344,7 @@ function DormInfo() {
           <div className="col-span-12 min-h-[230px] w-full max-xl:mt-8 xl:col-span-8 xl:pl-8">
             <div className="grid h-full w-full grid-cols-12 rounded-3xl bg-gray-100 px-8 max-xl:mx-auto max-xl:max-w-3xl max-lg:py-8">
               <div className="col-span-12 flex items-center md:col-span-8">
-                <div className="flex h-full w-full flex-col items-center justify-around max-sm:gap-4 sm:flex-row">
+                <div className="flex h-full w-full flex-col items-center justify-evenly max-sm:gap-4 sm:flex-row">
                   <div className="flex flex-col items-center justify-center border-gray-200 sm:border-r sm:pr-3">
                     <h2 className="mb-4 text-center text-5xl font-bold text-black">
                       {dorm?.averageRating}
