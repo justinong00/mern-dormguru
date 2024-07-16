@@ -236,11 +236,11 @@ function DormInfo() {
         </div>
         <hr />
 
-        <div className="my-10 grid grid-cols-12 gap-4">
+        <div className="my-10 grid grid-cols-12 gap-x-4 gap-y-10">
           {/* Description Section */}
           <div className="col-span-12 flex flex-col items-center gap-y-10 transition hover:scale-105 md:col-span-6 md:px-2">
             <p className="text-3xl font-bold leading-10 sm:text-4xl">Description</p>
-            <div className="flex flex-1 flex-col items-center justify-center md:max-w-xs lg:max-w-sm">
+            <div className="md:px-15 flex flex-1 flex-col items-center justify-center sm:px-10 lg:px-20">
               <p className="text-center text-lg">{dorm?.description}</p>
             </div>
           </div>
