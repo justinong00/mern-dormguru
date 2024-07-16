@@ -28,12 +28,12 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
   // Options for dorm types
   const dormTypeOptions = [
     {
-      value: "On-Campus",
-      label: "On-Campus",
+      value: "On-Campus Accomodation",
+      label: "On-Campus Accomodation",
     },
     {
-      value: "Off-Campus",
-      label: "Off-Campus",
+      value: "Off-Campus Accomodation",
+      label: "Off-Campus Accomodation",
     },
   ];
 
@@ -45,7 +45,7 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
         response.data.map((uni) => ({
           value: uni._id,
           label: uni.name,
-        }))
+        })),
       );
       console.log("Parent universities:", response.data);
     } catch (error) {

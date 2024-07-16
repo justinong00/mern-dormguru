@@ -18,6 +18,8 @@ import { roomOptions } from "../../helpers/roomOptions.js";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import "/node_modules/malaysia-state-flag-icon-css/css/flag-icon.min.css";
 import { getStateCode } from "../../helpers/stateCodesHelper.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBuilding, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
 
 function DormInfo() {
   const [dorm, setDorm] = useState([]);
@@ -101,20 +103,34 @@ function DormInfo() {
         {/* Dorm Basic Info Section */}
         <div className="my-10 grid grid-cols-8 justify-center gap-10">
           {/* Dorm Basic Info Image */}
-          <div className="col-span-8 flex h-full flex-col justify-between gap-y-4 lg:col-span-4">
-            {/* Aspect ratio container */}
-            {/* This div maintains a 2:3 aspect ratio on smaller screens */}
-            {/* The custom padding-bottom (pb-2/3) creates a 66.67% height relative to width */}
-            {/* On larger screens (lg), it switches to a flexible 1:1 ratio */}
-            <div className="pb-2/3 relative h-0 w-full lg:flex-1 lg:pb-0">
-              {/* The image is absolutely positioned within the container */}
-              {/* This allows it to fill the aspect ratio container completely */}
-              {/* On larger screens (lg), it becomes static, fitting the flexible container */}
+          <div className="col-span-8 flex h-full flex-col justify-between gap-y-4 transition hover:scale-105 lg:col-span-4">
+            {/* Aspect ratio container using padding-bottom method */}
+            <div className="pb-2/4 sm:pb-2/5 relative h-0 w-full overflow-hidden lg:flex-1 lg:pb-0">
+              {/** Explanation:
+               *
+               * pb-2/4 and sm:pb-2/5: These set the padding-bottom to a fraction of the width.
+               * For example, pb-2/4 means the padding-bottom is 50% of the width, creating a 2:1 aspect ratio.
+               * relative: This sets the position of the container as relative, allowing the img to be positioned absolutely within it.
+               * h-0: This sets the initial height to 0. The actual height is controlled by the padding-bottom.
+               * w-full: This sets the width to 100% of the parent container.
+               * overflow-hidden: This hides any overflow content, ensuring the image doesn't exceed the container.
+               * lg:flex-1: On large screens and above, this makes the container flexible, allowing it to grow and fill available space.
+               * lg:pb-0: On large screens and above, this removes the padding-bottom, allowing the container height to be controlled by flexbox.
+               */}
               <img
                 src={dorm.coverPhotos}
                 alt="Dorm Image"
-                className="absolute left-0 top-0 h-full w-full rounded-lg object-cover shadow-lg transition-shadow duration-300 hover:shadow-xl lg:static"
+                className="absolute inset-0 h-full w-full rounded-lg object-contain lg:object-cover"
               />
+              {/** Explanation:
+               *
+               * absolute: This positions the image absolutely within its container.
+               * inset-0: This ensures the image is positioned at the top-left corner of the container.
+               * h-full and w-full: These make the image fill the height and width of the container.
+               * rounded-lg: This applies a large border-radius to the image, making it rounded.
+               * object-contain: This ensures the image maintains its aspect ratio and is contained within the container.
+               * lg:object-cover: On large screens and above, this ensures the image covers the entire container.
+               */}
             </div>
           </div>
 
@@ -131,7 +147,7 @@ function DormInfo() {
               {/* Responsive grid: 1 column on extra small screens, 2 on small, 3 on medium, back to 1 on large and wider */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-1 lg:gap-8">
                 {/* Address */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between lg:flex-row">
                   {/* Label container */}
                   {/* flex-1 and h-full to ensure the label takes up the entire space within its container */}
                   <div className="flex h-full flex-1">
@@ -148,7 +164,7 @@ function DormInfo() {
                 {/* ... */}
 
                 {/* Postal Code */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-x-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-x-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Postal Code</span>
                   </div>
@@ -158,7 +174,7 @@ function DormInfo() {
                 </div>
 
                 {/* City */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">City</span>
                   </div>
@@ -168,7 +184,7 @@ function DormInfo() {
                 </div>
 
                 {/* State */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">State</span>
                   </div>
@@ -183,7 +199,7 @@ function DormInfo() {
                 </div>
 
                 {/* Established Year */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between md:border-x-2 md:border-y-0 md:border-solid md:border-gray-200 md:px-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between md:border-x-2 md:border-y-0 md:border-solid md:border-gray-200 md:px-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Established Year</span>
                   </div>
@@ -195,7 +211,7 @@ function DormInfo() {
                 </div>
 
                 {/* Rooms Offered */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Rooms Offered</span>
                   </div>
@@ -220,36 +236,49 @@ function DormInfo() {
         </div>
         <hr />
 
-        {/* Description Section */}
-        <h2 className="my-10 text-center text-3xl font-bold leading-10 text-black sm:text-4xl">
-          Description
-        </h2>
-
-        {/* Description Content */}
-        <div className="my-10 text-center text-lg">{dorm?.description}</div>
+        <div className="my-10 grid grid-cols-12 gap-4">
+          {/* Description Section */}
+          <div className="col-span-12 flex flex-col items-center gap-y-10 transition hover:scale-105 md:col-span-6 md:px-2">
+            <p className="text-3xl font-bold leading-10 sm:text-4xl">Description</p>
+            <div className="flex flex-1 flex-col items-center justify-center md:max-w-xs lg:max-w-sm">
+              <p className="text-center text-lg">{dorm?.description}</p>
+            </div>
+          </div>
+          {/* Dorm Type Section */}
+          <div className="col-span-12 flex flex-col items-center gap-y-10 transition hover:scale-105 md:col-span-6 md:border-x-2 md:border-y-0 md:border-r-0 md:border-solid md:border-gray-200 md:px-2">
+            <p className="text-3xl font-bold leading-10 sm:text-4xl">Dorm Type</p>
+            <div className="flex flex-1 flex-col items-center justify-center gap-y-2">
+              {dorm?.dormType === "On-Campus Accommodation" && (
+                <FontAwesomeIcon icon={faSchoolFlag} style={{ fontSize: "2rem" }} />
+              )}
+              {dorm?.dormType === "Off-Campus Accommodation" && (
+                <FontAwesomeIcon icon={faBuilding} style={{ fontSize: "2rem" }} />
+              )}
+              {dorm?.dormType && <p className="text-center text-lg">{dorm.dormType}</p>}
+            </div>
+          </div>
+        </div>
         <hr />
 
         {/* Parent University */}
-        <h2 className="my-10 text-center text-3xl font-bold leading-10 text-black sm:text-4xl">
+        <h2 className="my-10 text-center text-3xl font-bold leading-10 sm:text-4xl">
           Parent University
         </h2>
 
         {/* Parent University Content */}
-        <div className="mb-10 grid grid-cols-12 gap-4">
+        <div
+          className="mb-10 grid grid-cols-12 gap-4 transition hover:scale-105 hover:cursor-pointer hover:shadow-lg"
+          onClick={() => navigate(`/uni/${dorm?.parentUniversity?._id}`)}
+        >
           {/* University Logo */}
           <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-4 lg:px-2">
             <p className="text-2xl font-semibold">Logo</p>
             <div className="flex flex-1 flex-col items-center justify-center">
-              <div
-                className="cursor-pointer"
-                onClick={() => navigate(`/uni/${dorm?.parentUniversity?._id}`)}
-              >
-                <img
-                  src={dorm?.parentUniversity?.logoPic}
-                  alt="University Logo"
-                  className="max-h-28 transform rounded-sm object-cover transition-transform ease-in-out hover:scale-105"
-                />
-              </div>
+              <img
+                src={dorm?.parentUniversity?.logoPic}
+                alt="University Logo"
+                className="max-h-28 rounded-sm object-cover"
+              />
             </div>
           </div>
 
@@ -257,9 +286,7 @@ function DormInfo() {
           <div className="col-span-12 flex flex-col items-center gap-y-4 lg:col-span-4 lg:border-x-2 lg:border-y-0 lg:border-solid lg:border-gray-200 lg:px-2">
             <p className="text-2xl font-semibold">Name</p>
             <div className="flex flex-1 flex-col items-center justify-center">
-              <p className="transform cursor-pointer text-center text-lg transition-transform ease-in-out hover:scale-105 hover:underline">
-                {dorm?.parentUniversity?.name}
-              </p>
+              <p className="text-center text-lg">{dorm?.parentUniversity?.name}</p>
             </div>
           </div>
 
@@ -326,7 +353,7 @@ function DormInfo() {
         </div> */}
 
         {/* Rating & Reviews */}
-        <h2 className="my-10 text-center text-3xl font-bold leading-10 text-black sm:text-4xl">
+        <h2 className="my-10 text-center text-3xl font-bold leading-10 sm:text-4xl">
           Rating & Reviews
         </h2>
         <div className="mb-10 grid grid-cols-12">
@@ -347,9 +374,7 @@ function DormInfo() {
               <div className="col-span-12 flex items-center md:col-span-8">
                 <div className="flex h-full w-full flex-col items-center justify-evenly max-sm:gap-4 sm:flex-row">
                   <div className="flex flex-col items-center justify-center border-gray-200 sm:border-r sm:pr-3">
-                    <h2 className="mb-4 text-center text-5xl font-bold text-black">
-                      {dorm?.averageRating}
-                    </h2>
+                    <h2 className="mb-4 text-center text-5xl font-bold">{dorm?.averageRating}</h2>
 
                     <div className="mb-4 flex items-center gap-3">
                       <Rate
@@ -366,7 +391,7 @@ function DormInfo() {
                   </div>
 
                   <div className="flex flex-col items-center justify-center border-gray-200 sm:border-r sm:pr-3">
-                    <h2 className="mb-4 text-center text-5xl font-bold text-black">
+                    <h2 className="mb-4 text-center text-5xl font-bold">
                       {getLastMonthAverageRating(reviews)}
                     </h2>
 
@@ -428,7 +453,7 @@ function DormInfo() {
             </div>
 
             {/* Review Title */}
-            <p className="mb-4 text-xl font-semibold leading-9 text-black sm:text-2xl">
+            <p className="mb-4 text-xl font-semibold leading-9 sm:text-2xl">
               {review?.title || "No title"}
             </p>
 
@@ -458,10 +483,10 @@ function DormInfo() {
 
             {/* Rooms Stayed */}
             <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:gap-2">
-              <h4 className="mb-2 font-medium leading-6 text-black sm:mb-0">
+              <h4 className="mb-2 font-medium leading-6 sm:mb-0">
                 <span className="font-bold">Room/Rooms Stayed:</span>
               </h4>
-              <p className="leading-6 text-black">
+              <p className="leading-6">
                 {review?.roomsStayed?.map((room, index) => (
                   <span key={index}>
                     {roomOptions.find((option) => option.value === room)?.label}
@@ -473,10 +498,10 @@ function DormInfo() {
 
             {/* Date Stayed */}
             <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:gap-2">
-              <h4 className="mb-2 font-medium leading-6 text-black sm:mb-0">
+              <h4 className="mb-2 font-medium leading-6 sm:mb-0">
                 <span className="font-bold">From:</span>
               </h4>
-              <p className="leading-6 text-black">
+              <p className="leading-6">
                 {formatDateToMonthDayYear(review?.fromDate)} -{" "}
                 {formatDateToMonthDayYear(review?.toDate)}
               </p>
