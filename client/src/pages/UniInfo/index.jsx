@@ -57,7 +57,7 @@ function UniInfo() {
         {/* Uni Basic Info Section */}
         <div className="my-10 grid grid-cols-8 justify-center gap-10">
           {/* Uni Basic Info Image */}
-          <div className="col-span-8 flex h-full flex-col justify-between gap-y-4 lg:col-span-4">
+          <div className="col-span-8 flex h-full flex-col justify-between gap-y-4 transition hover:scale-105 lg:col-span-4">
             {/* Aspect ratio container using padding-bottom method */}
             <div className="pb-2/4 sm:pb-2/5 relative h-0 w-full overflow-hidden lg:flex-1 lg:pb-0">
               {/** Explanation:
@@ -99,7 +99,7 @@ function UniInfo() {
               {/* Grid container for info items */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-1 lg:gap-8">
                 {/* Address */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Address</span>
                   </div>
@@ -109,7 +109,7 @@ function UniInfo() {
                 </div>
 
                 {/* Postal Code */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-x-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-x-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Postal Code</span>
                   </div>
@@ -119,7 +119,7 @@ function UniInfo() {
                 </div>
 
                 {/* City */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">City</span>
                   </div>
@@ -129,7 +129,7 @@ function UniInfo() {
                 </div>
 
                 {/* State */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">State</span>
                   </div>
@@ -144,7 +144,7 @@ function UniInfo() {
                 </div>
 
                 {/* Established Year */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between md:border-x-2 md:border-y-0 md:border-solid md:border-gray-200 md:px-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between md:border-x-2 md:border-y-0 md:border-solid md:border-gray-200 md:px-2 lg:flex-1 lg:flex-row lg:items-start lg:border-none lg:px-0">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Established Year</span>
                   </div>
@@ -156,7 +156,7 @@ function UniInfo() {
                 </div>
 
                 {/* Website URL */}
-                <div className="flex flex-col items-center gap-y-4 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
+                <div className="flex flex-col items-center gap-y-4 transition hover:scale-105 sm:items-center sm:justify-between sm:border-y-0 sm:border-l-2 sm:border-r-0 sm:border-solid sm:border-gray-200 sm:px-2 md:border-none md:px-0 lg:flex-row">
                   <div className="flex h-full flex-1">
                     <span className="text-2xl font-semibold">Website URL</span>
                   </div>
@@ -178,16 +178,17 @@ function UniInfo() {
         <hr />
 
         {/* Bio Section */}
-        <h2 className="my-10 text-center text-3xl font-bold leading-10 text-black sm:text-4xl">
-          Bio
-        </h2>
+        <div className="md:leading-20 md:px-15 my-10 flex flex-col gap-10 px-5 text-center transition hover:scale-105 sm:px-10 lg:px-20">
+          {/* Bio Header */}
+          <h2 className="text-3xl font-bold sm:text-4xl">Bio</h2>
+          {/* Bio Content */}
+          <p className="text-lg">{uni?.bio}</p>
+        </div>
 
-        {/* Bio Content */}
-        <div className="my-10 text-center text-lg">{uni?.bio}</div>
         <hr />
 
         {/* Available Dorms Section */}
-        <h2 className="my-10 text-center text-3xl font-bold leading-10 text-black sm:text-4xl">
+        <h2 className="my-10 text-center text-3xl font-bold leading-10 sm:text-4xl">
           Available Dorms
         </h2>
 
