@@ -1,30 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, message, Rate } from "antd";
+import { message, Rate, Table } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
-import { GetDormById } from "../../apis/dorms.js";
 import { GetAllReviewsForUser } from "../../apis/reviews.js";
-import { roundToHalf } from "./../../helpers/roundToHalf";
-import {
-  getLastMonthAverageRating,
-  countNumberOfReviewsForEachRating,
-  renderRatingBar,
-} from "../../helpers/ratingHelpers.jsx";
-import { formatDateToMonthDayYear } from "../../helpers/index.js";
-import { LikeOutlined, LikeFilled, FlagOutlined, FlagFilled } from "@ant-design/icons";
-import { roomOptions } from "../../helpers/roomOptions.js";
-import "/node_modules/flag-icons/css/flag-icons.min.css";
-import "/node_modules/malaysia-state-flag-icon-css/css/flag-icon.min.css";
-import { getStateCode } from "../../helpers/stateCodesHelper.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
+import { formatDateToYYYY_MM_DD } from "../../helpers/index.js";
 
 function Reviews() {
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const [reviews, setReviews] = useState([]);
   const dispatch = useDispatch();
 
-  const fetchAllReviews = async () => {
+  const fetchAllReviewsForUser = async () => {
     try {
       dispatch(setLoading(true));
       console.log(user);
@@ -38,10 +24,74 @@ function Reviews() {
   };
 
   useEffect(() => {
-    fetchAllReviews();
+    fetchAllReviewsForUser();
   }, []);
 
-  return <div>Reviews</div>;
+  // Table columns definition
+  const columns = [
+    {
+      title: "Dorm",
+      dataIndex: "dorm",
+      key: "dorm",
+      width: 300,
+      fixed: "left",
+      render: (_, record) => record.dorm.name,
+    },
+    {
+      title: "Rating",
+      dataIndex: "rating",
+      key: "rating",
+      width: 100,
+      render: (text, record) => <Rate disabled defaultValue={record.rating} />,
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      width: 200,
+    },
+    {
+      title: "Review",
+      dataIndex: "comment",
+      key: "comment",
+      width: 300,
+    },
+    {
+      title: "Date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      width: 60,
+      render: (text, record) => formatDateToYYYY_MM_DD(record.createdAt),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      fixed: "right",
+      width: 60,
+      render: (_, record) => {
+        return (
+          <div className="flex gap-2">
+            <i className="ri-delete-bin-line" onClick={() => {}}></i>
+            <i className="ri-pencil-line" onClick={() => {}}></i>
+          </div>
+        );
+      },
+    },
+  ];
+
+  return (
+    <div>
+      {/* rowKey provides unique key for each row */}
+      <Table
+        dataSource={reviews}
+        columns={columns}
+        rowKey={(record) => record._id}
+        className="mt-5"
+        scroll={{ x: 1300 }}
+      />
+    </div>
+  );
 }
 
 export default Reviews;
