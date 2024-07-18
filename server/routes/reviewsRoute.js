@@ -62,7 +62,7 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 // Get all reviews by dorm id
-router.get("/:id", authMiddleware, async (req, res) => {
+router.get("/get-reviews-by-dorm/:id", authMiddleware, async (req, res) => {
   try {
     // Extract the dorm ID from the request parameters
     const { id } = req.params;
@@ -74,6 +74,31 @@ router.get("/:id", authMiddleware, async (req, res) => {
 
     // Find all reviews for the specified dorm, sort them by creation date in descending order, and populate the related user and dorm fields
     const reviews = await Review.find({ dorm: id })
+      .sort({ createdAt: -1 })
+      .populate("createdBy")
+      .populate("dorm");
+
+    // Send a success response with the retrieved reviews
+    res.status(200).json({ success: true, data: reviews });
+  } catch (err) {
+    // Handle any errors that occur during the process
+    res.status(500).json({ message: err.message, success: false });
+  }
+});
+
+// Get all reviews by user id
+router.get("/get-reviews-by-user/:id", authMiddleware, async (req, res) => {
+  try {
+    // Extract the user ID from the request parameters
+    const { id } = req.params;
+
+    // Check if the user ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("Invalid user ID");
+    }
+
+    // Find all reviews for the specified user, sort them by creation date in descending order, and populate the related user and dorm fields
+    const reviews = await Review.find({ createdBy: id })
       .sort({ createdAt: -1 })
       .populate("createdBy")
       .populate("dorm");

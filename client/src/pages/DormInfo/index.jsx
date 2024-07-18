@@ -5,7 +5,7 @@ import { Button, message, Rate } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
-import { GetAllReviews } from "../../apis/reviews.js";
+import { GetAllReviewsForDorm } from "../../apis/reviews.js";
 import { roundToHalf } from "./../../helpers/roundToHalf";
 import {
   getLastMonthAverageRating,
@@ -72,7 +72,7 @@ function DormInfo() {
       // reducing overall waiting time and improving performance
       const [dormResponse, reviewsResponse] = await Promise.all([
         GetDormById(id),
-        GetAllReviews(id),
+        GetAllReviewsForDorm(id),
       ]);
       setDorm(dormResponse.data);
       setReviews(reviewsResponse.data);

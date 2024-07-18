@@ -29,15 +29,40 @@ export const AddReview = async (data) => {
   }
 };
 
+/** Sends a GET request to the "/api/reviews/:id" endpoint on the server to retrieve all reviews for a specific dorm.
+ *
+ * @param {string} id - The ID of the dorm to retrieve reviews for.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const GetAllReviewsForDorm = async (id) => {
+  try {
+    // Send a GET request to the "/api/reviews/:id" endpoint on the server to retrieve all reviews for a specific dorm.
+    const response = await apiRequest({
+      method: "GET",
+      endPoint: `/api/reviews/get-reviews-by-dorm/${id}`,
+    });
 
-export const GetAllReviews = async (id) => {
+    // Return the response data from the server.
+    return response;
+  } catch (error) {
+    // If there is an error during the process, throw the error.
+    throw error;
+  }
+};
+
+// Sends a GET request to the "/api/reviews/get-reviews-by-user/:id" endpoint on the server to retrieve all reviews for a specific user.
+export const GetAllReviewsForUser = async (id) => {
   try {
     const response = await apiRequest({
       method: "GET",
-      endPoint: `/api/reviews/${id}`,
+      endPoint: `/api/reviews/get-reviews-by-user/${id}`,
     });
+
+    // Return the response data from the server.
     return response;
   } catch (error) {
+    // If there is an error during the process, throw the error.
     throw error;
   }
-}
+};
