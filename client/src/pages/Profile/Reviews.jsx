@@ -33,7 +33,7 @@ function Reviews() {
       title: "Dorm",
       dataIndex: "dorm",
       key: "dorm",
-      width: 300,
+      width: 200,
       fixed: "left",
       render: (_, record) => record.dorm.name,
     },
@@ -41,8 +41,8 @@ function Reviews() {
       title: "Rating",
       dataIndex: "rating",
       key: "rating",
-      width: 100,
-      render: (text, record) => <Rate disabled defaultValue={record.rating} />,
+      width: 150,
+      render: (_, record) => <Rate disabled defaultValue={record.rating} />,
     },
     {
       title: "Title",
@@ -61,7 +61,7 @@ function Reviews() {
       dataIndex: "createdAt",
       key: "createdAt",
       width: 60,
-      render: (text, record) => formatDateToYYYY_MM_DD(record.createdAt),
+      render: (_, record) => formatDateToYYYY_MM_DD(record.createdAt),
     },
     {
       title: "Action",
@@ -88,7 +88,7 @@ function Reviews() {
         columns={columns}
         rowKey={(record) => record._id}
         className="mt-5"
-        scroll={{ x: 1300 }}
+        scroll={{ x: 1300, scrollToFirstRowOnChange: true }}
       />
     </div>
   );
