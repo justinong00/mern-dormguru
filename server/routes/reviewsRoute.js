@@ -111,4 +111,62 @@ router.get("/get-reviews-by-user/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Update review
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    // Get and Destructure the specific id from the request parameters
+    const { id } = req.params;
+    // Check if the provided ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("Invalid review ID");
+    }
+
+    // Add user id from authMiddleware to request body
+    req.body.createdBy = req.userId; 
+
+    // Set new option to true to return the modified document instead of the original one
+    const review = await Review.findByIdAndUpdate(id, req.body, { new: true }); 
+    // If review not found, throw an error
+    if (!review) throw new Error("Review not found");
+
+    /** Aggregate reviews to calculate the average rating for the specified dorm.
+     *
+     * The aggregate method in MongoDB allows for performing complex queries that involve multiple stages. Each stage in the pipeline performs an operation on the input documents and passes the result to the next stage.
+     *
+     * - $match: Filters the documents to include only those that match the specified condition. In this case, it matches documents where the dorm field matches req.body.dorm. This ensures that we only consider reviews for the specific dorm we're interested in.
+     *
+     * - $group: Groups the documents by the specified _id and calculates aggregate values for each group. Here, it groups by the dorm field and calculates the average rating using $avg.
+     *
+     * The result of the aggregate operation is an array of documents, where each document represents a group (in this case, a single dorm) and contains the _id (the dorm value) and the averageRating calculated for that group.
+     */
+    const average = await Review.aggregate([
+      {
+        $match: { dorm: mongoose.Types.ObjectId.createFromHexString(req.body.dorm) },
+      },
+      {
+        $group: {
+          _id: "$dorm",
+          averageRating: { $avg: "$rating" },
+        },
+      },
+      {
+        $addFields: { averageRating: { $round: ["$averageRating", 1] } },
+      },
+    ]);
+
+    // Extract the average rating value from the array, defaulting to 0 if no reviews are found
+    const averageRatingValue = average[0]?.averageRating || 0;
+
+    // Update the dorm document with the new average rating and the same number of reviews (since update, no change in number of reviews)
+    await Dorm.findByIdAndUpdate(req.body.dorm, {
+      numberOfReviews: average.length,
+      averageRating: averageRatingValue,
+    });
+
+    res.status(200).json({ message: "Review updated successfully", success: true });
+  } catch (err) {
+    res.status(500).json({ message: err.message, success: false });
+  }
+});
+
 export default router;

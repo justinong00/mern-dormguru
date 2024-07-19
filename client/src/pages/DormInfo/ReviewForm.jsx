@@ -1,16 +1,23 @@
 import { Col, DatePicker, Form, Input, message, Modal, Rate, Row, Select } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../redux/loadersSlice.js";
-import { AddReview } from "../../apis/reviews.js";
+import { AddReview, UpdateReview } from "../../apis/reviews.js";
 import { roomOptions } from "./../../helpers/roomOptions";
 import {
   customValidateFromDate,
   customValidateToDate,
   validationRules,
 } from "../../helpers/index.js";
+import moment from "moment";
 
-function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
+function ReviewForm({
+  dorm,
+  reloadData,
+  showReviewForm,
+  setShowReviewForm,
+  selectedReview = null,
+}) {
   const [rating, setRating] = useState(null);
   const ratingDescriptions = ["Terrible", "Bad", "Average", "Good", "Excellent"];
   const dispatch = useDispatch();
@@ -24,10 +31,19 @@ function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
   const onFinish = async (values) => {
     try {
       dispatch(setLoading(true));
-      const response = await AddReview({
-        ...values,
-        dorm: dorm._id,
-      });
+      let response;
+
+      if (selectedReview) {
+        response = await UpdateReview(selectedReview._id, {
+          ...values,
+          dorm: dorm._id,
+        });
+      } else {
+        response = await AddReview({
+          ...values,
+          dorm: dorm._id,
+        });
+      }
       message.success(response.message);
       setShowReviewForm(false);
       reloadData();
@@ -38,16 +54,24 @@ function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
     }
   };
 
+  // The rating must be handled outside the initialValues because the Rate component does not directly bind its value to the form's initial values. Instead, it requires state management to control its value. Hence, useEffect is used to set initial rating value when a review is selected
+  useEffect(() => {
+    if (selectedReview) {
+      // Set the initial rating value from the selected review
+      setRating(selectedReview.rating);
+    }
+  }, [selectedReview]);
+
   return (
     <Modal
       open={showReviewForm}
       onCancel={() => setShowReviewForm(false)}
-      title="Add Review"
+      title={selectedReview ? "Update Review" : "Add Review"}
       centered // Center the modal on the screen
       width="90%" // Set the width of the modal for smaller screens
       style={{ maxWidth: 500, width: "100%" }} // Set a maximum width for larger screens
       className="reviewModalStyle"
-      okText="Add"
+      okText={selectedReview ? "Update" : "Add"}
       onOk={() => form.submit()}
     >
       <Form
@@ -56,7 +80,11 @@ function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
         onFinish={onFinish}
         form={form}
         initialValues={{
-          rating: rating,
+          ...selectedReview,
+          // Convert fromDate and toDate to moment objects if they exist in the selected review. This is necessary for preloading the Antd DatePicker components with the correct values in the form
+          fromDate: selectedReview?.fromDate ? moment(selectedReview.fromDate) : null,
+          toDate: selectedReview?.toDate ? moment(selectedReview.toDate) : null,
+          rating: rating, // Rating is initialized from the state
         }}
       >
         <Row gutter={16}>
@@ -72,7 +100,7 @@ function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
                 showSearch
                 placeholder="Select room type"
                 optionFilterProp="label"
-                options={roomOptions.filter((option) => dorm?.roomsOffered.includes(option.value))}
+                options={roomOptions.filter((option) => dorm?.roomsOffered?.includes(option.value))}
               />
             </Form.Item>
           </Col>
@@ -126,8 +154,8 @@ function ReviewForm({ dorm, reloadData, showReviewForm, setShowReviewForm }) {
                 <Rate
                   value={rating}
                   onChange={(value) => {
-                    setRating(value);
-                    form.setFieldsValue({ rating: value });
+                    setRating(value); // Update state with new rating value
+                    form.setFieldsValue({ rating: value }); // Update form field value
                   }}
                 />
                 {rating ? (

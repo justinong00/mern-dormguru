@@ -4,10 +4,13 @@ import { message, Rate, Table } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetAllReviewsForUser } from "../../apis/reviews.js";
 import { formatDateToYYYY_MM_DD } from "../../helpers/index.js";
+import ReviewForm from "./../DormInfo/ReviewForm";
 
 function Reviews() {
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const [reviews, setReviews] = useState([]);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const dispatch = useDispatch();
 
   const fetchAllReviewsForUser = async () => {
@@ -57,6 +60,26 @@ function Reviews() {
       width: 300,
     },
     {
+      title: "Room/Rooms Stayed",
+      dataIndex: "roomsStayed",
+      key: "roomsStayed",
+      width: 200,
+    },
+    {
+      title: "From Date",
+      dataIndex: "fromDate",
+      key: "fromDate",
+      width: 100,
+      render: (_, record) => formatDateToYYYY_MM_DD(record.fromDate),
+    },
+    {
+      title: "To Date",
+      dataIndex: "toDate",
+      key: "toDate",
+      width: 100,
+      render: (_, record) => formatDateToYYYY_MM_DD(record.toDate),
+    },
+    {
       title: "Date",
       dataIndex: "createdAt",
       key: "createdAt",
@@ -73,7 +96,13 @@ function Reviews() {
         return (
           <div className="flex gap-2">
             <i className="ri-delete-bin-line" onClick={() => {}}></i>
-            <i className="ri-pencil-line" onClick={() => {}}></i>
+            <i
+              className="ri-pencil-line"
+              onClick={() => {
+                setSelectedReview(record);
+                setShowReviewForm(true);
+              }}
+            ></i>
           </div>
         );
       },
@@ -90,6 +119,17 @@ function Reviews() {
         className="mt-5"
         scroll={{ x: 1300, scrollToFirstRowOnChange: true }}
       />
+
+      {/* Show review form when selectedReview is not null */}
+      {showReviewForm && selectedReview && (
+        <ReviewForm
+          dorm={selectedReview.dorm}
+          reloadData={fetchAllReviewsForUser}
+          showReviewForm={showReviewForm}
+          setShowReviewForm={setShowReviewForm}
+          selectedReview={selectedReview}
+        />
+      )}
     </div>
   );
 }
