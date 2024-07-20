@@ -50,13 +50,13 @@ function Dorms() {
       title: "Dorm",
       dataIndex: "coverPhotos",
       key: "coverPhotos",
-      width: 100,
+      width: 80,
       render: (_, record) => {
         return (
           <img
             src={record?.coverPhotos || ""}
             alt="coverPhotos"
-            className="w-20 h-20 object-contain"
+            className="h-20 w-20 object-contain"
           />
         );
       },

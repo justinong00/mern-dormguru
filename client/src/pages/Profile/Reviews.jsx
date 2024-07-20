@@ -18,7 +18,6 @@ function Reviews() {
     try {
       dispatch(setLoading(true));
       const response = await GetAllReviewsForUser(user._id);
-      console.log("Reviews:", response.data);
       setReviews(response.data);
       dispatch(setLoading(false));
     } catch (error) {
@@ -46,11 +45,27 @@ function Reviews() {
 
   // Table columns definition
   const columns = [
+    // want to show dorm cover photo
     {
       title: "Dorm",
+      dataIndex: "coverPhotos",
+      key: "coverPhotos",
+      width: 50,
+      render: (_, record) => {
+        return (
+          <img
+            src={record.dorm.coverPhotos || ""}
+            alt="coverPhotos"
+            className="h-20 w-20 object-contain"
+          />
+        );
+      },
+    },
+    {
+      title: "Name",
       dataIndex: "dorm",
       key: "dorm",
-      width: 200,
+      width: 100,
       fixed: "left",
       render: (_, record) => record.dorm.name,
     },
@@ -58,46 +73,56 @@ function Reviews() {
       title: "Rating",
       dataIndex: "rating",
       key: "rating",
-      width: 150,
+      width: 80,
       render: (_, record) => <Rate disabled value={record.rating} />,
-    },
-    {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      width: 200,
-    },
-    {
-      title: "Review",
-      dataIndex: "comment",
-      key: "comment",
-      width: 300,
     },
     {
       title: "Room/Rooms Stayed",
       dataIndex: "roomsStayed",
       key: "roomsStayed",
-      width: 200,
+      width: 80,
+      render: (_, record) => (
+        <div>
+          {record.roomsStayed.map((room, index) => (
+            <div key={room}>
+              {room}
+              {index < record.roomsStayed.length - 1 ? ", " : ""}
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
       title: "From Date",
       dataIndex: "fromDate",
       key: "fromDate",
-      width: 100,
+      width: 50,
       render: (_, record) => formatDateToYYYY_MM_DD(record.fromDate),
     },
     {
       title: "To Date",
       dataIndex: "toDate",
       key: "toDate",
-      width: 100,
+      width: 50,
       render: (_, record) => formatDateToYYYY_MM_DD(record.toDate),
     },
     {
-      title: "Date",
+      title: "Review",
+      dataIndex: "review",
+      key: "review",
+      width: 200,
+      render: (_, record) => (
+        <div>
+          <div style={{ fontWeight: "bold" }}>{record.title}</div>
+          <div>{record.comment}</div>
+        </div>
+      ),
+    },
+    {
+      title: "Posted Date",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: 60,
+      width: 50,
       render: (_, record) => formatDateToYYYY_MM_DD(record.createdAt),
     },
     {
@@ -105,21 +130,21 @@ function Reviews() {
       dataIndex: "action",
       key: "action",
       fixed: "right",
-      width: 60,
+      width: 50,
       render: (_, record) => {
         return (
           <div className="flex gap-2">
-            <i
-              className="ri-delete-bin-line"
-              onClick={() => {
-                deleteReview(record._id, record.dorm._id);
-              }}
-            ></i>
             <i
               className="ri-pencil-line"
               onClick={() => {
                 setSelectedReview(record);
                 setShowReviewForm(true);
+              }}
+            ></i>
+            <i
+              className="ri-delete-bin-line"
+              onClick={() => {
+                deleteReview(record._id, record.dorm._id);
               }}
             ></i>
           </div>
@@ -135,9 +160,99 @@ function Reviews() {
         dataSource={reviews}
         columns={columns}
         rowKey={(record) => record._id}
-        className="mt-5"
+        className="reviews-table mt-5"
         scroll={{ x: 1300, scrollToFirstRowOnChange: true }}
       />
+
+      {/* Mobile view */}
+      <div className="review-card mt-5">
+        {reviews.map((review) => (
+          <div
+            key={review._id}
+            className="my-8 cursor-pointer overflow-hidden rounded-xl bg-white shadow-md shadow-gray-300 transition hover:scale-105 hover:shadow-2xl"
+            onClick={() => {
+              setSelectedReview(review);
+              setShowReviewForm(true);
+            }}
+          >
+            {/* Image Container */}
+            <div className="aspect-w-3 aspect-h-2">
+              <img
+                src={review.dorm.coverPhotos || ""}
+                alt="coverPhotos"
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            {/* Content Container */}
+            <div className="flex flex-col justify-between gap-y-4 p-4">
+              {/* Dorm Name */}
+              <div className="text-2xl font-semibold">{review.dorm.name}</div>
+
+              {/* Rating */}
+              <Rate disabled value={review.rating} className="my-2" style={{ fontSize: 25 }} />
+
+              {/* Rooms Stayed */}
+              <div className="text-sm">
+                <div className="font-bold">Room/Rooms Stayed:</div>
+                <div>
+                  {review.roomsStayed.map((room, index) => (
+                    <div key={room}>
+                      {room}
+                      {index < review.roomsStayed.length - 1 ? ", " : ""}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Stay Duration */}
+              <div className="text-sm">
+                <div className="font-bold">Stay Duration:</div>
+                <div>
+                  <span className="font-semibold">From:</span>{" "}
+                  {formatDateToYYYY_MM_DD(review.fromDate)}
+                </div>
+                <div>
+                  <span className="font-semibold">To:</span> {formatDateToYYYY_MM_DD(review.toDate)}
+                </div>
+              </div>
+
+              {/* Review Title and Comment */}
+              <div className="text-sm">
+                <div className="font-bold">Review:</div>
+                <div className="font-semibold">{review.title}</div>
+                <div className="italic">{review.comment}</div>
+              </div>
+
+              {/* Posted Date */}
+              <div className="text-sm">
+                <div className="font-bold">Posted Date:</div>
+                <div>{formatDateToYYYY_MM_DD(review.createdAt)}</div>
+              </div>
+
+              {/* Action Icons */}
+              <div className="mt-2 flex gap-2">
+                <i
+                  className="ri-pencil-line"
+                  onClick={(e) => {
+                    // Stop event bubbling to the parent card to prevent it from triggering the onClick event
+                    e.stopPropagation();
+                    setSelectedReview(review);
+                    setShowReviewForm(true);
+                  }}
+                ></i>
+                <i
+                  className="ri-delete-bin-line"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteReview(review._id, review.dorm._id);
+                  }}
+                ></i>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* Show review form when selectedReview is not null */}
       {showReviewForm && selectedReview && (

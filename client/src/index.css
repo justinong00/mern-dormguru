@@ -107,11 +107,35 @@ table {
   margin-top: 30px;
 }
 
+/* Extra extra small devices (phones, 499px and down) */
+@media only screen and (max-width: 499px) {
+
+  .reviews-table {
+    display: none;
+  }
+
+  .review-card {
+    display: block;
+  }
+
+}
+
+/* Extra small devices (phones, 500px and up) */
+@media only screen and (min-width: 500px) {
+
+  .review-card {
+    display: none;
+  }
+
+  .ant-table-cell i {
+    font-size: 10px !important;
+  }
+}
+
 /* Extra small devices (phones, 640px and down) */
 @media only screen and (max-width: 640px) {
 
-  .ant-table-cell,
-  i {
+  .ant-table-cell {
     font-size: 10px !important;
   }
 
@@ -124,7 +148,7 @@ table {
 @media only screen and (min-width: 640px) {
 
   .ant-table-cell,
-  i {
+  .ant-table-cell i {
     font-size: 11px !important;
   }
 
@@ -137,8 +161,12 @@ table {
 @media only screen and (min-width: 768px) {
 
   .ant-table-cell,
-  i {
+  .ant-table-cell i {
     font-size: 12px !important;
+  }
+
+  .review-card {
+    display: none;
   }
 }
 
@@ -146,7 +174,7 @@ table {
 @media only screen and (min-width: 1024px) {
 
   .ant-table-cell,
-  i {
+  .ant-table-cell i {
     font-size: 13px !important;
   }
 }
@@ -155,7 +183,7 @@ table {
 @media only screen and (min-width: 1280px) {
 
   .ant-table-cell,
-  i {
+  .ant-table-cell i {
     font-size: 14px !important;
   }
 }
