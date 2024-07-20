@@ -134,9 +134,16 @@ export const customValidateEstablishedYear = (_, minYear, maxYear, value) => {
   return Promise.reject(new Error(`Valid only between ${minYear} and ${maxYear}`));
 };
 
-// Custom validation function for fromDate
-export const customValidateFromDate = (dormEstablishedYear, value) => {
+// Custom validation function for To Date and From Date in ReviewForm.jsx
+export const validateDates = (fieldName, value, form, dorm) => {
+  const dormEstablishedYear = dorm.establishedYear;
+  // Minimum date is the dorm's established year
   const minDate = dayjs(`${dormEstablishedYear}-01-01`);
+  // Maximum date is current date
+  const currentDate = dayjs();
+  // Get the values of fromDate and toDate from the form
+  const fromDate = form.getFieldValue("fromDate");
+  const toDate = form.getFieldValue("toDate");
 
   if (!value) {
     return Promise.resolve();
@@ -144,24 +151,25 @@ export const customValidateFromDate = (dormEstablishedYear, value) => {
 
   if (value.isBefore(minDate)) {
     return Promise.reject(
-      new Error(`From date cannot be before the dorm's established year of ${dormEstablishedYear}`)
+      new Error(`Date cannot be before the dorm's established year of ${dormEstablishedYear}`),
     );
   }
 
-  if (value.isAfter(dayjs(), "day")) {
-    return Promise.reject(new Error("From date cannot be in the future"));
+  if (value.isAfter(currentDate, "day")) {
+    return Promise.reject(new Error("Date cannot be in the future"));
+  }
+
+  //  If the field is fromDate, check if it is after toDate
+  if (fieldName === "fromDate" && toDate && value.isAfter(toDate)) {
+    return Promise.reject(new Error("From date cannot be after To date"));
+  }
+
+  // If the field is toDate, check if it is before fromDate
+  if (fieldName === "toDate" && fromDate && value.isBefore(fromDate)) {
+    return Promise.reject(new Error("To date cannot be before From date"));
   }
 
   return Promise.resolve();
-};
-
-// Custom validation function for toDate
-export const customValidateToDate = (value) => {
-  const currentDate = dayjs();
-  if (!value || value.isBefore(currentDate, "day") || value.isSame(currentDate, "day")) {
-    return Promise.resolve();
-  }
-  return Promise.reject(new Error("To date cannot be in the future"));
 };
 
 // Function to format date to YYYY-MM-DD
@@ -180,9 +188,9 @@ dayjs.extend(relativeTime);
 export const getRelativeTime = (date) => {
   const now = dayjs();
   const createdAt = dayjs(date);
-  const diffInSeconds = now.diff(createdAt, 'second');
+  const diffInSeconds = now.diff(createdAt, "second");
 
-  if (diffInSeconds < 60) return 'Just now';
+  if (diffInSeconds < 60) return "Just now";
   if (diffInSeconds < 3600) return createdAt.fromNow(); // This will show "X minutes ago"
   if (diffInSeconds < 86400) return createdAt.fromNow(); // This will show "X hours ago"
   if (diffInSeconds < 604800) return createdAt.fromNow(); // This will show "X days ago"
@@ -208,4 +216,3 @@ export const limitInputLengthTo = (maxLength, e) => {
     e.target.value = value.slice(0, maxLength);
   }
 };
-

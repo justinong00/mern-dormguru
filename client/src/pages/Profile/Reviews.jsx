@@ -5,6 +5,7 @@ import { setLoading } from "../../redux/loadersSlice.js";
 import { GetAllReviewsForUser } from "../../apis/reviews.js";
 import { formatDateToYYYY_MM_DD } from "../../helpers/index.js";
 import ReviewForm from "./../DormInfo/ReviewForm";
+import { DeleteReview } from "./../../apis/reviews";
 
 function Reviews() {
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
@@ -16,8 +17,8 @@ function Reviews() {
   const fetchAllReviewsForUser = async () => {
     try {
       dispatch(setLoading(true));
-      console.log(user);
       const response = await GetAllReviewsForUser(user._id);
+      console.log("Reviews:", response.data);
       setReviews(response.data);
       dispatch(setLoading(false));
     } catch (error) {
@@ -29,6 +30,19 @@ function Reviews() {
   useEffect(() => {
     fetchAllReviewsForUser();
   }, []);
+
+  const deleteReview = async (id, dormId) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await DeleteReview(id, { dorm: dormId });
+      message.success(response.message);
+      fetchAllReviewsForUser();
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      message.error(error.message);
+    }
+  };
 
   // Table columns definition
   const columns = [
@@ -45,7 +59,7 @@ function Reviews() {
       dataIndex: "rating",
       key: "rating",
       width: 150,
-      render: (_, record) => <Rate disabled defaultValue={record.rating} />,
+      render: (_, record) => <Rate disabled value={record.rating} />,
     },
     {
       title: "Title",
@@ -95,7 +109,12 @@ function Reviews() {
       render: (_, record) => {
         return (
           <div className="flex gap-2">
-            <i className="ri-delete-bin-line" onClick={() => {}}></i>
+            <i
+              className="ri-delete-bin-line"
+              onClick={() => {
+                deleteReview(record._id, record.dorm._id);
+              }}
+            ></i>
             <i
               className="ri-pencil-line"
               onClick={() => {
@@ -128,6 +147,7 @@ function Reviews() {
           showReviewForm={showReviewForm}
           setShowReviewForm={setShowReviewForm}
           selectedReview={selectedReview}
+          setSelectedReview={setSelectedReview}
         />
       )}
     </div>

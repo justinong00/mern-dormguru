@@ -96,3 +96,22 @@ export const UpdateReview = async (id, data) => {
     throw error;
   }
 };
+
+/** Sends a DELETE request to the "/api/reviews/:id" endpoint on the server to delete a review by its ID.
+ *
+ * @param {string} id - The ID of the review to delete.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const DeleteReview = async (id, data) => {
+  try {
+    const response = await apiRequest({
+      method: "DELETE",
+      endPoint: `/api/reviews/${id}`,
+      payload: data,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

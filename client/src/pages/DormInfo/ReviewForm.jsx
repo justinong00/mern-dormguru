@@ -4,12 +4,8 @@ import { useDispatch } from "react-redux";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { AddReview, UpdateReview } from "../../apis/reviews.js";
 import { roomOptions } from "./../../helpers/roomOptions";
-import {
-  customValidateFromDate,
-  customValidateToDate,
-  validationRules,
-} from "../../helpers/index.js";
-import moment from "moment";
+import { validateDates, validationRules } from "../../helpers/index.js";
+import dayjs from "dayjs";
 
 function ReviewForm({
   dorm,
@@ -44,9 +40,9 @@ function ReviewForm({
           dorm: dorm._id,
         });
       }
+      reloadData();
       message.success(response.message);
       setShowReviewForm(false);
-      reloadData();
       dispatch(setLoading(false));
     } catch (error) {
       dispatch(setLoading(false));
@@ -59,6 +55,7 @@ function ReviewForm({
     if (selectedReview) {
       // Set the initial rating value from the selected review
       setRating(selectedReview.rating);
+      console.log(dorm);
     }
   }, [selectedReview]);
 
@@ -81,10 +78,10 @@ function ReviewForm({
         form={form}
         initialValues={{
           ...selectedReview,
-          // Convert fromDate and toDate to moment objects if they exist in the selected review. This is necessary for preloading the Antd DatePicker components with the correct values in the form
-          fromDate: selectedReview?.fromDate ? moment(selectedReview.fromDate) : null,
-          toDate: selectedReview?.toDate ? moment(selectedReview.toDate) : null,
-          rating: rating, // Rating is initialized from the state
+          // Convert fromDate and toDate to dayjs objects if they exist in the selected review. This is necessary for preloading the Antd DatePicker components with the correct values in the form
+          fromDate: selectedReview?.fromDate ? dayjs(selectedReview.fromDate) : null,
+          toDate: selectedReview?.toDate ? dayjs(selectedReview.toDate) : null,
+          rating: selectedReview?.rating, // Rating is initialized from the state
         }}
       >
         <Row gutter={16}>
@@ -117,13 +114,18 @@ function ReviewForm({
                   message: "Required",
                 },
                 {
-                  validator: (_, value) =>
-                    // Custom validator for establishedYear in index.js in helper folder
-                    customValidateFromDate(dorm.establishedYear, value),
+                  validator: (_, value) => validateDates("fromDate", value, form, dorm),
                 },
               ]}
             >
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker
+                format="YYYY-MM-DD"
+                onChange={(date) => {
+                  form.setFieldsValue({ fromDate: date });
+                  // Trigger validation of the toDate field when the fromDate field is changed
+                  form.validateFields(["toDate"]);
+                }}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
@@ -136,13 +138,18 @@ function ReviewForm({
                   message: "Required",
                 },
                 {
-                  validator: (_, value) =>
-                    // Custom validator for establishedYear in index.js in helper folder
-                    customValidateToDate(value),
+                  validator: (_, value) => validateDates("toDate", value, form, dorm),
                 },
               ]}
             >
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker
+                format="YYYY-MM-DD"
+                onChange={(date) => {
+                  form.setFieldsValue({ toDate: date });
+                  // Trigger validation of the fromDate field when the toDate field is changed
+                  form.validateFields(["fromDate"]);
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
