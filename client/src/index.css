@@ -130,6 +130,10 @@ table {
   .ant-table-cell i {
     font-size: 10px !important;
   }
+
+  .ant-table-cell .ant-rate {
+    font-size: 13px;
+  }
 }
 
 /* Extra small devices (phones, 640px and down) */
@@ -155,6 +159,10 @@ table {
   .ant-table-cell-fix-right {
     position: static !important;
   }
+
+  .ant-table-cell .ant-rate {
+    font-size: 14px;
+  }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
@@ -165,8 +173,8 @@ table {
     font-size: 12px !important;
   }
 
-  .review-card {
-    display: none;
+  .ant-table-cell .ant-rate {
+    font-size: 15px;
   }
 }
 
@@ -177,6 +185,10 @@ table {
   .ant-table-cell i {
     font-size: 13px !important;
   }
+
+  .ant-table-cell .ant-rate {
+    font-size: 16px;
+  }
 }
 
 /* Extra large devices (large laptops and desktops, 1280px and up) */
@@ -185,6 +197,10 @@ table {
   .ant-table-cell,
   .ant-table-cell i {
     font-size: 14px !important;
+  }
+
+  .ant-table-cell .ant-rate {
+    font-size: 17px;
   }
 }
 

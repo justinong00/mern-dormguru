@@ -7,6 +7,7 @@ import { formatDateToYYYY_MM_DD } from "../../helpers/index.js";
 import ReviewForm from "./../DormInfo/ReviewForm";
 import { DeleteReview } from "./../../apis/reviews";
 import { useNavigate } from "react-router-dom";
+import { roomOptions } from "../../helpers/roomOptions.js";
 
 function Reviews() {
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
@@ -75,19 +76,19 @@ function Reviews() {
       title: "Rating",
       dataIndex: "rating",
       key: "rating",
-      width: 80,
+      width: 100,
       render: (_, record) => <Rate disabled value={record.rating} />,
     },
     {
       title: "Room/Rooms Stayed",
       dataIndex: "roomsStayed",
       key: "roomsStayed",
-      width: 80,
+      width: 120,
       render: (_, record) => (
         <div>
           {record.roomsStayed.map((room, index) => (
             <div key={room}>
-              {room}
+              {roomOptions.find((roomOption) => roomOption.value === room)?.label}
               {index < record.roomsStayed.length - 1 ? ", " : ""}
             </div>
           ))}
@@ -95,28 +96,29 @@ function Reviews() {
       ),
     },
     {
-      title: "From Date",
-      dataIndex: "fromDate",
-      key: "fromDate",
-      width: 50,
-      render: (_, record) => formatDateToYYYY_MM_DD(record.fromDate),
-    },
-    {
-      title: "To Date",
-      dataIndex: "toDate",
-      key: "toDate",
-      width: 50,
-      render: (_, record) => formatDateToYYYY_MM_DD(record.toDate),
+      title: "Stay Duration",
+      key: "stayDuration",
+      width: 100,
+      render: (_, record) => (
+        <div>
+          <div>
+            <span className="font-semibold">From:</span> {formatDateToYYYY_MM_DD(record.fromDate)}
+          </div>
+          <div>
+            <span className="font-semibold">To:</span> {formatDateToYYYY_MM_DD(record.toDate)}
+          </div>
+        </div>
+      ),
     },
     {
       title: "Review",
       dataIndex: "review",
       key: "review",
-      width: 200,
+      width: 150,
       render: (_, record) => (
         <div>
-          <div style={{ fontWeight: "bold" }}>{record.title}</div>
-          <div>{record.comment}</div>
+          <div className="font-semibold">{record.title}</div>
+          <div className="italic">{record.comment}</div>
         </div>
       ),
     },
@@ -124,7 +126,7 @@ function Reviews() {
       title: "Posted Date",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: 50,
+      width: 80,
       render: (_, record) => formatDateToYYYY_MM_DD(record.createdAt),
     },
     {
@@ -183,7 +185,7 @@ function Reviews() {
             key={review._id}
             className="my-8 cursor-pointer overflow-hidden rounded-xl bg-white shadow-md shadow-gray-300 transition hover:scale-105 hover:shadow-2xl"
             onClick={() => {
-              navigate(`/dorm/${record.dorm._id}#${record._id}`);
+              navigate(`/dorm/${review.dorm._id}#${review._id}`);
             }}
           >
             {/* Image Container */}
@@ -209,7 +211,7 @@ function Reviews() {
                 <div>
                   {review.roomsStayed.map((room, index) => (
                     <div key={room}>
-                      {room}
+                      {roomOptions.find((roomOption) => roomOption.value === room)?.label}
                       {index < review.roomsStayed.length - 1 ? ", " : ""}
                     </div>
                   ))}
