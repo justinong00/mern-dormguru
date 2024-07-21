@@ -76,22 +76,27 @@ router.put('/update-user', authMiddleware, async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user) throw new Error('User not found');
 
-    const oldPassword = req.body.oldPassword;
-    if (oldPassword) {
+    // Check if old password is provided and if it matches the user's stored password
+    if (req.body.oldPassword) {
       const validPassword = await brcypt.compare(
-        oldPassword, // user input
+        req.body.oldPassword, // user input
         user.password // hashed password from database
       );
       if (!validPassword) throw new Error('The old password is incorrect');
     }
 
-    const newPassword = req.body.newPassword;
-    if (newPassword) {
+    // If new password is provided, hash it and update the user's password
+    if (req.body.newPassword) {
       const salt = await brcypt.genSalt(10);
-      req.body.password = await brcypt.hash(newPassword, salt);
+      req.body.password = await brcypt.hash(req.body.newPassword, salt);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(req.userId, req.body, { new: true }).select('-password');
+    // Prepare the updateData, excluding oldPassword and newPassword (so only req.body.name, req.body.email, and req.body.password are in updateData)
+    const updateData = { ...req.body };
+    delete updateData.oldPassword;
+    delete updateData.newPassword;
+
+    const updatedUser = await User.findByIdAndUpdate(req.userId, updateData, { new: true }).select('-password');
     res
       .status(200)
       .json({ message: 'User updated successfully', success: true, data: updatedUser });
