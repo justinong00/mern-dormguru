@@ -6,6 +6,7 @@ import { GetAllReviewsForUser } from "../../apis/reviews.js";
 import { formatDateToYYYY_MM_DD } from "../../helpers/index.js";
 import ReviewForm from "./../DormInfo/ReviewForm";
 import { DeleteReview } from "./../../apis/reviews";
+import { useNavigate } from "react-router-dom";
 
 function Reviews() {
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
@@ -13,6 +14,7 @@ function Reviews() {
   const [selectedReview, setSelectedReview] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const fetchAllReviewsForUser = async () => {
     try {
@@ -162,6 +164,16 @@ function Reviews() {
         rowKey={(record) => record._id}
         className="reviews-table mt-5"
         scroll={{ x: 1300, scrollToFirstRowOnChange: true }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              navigate(`/dorm/${record.dorm._id}#${record._id}`);
+            },
+            style: {
+              cursor: "pointer",
+            },
+          };
+        }}
       />
 
       {/* Mobile view */}
@@ -171,8 +183,7 @@ function Reviews() {
             key={review._id}
             className="my-8 cursor-pointer overflow-hidden rounded-xl bg-white shadow-md shadow-gray-300 transition hover:scale-105 hover:shadow-2xl"
             onClick={() => {
-              setSelectedReview(review);
-              setShowReviewForm(true);
+              navigate(`/dorm/${record.dorm._id}#${record._id}`);
             }}
           >
             {/* Image Container */}
