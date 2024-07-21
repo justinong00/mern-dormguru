@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs } from "antd";
 import Reviews from "./Reviews.jsx";
+import UserDetails from "./UserDetails.jsx";
 
 function Profile() {
   const tabItems = [
@@ -12,7 +13,7 @@ function Profile() {
     {
       key: "2",
       label: "Profile",
-      children: "Profile",
+      children: <UserDetails />,
     },
   ];
 

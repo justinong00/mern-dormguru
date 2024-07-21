@@ -69,4 +69,35 @@ router.get('/get-current-user', authMiddleware , async (req, res) => {
   }
 });
 
+// Update User
+router.put('/update-user', authMiddleware, async (req, res) => {
+  try {
+    // req.userId is from the authMiddleware function because we rely on auth token to identify the user and we did not pass the id as params in client side
+    const user = await User.findById(req.userId);
+    if (!user) throw new Error('User not found');
+
+    const oldPassword = req.body.oldPassword;
+    if (oldPassword) {
+      const validPassword = await brcypt.compare(
+        oldPassword, // user input
+        user.password // hashed password from database
+      );
+      if (!validPassword) throw new Error('The old password is incorrect');
+    }
+
+    const newPassword = req.body.newPassword;
+    if (newPassword) {
+      const salt = await brcypt.genSalt(10);
+      req.body.password = await brcypt.hash(newPassword, salt);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(req.userId, req.body, { new: true }).select('-password');
+    res
+      .status(200)
+      .json({ message: 'User updated successfully', success: true, data: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+});
+
 export default router;
