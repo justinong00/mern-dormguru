@@ -5,7 +5,7 @@ import { Button, message, Rate } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
-import { GetAllReviews } from "../../apis/reviews.js";
+import { GetAllReviewsForDorm } from "../../apis/reviews.js";
 import { roundToHalf } from "./../../helpers/roundToHalf";
 import {
   getLastMonthAverageRating,
@@ -72,7 +72,7 @@ function DormInfo() {
       // reducing overall waiting time and improving performance
       const [dormResponse, reviewsResponse] = await Promise.all([
         GetDormById(id),
-        GetAllReviews(id),
+        GetAllReviewsForDorm(id),
       ]);
       setDorm(dormResponse.data);
       setReviews(reviewsResponse.data);
@@ -89,6 +89,19 @@ function DormInfo() {
   useEffect(() => {
     fetchSpecificDorm();
   }, []);
+
+  // Scroll to the specific review when there is a hash in the URL (for when user clicks on a review in Profile)
+  useEffect(() => {
+    const hash = window.location.hash; // Gets the hash from the URL
+    console.log(hash);
+    if (hash) {
+      const reviewId = hash.replace("#", ""); // Extracts the review ID from the hash
+      const reviewElement = document.getElementById(reviewId); // Finds the review element in the DOM
+      if (reviewElement) {
+        reviewElement.scrollIntoView({ behavior: "smooth" }); // Scrolls to the review element if found
+      }
+    }
+  }, [visibleReviews]); // When the component first mounts, visibleReviews might be empty or not fully populated yet. By including visibleReviews in the dependency array, you ensure that the effect runs after the reviews have been fetched and rendered. Without visibleReviews as a dependency, the useEffect might run before the review elements are present in the DOM. This would result in document.getElementById(reviewId) returning null because the elements are not yet created.
 
   return (
     dorm && (
@@ -436,6 +449,7 @@ function DormInfo() {
         {visibleReviews.map((review) => (
           <div
             key={review?._id}
+            id={review?._id} // Ensure each review has the correct ID for scrolling
             className="border-b border-gray-100 pb-8 max-xl:mx-auto max-xl:max-w-2xl"
           >
             <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">

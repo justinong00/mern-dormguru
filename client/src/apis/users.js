@@ -1,4 +1,4 @@
-import apiRequest from './index.js';
+import apiRequest from "./index.js";
 
 /** @fileoverview
  * @fileoverview Utility module for making API requests related to user management.
@@ -15,8 +15,8 @@ import apiRequest from './index.js';
 export const RegisterUser = async (data) => {
   try {
     const response = await apiRequest({
-      method: 'POST',
-      endPoint: '/api/user/register',
+      method: "POST",
+      endPoint: "/api/user/register",
       payload: data,
     });
     return response;
@@ -33,8 +33,8 @@ export const RegisterUser = async (data) => {
 export const LoginUser = async (data) => {
   try {
     const response = await apiRequest({
-      method: 'POST',
-      endPoint: '/api/user/login',
+      method: "POST",
+      endPoint: "/api/user/login",
       payload: data,
     });
     return response;
@@ -51,8 +51,28 @@ export const LoginUser = async (data) => {
 export const GetCurrentUser = async () => {
   try {
     const response = await apiRequest({
-      method: 'GET',
-      endPoint: '/api/user/get-current-user',
+      method: "GET",
+      endPoint: "/api/user/get-current-user",
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/** Sends a PUT request to update a user by its ID.
+ *
+ * @param {Object} data - The data to be sent in the request body.
+ *                       The data should have an _id property representing the user's ID.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const UpdateUser = async (data) => {
+  try {
+    const response = await apiRequest({
+      method: "PUT",
+      endPoint: `/api/user/update-user`,
+      payload: data,
     });
     return response;
   } catch (error) {

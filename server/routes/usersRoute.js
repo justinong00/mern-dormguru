@@ -69,4 +69,40 @@ router.get('/get-current-user', authMiddleware , async (req, res) => {
   }
 });
 
+// Update User
+router.put('/update-user', authMiddleware, async (req, res) => {
+  try {
+    // req.userId is from the authMiddleware function because we rely on auth token to identify the user and we did not pass the id as params in client side
+    const user = await User.findById(req.userId);
+    if (!user) throw new Error('User not found');
+
+    // Check if old password is provided and if it matches the user's stored password
+    if (req.body.oldPassword) {
+      const validPassword = await brcypt.compare(
+        req.body.oldPassword, // user input
+        user.password // hashed password from database
+      );
+      if (!validPassword) throw new Error('The old password is incorrect');
+    }
+
+    // If new password is provided, hash it and update the user's password
+    if (req.body.newPassword) {
+      const salt = await brcypt.genSalt(10);
+      req.body.password = await brcypt.hash(req.body.newPassword, salt);
+    }
+
+    // Prepare the updateData, excluding oldPassword and newPassword (so only req.body.name, req.body.email, and req.body.password are in updateData)
+    const updateData = { ...req.body };
+    delete updateData.oldPassword;
+    delete updateData.newPassword;
+
+    const updatedUser = await User.findByIdAndUpdate(req.userId, updateData, { new: true }).select('-password');
+    res
+      .status(200)
+      .json({ message: 'User updated successfully', success: true, data: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+});
+
 export default router;

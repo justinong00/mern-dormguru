@@ -29,15 +29,89 @@ export const AddReview = async (data) => {
   }
 };
 
-
-export const GetAllReviews = async (id) => {
+/** Sends a GET request to the "/api/reviews/:id" endpoint on the server to retrieve all reviews for a specific dorm.
+ *
+ * @param {string} id - The ID of the dorm to retrieve reviews for.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const GetAllReviewsForDorm = async (id) => {
   try {
+    // Send a GET request to the "/api/reviews/:id" endpoint on the server to retrieve all reviews for a specific dorm.
     const response = await apiRequest({
       method: "GET",
+      endPoint: `/api/reviews/get-reviews-by-dorm/${id}`,
+    });
+
+    // Return the response data from the server.
+    return response;
+  } catch (error) {
+    // If there is an error during the process, throw the error.
+    throw error;
+  }
+};
+
+/** Sends a GET request to the "/api/reviews/get-reviews-by-user/:id" endpoint on the server to retrieve all reviews for a specific user.
+ *
+ * @param {string} id - The ID of the user to retrieve reviews for.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const GetAllReviewsForUser = async (id) => {
+  try {
+    // Send a GET request to the "/api/reviews/get-reviews-by-user/:id" endpoint on the server to retrieve all reviews for a specific user.
+    const response = await apiRequest({
+      method: "GET",
+      endPoint: `/api/reviews/get-reviews-by-user/${id}`,
+    });
+
+    // Return the response data from the server.
+    return response;
+  } catch (error) {
+    // If there is an error during the process, throw the error.
+    throw error;
+  }
+};
+
+/** Sends a PUT request to the "/api/reviews/:id" endpoint on the server to update a review by its ID.
+ *
+ * @param {string} id - The ID of the review to update.
+ * @param {Object} data - The data to be sent in the request body.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const UpdateReview = async (id, data) => {
+  try {
+    // Send a PUT request to the "/api/reviews/:id" endpoint on the server to update a review by its ID.
+    const response = await apiRequest({
+      method: "PUT",
       endPoint: `/api/reviews/${id}`,
+      payload: data,
+    });
+
+    // Return the response data from the server.
+    return response;
+  } catch (error) {
+    // If there is an error during the process, throw the error.
+    throw error;
+  }
+};
+
+/** Sends a DELETE request to the "/api/reviews/:id" endpoint on the server to delete a review by its ID.
+ *
+ * @param {string} id - The ID of the review to delete.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const DeleteReview = async (id, data) => {
+  try {
+    const response = await apiRequest({
+      method: "DELETE",
+      endPoint: `/api/reviews/${id}`,
+      payload: data,
     });
     return response;
   } catch (error) {
     throw error;
   }
-}
+};
