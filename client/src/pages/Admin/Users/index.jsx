@@ -55,11 +55,16 @@ function Users() {
     {
       title: "Created At",
       dataIndex: "createdAt",
+      key: "createdAt",
+      width: 120,
       render: (text) => formatDateToYYYY_MM_DD(text),
     },
     {
       title: "Is Admin",
       dataIndex: "isAdmin",
+      key: "isAdmin",
+      fixed: "right",
+      width: 100,
       render: (text, record) => (
         <Switch
           checked={text}
@@ -70,6 +75,9 @@ function Users() {
     {
       title: "Is Active",
       dataIndex: "isActive",
+      key: "isActive",
+      fixed: "right",
+      width: 100,
       render: (text, record) => (
         <Switch
           checked={text}
