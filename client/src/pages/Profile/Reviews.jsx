@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { message, Rate, Table } from "antd";
+import { message, Rate, Table, Tooltip } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetAllReviewsForUser } from "../../apis/reviews.js";
 import { formatDateToYYYY_MM_DD } from "../../helpers/index.js";
@@ -138,19 +138,27 @@ function Reviews() {
       render: (_, record) => {
         return (
           <div className="flex gap-2">
-            <i
-              className="ri-pencil-line"
-              onClick={() => {
-                setSelectedReview(record);
-                setShowReviewForm(true);
-              }}
-            ></i>
-            <i
-              className="ri-delete-bin-line"
-              onClick={() => {
-                deleteReview(record._id, record.dorm._id);
-              }}
-            ></i>
+            <Tooltip title="Edit Review">
+              <i
+                className="ri-pencil-line"
+                onClick={(e) => {
+                  // Stop event bubbling to the parent card to prevent it from triggering the onClick event
+                  e.stopPropagation();
+                  setSelectedReview(record);
+                  setShowReviewForm(true);
+                }}
+              ></i>
+            </Tooltip>
+            <Tooltip title="Delete Review">
+              <i
+                className="ri-delete-bin-line"
+                onClick={(e) => {
+                  // Stop event bubbling to the parent card to prevent it from triggering the onClick event
+                  e.stopPropagation();
+                  deleteReview(record._id, record.dorm._id);
+                }}
+              ></i>
+            </Tooltip>
           </div>
         );
       },
@@ -245,22 +253,26 @@ function Reviews() {
 
               {/* Action Icons */}
               <div className="mt-2 flex gap-2">
-                <i
-                  className="ri-pencil-line"
-                  onClick={(e) => {
-                    // Stop event bubbling to the parent card to prevent it from triggering the onClick event
-                    e.stopPropagation();
-                    setSelectedReview(review);
-                    setShowReviewForm(true);
-                  }}
-                ></i>
-                <i
-                  className="ri-delete-bin-line"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteReview(review._id, review.dorm._id);
-                  }}
-                ></i>
+                <Tooltip title="Edit Review">
+                  <i
+                    className="ri-pencil-line"
+                    onClick={(e) => {
+                      // Stop event bubbling to the parent card to prevent it from triggering the onClick event
+                      e.stopPropagation();
+                      setSelectedReview(review);
+                      setShowReviewForm(true);
+                    }}
+                  ></i>
+                </Tooltip>
+                <Tooltip title="Delete Review">
+                  <i
+                    className="ri-delete-bin-line"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteReview(review._id, review.dorm._id);
+                    }}
+                  ></i>
+                </Tooltip>
               </div>
             </div>
           </div>

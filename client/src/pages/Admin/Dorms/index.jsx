@@ -1,4 +1,4 @@
-import { Button, Table, message } from "antd";
+import { Button, Table, Tooltip, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
@@ -127,15 +127,19 @@ function Dorms() {
       width: 60,
       render: (_, record) => (
         <div className="flex gap-2">
-          <i className="ri-delete-bin-line" onClick={() => deleteDorm(record._id)}></i>
-          <i
-            className="ri-pencil-line"
-            onClick={() => {
-              setSelectedDorm(record);
-              setShowDormForm(true);
-              // navigate(`/admin/dorms/edit/${record._id}`);
-            }}
-          ></i>
+          <Tooltip title="Edit Dorm">
+            <i
+              className="ri-pencil-line"
+              onClick={() => {
+                setSelectedDorm(record);
+                setShowDormForm(true);
+                // navigate(`/admin/dorms/edit/${record._id}`);
+              }}
+            ></i>
+          </Tooltip>
+          <Tooltip title="Delete Dorm">
+            <i className="ri-delete-bin-line" onClick={() => deleteDorm(record._id)}></i>
+          </Tooltip>
         </div>
       ),
     },

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, message } from "antd";
+import { Button, Table, Tooltip, message } from "antd";
 import UniForm from "./UniForm.jsx";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
@@ -47,7 +47,7 @@ function Unis() {
       width: 100,
       render: (_, record) => {
         return (
-          <img src={record?.logoPic || ""} alt="logoPic" className="w-20 h-20 object-contain " />
+          <img src={record?.logoPic || ""} alt="logoPic" className="h-20 w-20 object-contain" />
         );
       },
     },
@@ -99,15 +99,19 @@ function Unis() {
       width: 60,
       render: (_, record) => {
         return (
-          <div className="flex gap-2 ">
-            <i className="ri-delete-bin-line" onClick={() => deleteUni(record._id)}></i>
-            <i
-              className="ri-pencil-line"
-              onClick={() => {
-                setSelectedUni(record); // Set the selected university for editing
-                setShowUniForm(true); // Show the UniForm
-              }}
-            ></i>
+          <div className="flex gap-2">
+            <Tooltip title="Edit University">
+              <i
+                className="ri-pencil-line"
+                onClick={() => {
+                  setSelectedUni(record); // Set the selected university for editing
+                  setShowUniForm(true); // Show the UniForm
+                }}
+              ></i>
+            </Tooltip>
+            <Tooltip title="Delete University">
+              <i className="ri-delete-bin-line" onClick={() => deleteUni(record._id)}></i>
+            </Tooltip>
           </div>
         );
       },
