@@ -5,10 +5,12 @@ import { Button, message, Rate } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetAllDorms } from "../../apis/dorms.js";
 import { roundToHalf } from "../../helpers/roundToHalf.js";
+import Filters from "../../components/Filters.jsx";
 
 function Home() {
   const [dorms, setDorms] = useState([]);
   const { user } = useSelector((state) => state.users);
+  const [filters, setFilters] = useState({ search: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -31,18 +33,19 @@ function Home() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-gray-600 cursor-pointer">
+      <Filters filters={filters} setFilters={setFilters} />
+      <div className="grid cursor-pointer grid-cols-1 gap-10 text-gray-600 sm:grid-cols-2 lg:grid-cols-4">
         {dorms.map((dorm) => (
           <div
             key={dorm._id}
-            className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-transform ease-in-out transform hover:scale-105"
+            className="transform rounded-lg bg-white p-4 shadow-md transition-transform ease-in-out hover:scale-105 hover:shadow-lg"
             onClick={() => navigate(`/dorm/${dorm._id}`)}
             //name.replace(/\s+/g, '_').toLowerCase()}
           >
             <img
               src={dorm.coverPhotos}
               alt="dorm-image"
-              className="w-full h-48 rounded-sm object-contain"
+              className="h-48 w-full rounded-sm object-contain"
             ></img>
 
             <h2 className="text-lg font-semibold text-gray-600">{dorm.name}</h2>
