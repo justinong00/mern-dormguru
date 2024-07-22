@@ -35,6 +35,9 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) throw new Error('User with this email does not exist');
 
+    // Check if user is active
+    if (!user.isActive) throw new Error('User is not active');
+
     // Check if password is correct
     const validPassword = await brcypt.compare(
       req.body.password, // user input
@@ -72,8 +75,7 @@ router.get('/get-current-user', authMiddleware , async (req, res) => {
 // Update User
 router.put('/update-user', authMiddleware, async (req, res) => {
   try {
-    // req.userId is from the authMiddleware function because we rely on auth token to identify the user and we did not pass the id as params in client side
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.body.id);
     if (!user) throw new Error('User not found');
 
     // Check if old password is provided and if it matches the user's stored password
@@ -96,12 +98,22 @@ router.put('/update-user', authMiddleware, async (req, res) => {
     delete updateData.oldPassword;
     delete updateData.newPassword;
 
-    const updatedUser = await User.findByIdAndUpdate(req.userId, updateData, { new: true }).select('-password');
+    const updatedUser = await User.findByIdAndUpdate(req.body.id, updateData, { new: true }).select('-password');
     res
       .status(200)
       .json({ message: 'User updated successfully', success: true, data: updatedUser });
   } catch (error) {
     res.status(500).json({ message: error.message, success: false });
+  }
+});
+
+// Get All Users
+router.get('/get-all-users', authMiddleware, async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.status(200).json({ message: 'Users fetched successfully', success: true, data: users });
+  } catch (err) {
+    res.status(500).json({ message: err.message, success: false });
   }
 });
 

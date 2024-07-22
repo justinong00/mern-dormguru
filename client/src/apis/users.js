@@ -79,3 +79,20 @@ export const UpdateUser = async (data) => {
     throw error;
   }
 };
+
+/** Sends a GET request to the "/api/user/get-all-users" endpoint to fetch all users from the server.
+ *
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const GetAllUsers = async () => {
+  try {
+    const response = await apiRequest({
+      method: "GET",
+      endPoint: `/api/user/get-all-users`, // Endpoint to fetch all users
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -48,6 +48,10 @@ input {
   margin-bottom: 0px !important;
 }
 
+.ant-switch {
+  height: 22px !important;
+}
+
 a {
   color: #303030;
   text-decoration: underline !important;

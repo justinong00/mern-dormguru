@@ -26,8 +26,7 @@ function UserDetails() {
         updateFields.newPassword = newPassword;
       }
 
-      // No need to pass user._id, as we will get that info from authMiddleware in the backend
-      const response = await UpdateUser(updateFields);
+      const response = await UpdateUser({ ...updateFields, id: user._id });
       message.success(response.message);
       dispatch(setUsers(response.data));
       // Reset the password fields
@@ -67,7 +66,7 @@ function UserDetails() {
         {updatePassword && (
           <>
             {/* Old Password */}
-            <Form.Item label="Old Password" name="oldPassword" rules={validationRules["password"]}>
+            <Form.Item label="Old Password" name="oldPassword">
               <Input.Password
                 placeholder="Enter your old password"
                 autoComplete=""
