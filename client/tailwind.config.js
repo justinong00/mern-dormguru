@@ -35,7 +35,8 @@ export default {
         "11/12": "91.666667%",
       },
       screens: {
-        xs: "400px",
+        xxs: "400px",
+        xs: "500px",
       },
     },
   },

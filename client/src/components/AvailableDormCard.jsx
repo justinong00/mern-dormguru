@@ -41,7 +41,7 @@ function AvailableDormCard({ dorm }) {
         </div>
         {/* Rating and number of reviews */}
         <div className="flex flex-grow flex-col justify-between gap-4">
-          <div className="xs:flex-row flex flex-col-reverse justify-between gap-2">
+          <div className="xxs:flex-row flex flex-col-reverse justify-between gap-2">
             {/* Rating */}
             <Rate
               disabled
