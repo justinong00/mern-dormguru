@@ -21,6 +21,27 @@ export const validationRules = {
       message: "Name must be at least 3 characters",
     },
   ],
+  email: [
+    {
+      required: true,
+      message: "Required",
+    },
+    {
+      type: "email",
+      message: "Please enter a valid email",
+    },
+  ],
+  password: [
+    {
+      required: true,
+      message: "Password is required",
+    },
+    {
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&]{8,15}$/,
+      message:
+        "Password must be between 8-15 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character(@.#$!%*?&^)",
+    },
+  ],
   bio: [
     {
       required: true,

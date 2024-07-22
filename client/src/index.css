@@ -26,6 +26,12 @@ input {
   border-radius: 2px !important;
 }
 
+.ant-input-password {
+  border-radius: 2px !important;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 .ant-select-selector,
 .ant-input-textarea-affix-wrapper {
   border-radius: 2px !important;
