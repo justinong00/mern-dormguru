@@ -8,80 +8,45 @@ import { roundToHalf } from "../../helpers/roundToHalf.js";
 import Filters from "../../components/Filters.jsx";
 
 function Home() {
-  const [dorms, setDorms] = useState([]);
-  const { user } = useSelector((state) => state.users);
-  const [filters, setFilters] = useState({ search: "" });
-  const dispatch = useDispatch();
+  const [filters, setFilters] = useState({});
   const navigate = useNavigate();
 
-  const fetchDorms = async () => {
-    try {
-      dispatch(setLoading(true)); // Show loading indicator
-      const response = await GetAllDorms();
-      setDorms(response.data); // Update state with fetched dorms
-      dispatch(setLoading(false)); // Hide loading indicator
-    } catch (error) {
-      dispatch(setLoading(false)); // Hide loading indicator
-      message.error(error.message); // Show error message
-    }
-  };
-
-  // Fetch dorms when the component mounts
-  useEffect(() => {
-    fetchDorms();
-  }, []);
-
   return (
-    <div>
-      <Filters filters={filters} setFilters={setFilters} />
-      <div className="grid cursor-pointer grid-cols-1 gap-10 text-gray-600 sm:grid-cols-2 lg:grid-cols-4">
-        {dorms.map((dorm) => (
-          <div
-            key={dorm._id}
-            className="transform rounded-lg bg-white p-4 shadow-md transition-transform ease-in-out hover:scale-105 hover:shadow-lg"
-            onClick={() => navigate(`/dorm/${dorm._id}`)}
-            //name.replace(/\s+/g, '_').toLowerCase()}
-          >
-            <img
-              src={dorm.coverPhotos}
-              alt="dorm-image"
-              className="h-48 w-full rounded-sm object-contain"
-            ></img>
-
-            <h2 className="text-lg font-semibold text-gray-600">{dorm.name}</h2>
-
-            <hr />
-
-            <div className="flex justify-between text-sm">
-              <span>City</span>
-              <span>{dorm.city}</span>
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span>State:</span>
-              <span>{dorm.state}</span>
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span>Rating:</span>
-              <Rate disabled allowHalf defaultValue={roundToHalf(dorm?.averageRating || 0)} />
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span>Score:</span>
-              <span>{dorm?.averageRating}</span>
-            </div>
-          </div>
-        ))}
+    <div className="flex h-screen flex-col bg-gray-100 md:flex-row">
+      {/* Image Container */}
+      <div className="relative hidden flex-1 items-center justify-end bg-gray-200 md:flex">
+        <img
+          src="https://img.freepik.com/premium-photo/guidance-counselor-s-office-where-students-receive-support-guidance_741910-47754.jpg"
+          alt="Dormitory background"
+          className="absolute right-0 h-full w-full object-cover"
+        />
       </div>
-      <div className="flex justify-end">
-        <Button
-          onClick={() => {
-            navigate("/admin");
-          }}
-        >
-          Go To Admin
-        </Button>
+      {/* Text Container */}
+      <div className="flex flex-1 flex-col justify-center px-8 lg:px-16 lg:py-24">
+        <h1 className="mb-6 text-4xl font-bold text-gray-800 lg:text-5xl">
+          Find Your Ideal Dormitory
+        </h1>
+        <p className="mb-8 text-lg text-gray-600 lg:text-xl">
+          Discover and book the perfect dormitory that meets all your needs and preferences. Our
+          platform offers a variety of options to help you find a place you'll love.
+        </p>
+        <div className="mb-8 hidden space-x-6 lg:flex">
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <h1 className="text-3xl font-semibold text-gray-800">3+</h1>
+            <h2 className="text-center text-lg text-gray-600">Months of Experience</h2>
+          </div>
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <h1 className="text-3xl font-semibold text-gray-800">20+</h1>
+            <h2 className="text-center text-lg text-gray-600">Colleges & Universities</h2>
+          </div>
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <h1 className="text-3xl font-semibold text-gray-800">20+</h1>
+            <h2 className="text-center text-lg text-gray-600">Dormitories Available</h2>
+          </div>
+        </div>
+        <div className="mb-8">
+          <Filters filters={filters} setFilters={setFilters} />
+        </div>
       </div>
     </div>
   );
