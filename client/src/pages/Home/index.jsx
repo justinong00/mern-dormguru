@@ -34,8 +34,8 @@ function Home() {
         />
       </div>
       {/* Text Container */}
-      <div className="xs:justify-center xs:p-8 flex flex-1 flex-col justify-start px-8 py-12 md:justify-center lg:px-16">
-        <h1 className="mb-6 text-3xl font-bold text-gray-800 md:text-4xl lg:text-5xl">
+      <div className="xs:justify-center xs:p-8 flex flex-1 flex-col justify-start px-8 py-12">
+        <h1 className="mb-6 text-3xl font-bold text-gray-800 md:text-4xl xl:text-5xl">
           Explore University Dorm Reviews
         </h1>
         <p className="xxs:text-base mb-8 text-sm text-gray-600 md:text-lg lg:text-xl">
@@ -46,7 +46,7 @@ function Home() {
         <div className="mb-8">
           <Filters filters={filters} setFilters={setFilters} />
         </div>
-        <div className="3xl:justify-start xs:flex mb-8 hidden justify-between space-x-6">
+        <div className="3xl:justify-start xs:flex hidden justify-between space-x-6">
           <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
             <FaCheckCircle className="mb-2 text-xl text-gray-800 md:text-2xl lg:text-3xl" />
             <h1 className="text-xl font-semibold text-gray-800 md:text-2xl lg:text-3xl">
