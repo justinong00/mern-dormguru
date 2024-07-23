@@ -65,7 +65,7 @@ function Filters({ filters, setFilters }) {
       {/* QuickSearchFilterResults div */}
       {filters.search && !hideResults && results?.dorms?.length > 0 && (
         // Drop down results container
-        <div className="absolute z-50 h-64 w-full overflow-y-auto border border-solid border-gray-300 bg-white shadow-md">
+        <div className="absolute z-50 max-h-64 w-full overflow-y-auto border border-solid border-gray-300 bg-white shadow-md">
           {results?.dorms?.length > 0 && (
             // List of results
             <ul>
