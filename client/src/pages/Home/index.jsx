@@ -3,6 +3,7 @@ import Filters from "../../components/Filters.jsx";
 import { FaCheckCircle, FaUniversity, FaBed } from "react-icons/fa";
 import { getHomeStats } from "../../apis/homeStats.js";
 import { message } from "antd";
+import homePageBanner from "../../assets/dorm-guru-home-page-banner.png";
 
 function Home() {
   const [filters, setFilters] = useState({});
@@ -27,8 +28,8 @@ function Home() {
       {/* Image Container */}
       <div className="relative hidden flex-1 items-center justify-end bg-gray-200 md:flex">
         <img
-          src="https://img.freepik.com/premium-photo/guidance-counselor-s-office-where-students-receive-support-guidance_741910-47754.jpg"
-          alt="Dormitory background"
+          src={homePageBanner}
+          alt="Home Page Banner"
           className="absolute h-full w-full object-cover"
         />
       </div>
