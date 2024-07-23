@@ -1,84 +1,80 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { Button, message, Rate } from "antd";
-import { setLoading } from "../../redux/loadersSlice.js";
-import { GetAllDorms } from "../../apis/dorms.js";
-import { roundToHalf } from "../../helpers/roundToHalf.js";
+import Filters from "../../components/Filters.jsx";
+import { FaCheckCircle, FaUniversity, FaBed } from "react-icons/fa";
+import { getHomeStats } from "../../apis/homeStats.js";
+import { message } from "antd";
+import homePageBanner from "../../assets/dorm-guru-home-page-banner.png";
 
 function Home() {
-  const [dorms, setDorms] = useState([]);
-  const { user } = useSelector((state) => state.users);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [filters, setFilters] = useState({});
+  const [stats, setStats] = useState({});
 
-  const fetchDorms = async () => {
+  // Fetch home stats from backend
+  const fetchHomeStats = async () => {
     try {
-      dispatch(setLoading(true)); // Show loading indicator
-      const response = await GetAllDorms();
-      setDorms(response.data); // Update state with fetched dorms
-      dispatch(setLoading(false)); // Hide loading indicator
+      const response = await getHomeStats();
+      setStats(response.data);
     } catch (error) {
-      dispatch(setLoading(false)); // Hide loading indicator
-      message.error(error.message); // Show error message
+      message.error(error.message);
     }
   };
 
-  // Fetch dorms when the component mounts
   useEffect(() => {
-    fetchDorms();
+    fetchHomeStats();
   }, []);
 
   return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-gray-600 cursor-pointer">
-        {dorms.map((dorm) => (
-          <div
-            key={dorm._id}
-            className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-transform ease-in-out transform hover:scale-105"
-            onClick={() => navigate(`/dorm/${dorm._id}`)}
-            //name.replace(/\s+/g, '_').toLowerCase()}
-          >
-            <img
-              src={dorm.coverPhotos}
-              alt="dorm-image"
-              className="w-full h-48 rounded-sm object-contain"
-            ></img>
-
-            <h2 className="text-lg font-semibold text-gray-600">{dorm.name}</h2>
-
-            <hr />
-
-            <div className="flex justify-between text-sm">
-              <span>City</span>
-              <span>{dorm.city}</span>
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span>State:</span>
-              <span>{dorm.state}</span>
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span>Rating:</span>
-              <Rate disabled allowHalf defaultValue={roundToHalf(dorm?.averageRating || 0)} />
-            </div>
-
-            <div className="flex justify-between text-sm">
-              <span>Score:</span>
-              <span>{dorm?.averageRating}</span>
-            </div>
-          </div>
-        ))}
+    <div className="h-screen-4/5 flex flex-col bg-gray-100 md:flex-row">
+      {/* Image Container */}
+      <div className="relative hidden flex-1 items-center justify-end bg-gray-200 md:flex">
+        <img
+          src={homePageBanner}
+          alt="Home Page Banner"
+          className="absolute h-full w-full object-cover"
+        />
       </div>
-      <div className="flex justify-end">
-        <Button
-          onClick={() => {
-            navigate("/admin");
-          }}
-        >
-          Go To Admin
-        </Button>
+      {/* Text Container */}
+      <div className="xs:justify-center xs:p-8 flex flex-1 flex-col justify-start px-8 py-12">
+        <h1 className="mb-6 text-3xl font-bold text-gray-800 md:text-4xl xl:text-5xl">
+          Explore University Dorm Reviews
+        </h1>
+        <p className="xxs:text-base mb-8 text-sm text-gray-600 md:text-lg lg:text-xl">
+          Browse and share reviews of university dormitories across Malaysia. Find the best dorms
+          based on genuine feedback from students like you.
+        </p>
+
+        <div className="mb-8">
+          <Filters filters={filters} setFilters={setFilters} />
+        </div>
+        <div className="3xl:justify-start xs:flex hidden justify-between space-x-6">
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <FaCheckCircle className="mb-2 text-xl text-gray-800 md:text-2xl lg:text-3xl" />
+            <h1 className="text-xl font-semibold text-gray-800 md:text-2xl lg:text-3xl">
+              {stats.reviewCount}+
+            </h1>
+            <h2 className="text-center text-sm text-gray-600 md:text-base lg:text-lg">
+              Verified Reviews
+            </h2>
+          </div>
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <FaUniversity className="mb-2 text-xl text-gray-800 md:text-2xl lg:text-3xl" />
+            <h1 className="text-xl font-semibold text-gray-800 md:text-2xl lg:text-3xl">
+              {stats.uniCount}+
+            </h1>
+            <h2 className="text-center text-sm text-gray-600 md:text-base lg:text-lg">
+              Colleges & Universities
+            </h2>
+          </div>
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <FaBed className="mb-2 text-xl text-gray-800 md:text-2xl lg:text-3xl" />
+            <h1 className="text-xl font-semibold text-gray-800 md:text-2xl lg:text-3xl">
+              {stats.dormCount}+
+            </h1>
+            <h2 className="text-center text-sm text-gray-600 md:text-base lg:text-lg">
+              Dormitories Available
+            </h2>
+          </div>
+        </div>
       </div>
     </div>
   );
