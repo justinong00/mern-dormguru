@@ -1,51 +1,78 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { Button, message, Rate } from "antd";
-import { setLoading } from "../../redux/loadersSlice.js";
-import { GetAllDorms } from "../../apis/dorms.js";
-import { roundToHalf } from "../../helpers/roundToHalf.js";
 import Filters from "../../components/Filters.jsx";
+import { FaCheckCircle, FaUniversity, FaBed } from "react-icons/fa";
+import { getHomeStats } from "../../apis/homeStats.js";
+import { message } from "antd";
 
 function Home() {
   const [filters, setFilters] = useState({});
-  const navigate = useNavigate();
+  const [stats, setStats] = useState({});
+
+  // Fetch home stats from backend
+  const fetchHomeStats = async () => {
+    try {
+      const response = await getHomeStats();
+      setStats(response.data);
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchHomeStats();
+  }, []);
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 md:flex-row">
+    <div className="h-screen-4/5 flex flex-col bg-gray-100 md:flex-row">
       {/* Image Container */}
       <div className="relative hidden flex-1 items-center justify-end bg-gray-200 md:flex">
         <img
           src="https://img.freepik.com/premium-photo/guidance-counselor-s-office-where-students-receive-support-guidance_741910-47754.jpg"
           alt="Dormitory background"
-          className="absolute right-0 h-full w-full object-cover"
+          className="absolute h-full w-full object-cover"
         />
       </div>
       {/* Text Container */}
-      <div className="flex flex-1 flex-col justify-center px-8 lg:px-16 lg:py-24">
-        <h1 className="mb-6 text-4xl font-bold text-gray-800 lg:text-5xl">
-          Find Your Ideal Dormitory
+      <div className="xs:justify-center xs:p-8 flex flex-1 flex-col justify-start px-8 py-12 md:justify-center lg:px-16">
+        <h1 className="mb-6 text-3xl font-bold text-gray-800 md:text-4xl lg:text-5xl">
+          Explore University Dorm Reviews
         </h1>
-        <p className="mb-8 text-lg text-gray-600 lg:text-xl">
-          Discover and book the perfect dormitory that meets all your needs and preferences. Our
-          platform offers a variety of options to help you find a place you'll love.
+        <p className="xxs:text-base mb-8 text-sm text-gray-600 md:text-lg lg:text-xl">
+          Browse and share reviews of university dormitories across Malaysia. Find the best dorms
+          based on genuine feedback from students like you.
         </p>
-        <div className="mb-8 hidden space-x-6 lg:flex">
-          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
-            <h1 className="text-3xl font-semibold text-gray-800">3+</h1>
-            <h2 className="text-center text-lg text-gray-600">Months of Experience</h2>
-          </div>
-          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
-            <h1 className="text-3xl font-semibold text-gray-800">20+</h1>
-            <h2 className="text-center text-lg text-gray-600">Colleges & Universities</h2>
-          </div>
-          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
-            <h1 className="text-3xl font-semibold text-gray-800">20+</h1>
-            <h2 className="text-center text-lg text-gray-600">Dormitories Available</h2>
-          </div>
-        </div>
+
         <div className="mb-8">
           <Filters filters={filters} setFilters={setFilters} />
+        </div>
+        <div className="3xl:justify-start xs:flex mb-8 hidden justify-between space-x-6">
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <FaCheckCircle className="mb-2 text-xl text-gray-800 md:text-2xl lg:text-3xl" />
+            <h1 className="text-xl font-semibold text-gray-800 md:text-2xl lg:text-3xl">
+              {stats.reviewCount}+
+            </h1>
+            <h2 className="text-center text-sm text-gray-600 md:text-base lg:text-lg">
+              Verified Reviews
+            </h2>
+          </div>
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <FaUniversity className="mb-2 text-xl text-gray-800 md:text-2xl lg:text-3xl" />
+            <h1 className="text-xl font-semibold text-gray-800 md:text-2xl lg:text-3xl">
+              {stats.uniCount}+
+            </h1>
+            <h2 className="text-center text-sm text-gray-600 md:text-base lg:text-lg">
+              Colleges & Universities
+            </h2>
+          </div>
+          <div className="flex flex-col items-center rounded-lg bg-white p-6 shadow-md">
+            <FaBed className="mb-2 text-xl text-gray-800 md:text-2xl lg:text-3xl" />
+            <h1 className="text-xl font-semibold text-gray-800 md:text-2xl lg:text-3xl">
+              {stats.dormCount}+
+            </h1>
+            <h2 className="text-center text-sm text-gray-600 md:text-base lg:text-lg">
+              Dormitories Available
+            </h2>
+          </div>
         </div>
       </div>
     </div>

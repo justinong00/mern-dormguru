@@ -9,6 +9,7 @@ import imagesRoute from './routes/imagesRoute.js';
 import dormsRoute from './routes/dormsRoute.js';
 import reviewsRoute from './routes/reviewsRoute.js';
 import filtersRoute from './routes/filtersRoute.js';
+import homeStatsRoute from './routes/homeStatsRoute.js';
 
 
 // Load environment variables from the .env file into process.env
@@ -51,6 +52,7 @@ app.use('/api/images', imagesRoute) // Mount the image routes at the '/api/image
 app.use('/api/dorms', dormsRoute) // Mount the dorm routes at the '/api/dorms' path
 app.use('/api/reviews', reviewsRoute) // Mount the review routes at the '/api/reviews' path
 app.use('/api/filters', filtersRoute) // Mount the filter routes at the '/api/filters' path
+app.use('/api/home-stats', homeStatsRoute) // Mount the filter routes at the '/api/filters' path
 
 // Call the dbConfig function to connect to MongoDB
 dbConfig();

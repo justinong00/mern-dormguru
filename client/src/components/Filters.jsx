@@ -6,6 +6,7 @@ import "/node_modules/malaysia-state-flag-icon-css/css/flag-icon.min.css";
 import { getStateCode } from "../helpers/stateCodesHelper.js";
 import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
 
 function Filters({ filters, setFilters }) {
   const [hideResults, setHideResults] = useState(false);
@@ -38,22 +39,33 @@ function Filters({ filters, setFilters }) {
 
   return (
     <div className="relative mb-5">
-      <input
-        type="text"
-        placeholder="Search Dorms by Name, City, State, or University"
-        value={filters.search}
-        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-        // Close results dropdown when user clicks outside of input
-        // setTimeout is used to delay the hiding of the results dropdown by 200ms to allow the onClick event to propagate before firing the onBlur event. This ensures that the onBlur event is triggered after the onClick event. (The stopPropagation method prevents the event from bubbling up the DOM tree but does not prevent the onBlur event from firing because it is a focus-related event.)
-        onBlur={() => setTimeout(() => setHideResults(true), 200)}
-        // Open results dropdown when user clicks inside input
-        onFocus={() => setHideResults(false)}
-      />
+      <label
+        htmlFor="dormSearch"
+        className="xxs:text-sm mb-2 block text-xs font-bold text-gray-700 md:text-base lg:text-lg"
+      >
+        Search Dorms by Name, City, State, or University
+      </label>
+      <div className="relative">
+        <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <input
+          id="dormSearch"
+          type="text"
+          placeholder="Enter here..."
+          value={filters.search}
+          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          // Close results dropdown when user clicks outside of input
+          // setTimeout is used to delay the hiding of the results dropdown by 200ms to allow the onClick event to propagate before firing the onBlur event. This ensures that the onBlur event is triggered after the onClick event. (The stopPropagation method prevents the event from bubbling up the DOM tree but does not prevent the onBlur event from firing because it is a focus-related event.)
+          onBlur={() => setTimeout(() => setHideResults(true), 200)}
+          // Open results dropdown when user clicks inside input
+          onFocus={() => setHideResults(false)}
+          className="w-full pl-10" // Add left padding to make room for the icon
+        />
+      </div>
 
       {/* QuickSearchFilterResults div */}
       {filters.search && !hideResults && results?.dorms?.length > 0 && (
         // Drop down results container
-        <div className="absolute top-12 z-50 h-96 w-full overflow-y-auto border border-solid border-gray-300 bg-white shadow-md">
+        <div className="absolute z-50 h-64 w-full overflow-y-auto border border-solid border-gray-300 bg-white shadow-md">
           {results?.dorms?.length > 0 && (
             // List of results
             <ul>
