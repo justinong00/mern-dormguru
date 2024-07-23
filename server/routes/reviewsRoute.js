@@ -265,4 +265,38 @@ router.put("/toggle-like/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Add or remove flag to review
+router.put("/toggle-flag/:id", authMiddleware, async (req, res) => {
+  try {
+    // Get the review with the specified ID
+    const review = await Review.findById(req.params.id);
+    // Get the user ID from the authMiddleware
+    const userId = req.userId;
+
+    if (!review) {
+      return res.status(404).json({ error: "Review not found" });
+    }
+
+    // Find the index of the userId in the flaggedBy array to see if the user has already flagged the review
+    const userIndex = review.flaggedBy.indexOf(userId);
+    // User has not flagged the review yet
+    if (userIndex === -1) {
+      // Add flag to review
+      review.flaggedBy.push(userId);
+      review.numberOfFlags += 1;
+    } else { // User has already flagged the review
+      // Remove flag from review
+      review.flaggedBy.splice(userIndex, 1);
+      review.numberOfFlags -= 1;
+    }
+    await review.save();
+    res.status(200).json({
+      message: userIndex === -1 ? "Flag added successfully" : "Flag removed successfully",
+      success: true,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message, success: false });
+  }
+});
+
 export default router;

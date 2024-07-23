@@ -133,3 +133,21 @@ export const toggleLikeReview = async (id) => {
     throw error;
   }
 };
+
+/** Sends a PUT request to the "/api/reviews/toggle-flag/:id" endpoint on the server to toggle the flag status of a review by its ID.
+ *
+ * @param {string} id - The ID of the review to toggle the flag status for.
+ * @return {Promise<Object>} A promise that resolves to the response data from the server.
+ * @throws {Error} If there is an error during the request.
+ */
+export const toggleFlagReview = async (id) => {
+  try {
+    const response = await apiRequest({
+      method: "PUT",
+      endPoint: `/api/reviews/toggle-flag/${id}`,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -52,15 +52,15 @@ const reviewSchema = new Schema(
       required: false,
       default: 0,
     },
-    isFlagged: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     flaggedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: [mongoose.Schema.Types.ObjectId],
       ref: 'User',
       required: false,
+    },
+    numberOfFlags: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   {
