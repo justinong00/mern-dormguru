@@ -5,7 +5,7 @@ import { Button, message, Rate } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
-import { GetAllReviewsForDorm } from "../../apis/reviews.js";
+import { GetAllReviewsForDorm, GetIsLikedByUser, toggleLikeReview } from "../../apis/reviews.js";
 import { roundToHalf } from "./../../helpers/roundToHalf";
 import {
   getLastMonthAverageRating,
@@ -35,21 +35,11 @@ function DormInfo() {
     2: 0,
     1: 0,
   });
-  const [isLiked, setIsLiked] = useState(false);
   const [isFlagged, setIsFlagged] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const { id } = useParams();
-
-  // Toggle like status
-  const toggleLike = () => {
-    setIsLiked((prev) => !prev);
-  };
-
-  // Toggle flagged status
-  const toggleFlag = () => {
-    setIsFlagged((prev) => !prev);
-  };
 
   // Toggle visibility of reviews
   const toggleReviews = () => {
@@ -89,6 +79,23 @@ function DormInfo() {
   useEffect(() => {
     fetchSpecificDorm();
   }, []);
+
+  // Toggle like status
+  const toggleLike = async (reviewId) => {
+    try {
+      const response = await toggleLikeReview(reviewId);
+      // Reload the page to update the like count
+      fetchSpecificDorm();
+      message.success(response.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  // Toggle flagged status
+  const toggleFlag = () => {
+    setIsFlagged((prev) => !prev);
+  };
 
   // Scroll to the specific review when there is a hash in the URL (for when user clicks on a review in Profile)
   useEffect(() => {
@@ -457,8 +464,29 @@ function DormInfo() {
               <Rate disabled value={review?.rating} style={{ fontSize: 25, marginBottom: 4 }} />
               {/* Like and Flag Icons */}
               <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
-                <div onClick={toggleLike} style={{ fontSize: 20, cursor: "pointer" }}>
+                {/* <div
+                  onClick={() => {
+                    addLikeToReview(review?._id);
+                    setIsLiked(true);
+                  }}
+                  style={{ fontSize: 20, cursor: "pointer" }}
+                >
                   {isLiked ? <LikeFilled /> : <LikeOutlined />}
+                </div> */}
+                <div
+                  onClick={() => {
+                    toggleLike(review?._id);
+                  }}
+                  style={{ fontSize: 20, cursor: "pointer" }}
+                >
+                  {/* Render the like icon based on whether the user has already liked the review */}
+                  {/* We use the 'some' method to iterate over the likedBy array. For each objectId in the array, we convert it to a string using the toString() method. We then compare the string representation of the user's ObjectId with the string representation of the ObjectId in the likedBy array. If there is a match, we know that the user has already liked the review, and we render the like icon with a filled color. If there is no match, we know that the user has not yet liked the review, and we render the like icon with an outline color. */}
+                  {review.likedBy.some((objectId) => objectId.toString() === user._id) ? (
+                    <LikeFilled />
+                  ) : (
+                    <LikeOutlined />
+                  )}
+                  <span className="ml-2 text-gray-400">{review?.numberOfLikes}</span>
                 </div>
                 <div onClick={toggleFlag} style={{ fontSize: 20, cursor: "pointer" }}>
                   {isFlagged ? <FlagFilled style={{ color: "red" }} /> : <FlagOutlined />}

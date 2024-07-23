@@ -229,4 +229,40 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Add or remove like to review
+router.put("/toggle-like/:id", authMiddleware, async (req, res) => {
+  try {
+    // Get the review with the specified ID
+    const review = await Review.findById(req.params.id);
+    // Get the user ID from the authMiddleware
+    const userId = req.userId;
+
+    if (!review) {
+      return res.status(404).json({ error: "Review not found" });
+    }
+
+    // Find the index of the userId in the likedBy array to see if the user has already liked the review
+    const userIndex = review.likedBy.indexOf(userId);
+
+    // User has not liked the review yet
+    if (userIndex === -1) {
+      // Add like to review
+      review.likedBy.push(userId);
+      review.numberOfLikes += 1;
+    } else { // User has already liked the review
+      // Remove like from review
+      review.likedBy.splice(userIndex, 1);
+      review.numberOfLikes -= 1;
+    }
+
+    await review.save();
+    res.status(200).json({ 
+      message: userIndex === -1 ? "Like added successfully" : "Like removed successfully",
+      success: true, 
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message, success: false });
+  }
+});
+
 export default router;
