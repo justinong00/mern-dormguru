@@ -1,10 +1,10 @@
-import { message } from 'antd';
-import { useState, useEffect } from 'react';
-import { GetCurrentUser } from '../apis/users.js';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUsers } from '../redux/usersSlice.js';
-import { setLoading } from '../redux/loadersSlice.js';
+import { message } from "antd";
+import { useState, useEffect } from "react";
+import { GetCurrentUser } from "../apis/users.js";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setUsers } from "../redux/usersSlice.js";
+import { setLoading } from "../redux/loadersSlice.js";
 
 /** ProtectedPage component is a higher-order component that wraps a route or a section of the application and provides authentication and authorization functionality.
  *
@@ -26,7 +26,7 @@ function ProtectedPage({ children }) {
       dispatch(setLoading(true));
       const response = await GetCurrentUser();
       dispatch(setLoading(false));
-      dispatch(setUsers(response.data));  // Update the users state in the Redux store
+      dispatch(setUsers(response.data)); // Update the users state in the Redux store
     } catch (error) {
       message.error(error.message);
     }
@@ -38,8 +38,8 @@ function ProtectedPage({ children }) {
    * Otherwise, it fetches the current user.
    */
   useEffect(() => {
-    if (!localStorage.getItem('token')) {
-      navigate('/login');
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
     } else {
       getCurrentUser();
     }
@@ -48,27 +48,28 @@ function ProtectedPage({ children }) {
   // Renders the current user's name and the children components
   return (
     <div>
-      <div className="flex items-center justify-between bg-primary p-5">
+      <div className="bg-primary flex items-center justify-between p-5">
         <span
-          className="font-semibold text-yellow-500 text-2xl cursor-pointer"
-          onClick={() => navigate('/')}
+          className="cursor-pointer text-2xl font-semibold text-yellow-500"
+          onClick={() => navigate("/")}
         >
           DormGuru
         </span>
 
-        <div className="bg-white rounded px-5 py-2 flex gap-2 items-center">
+        <div className="flex items-center gap-2 rounded bg-white px-5 py-2">
           <i className="ri-shield-user-line"></i>
           <span
-            className="text-primary text-sm cursor-pointer underline"
-            onClick={() => navigate('/profile')}
+            className="text-primary cursor-pointer text-sm underline"
+            // Redirects to the admin page if the user is an admin, otherwise to the user's profile page
+            onClick={() => navigate(user.isAdmin ? "/admin" : "/profile")}
           >
             {user?.name}
           </span>
           <i
             className="ri-logout-box-r-line ml-8"
             onClick={() => {
-              localStorage.removeItem('token');
-              navigate('/login');
+              localStorage.removeItem("token");
+              navigate("/login");
             }}
           ></i>
         </div>

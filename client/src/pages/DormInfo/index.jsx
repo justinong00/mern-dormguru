@@ -5,7 +5,7 @@ import { Button, message, Rate } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
-import { GetAllReviewsForDorm } from "../../apis/reviews.js";
+import { GetAllReviewsForDorm, toggleFlagReview, toggleLikeReview } from "../../apis/reviews.js";
 import { roundToHalf } from "./../../helpers/roundToHalf";
 import {
   getLastMonthAverageRating,
@@ -35,21 +35,11 @@ function DormInfo() {
     2: 0,
     1: 0,
   });
-  const [isLiked, setIsLiked] = useState(false);
   const [isFlagged, setIsFlagged] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const { id } = useParams();
-
-  // Toggle like status
-  const toggleLike = () => {
-    setIsLiked((prev) => !prev);
-  };
-
-  // Toggle flagged status
-  const toggleFlag = () => {
-    setIsFlagged((prev) => !prev);
-  };
 
   // Toggle visibility of reviews
   const toggleReviews = () => {
@@ -90,10 +80,41 @@ function DormInfo() {
     fetchSpecificDorm();
   }, []);
 
+  /** Toggles the like status of a review.
+   *
+   * @param {string} reviewId - The ID of the review to toggle the like status for.
+   * @return {Promise<void>} - A Promise that resolves when the like status is toggled.
+   */
+  const toggleLike = async (reviewId) => {
+    try {
+      const response = await toggleLikeReview(reviewId);
+      // Reload the page to update the like count
+      fetchSpecificDorm();
+      message.success(response.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  /** Toggles the flag status of a review.
+   *
+   * @param {string} reviewId - The ID of the review to toggle the flag status for.
+   * @return {Promise<void>} A Promise that resolves when the flag status is toggled.
+   */
+  const toggleFlag = async (reviewId) => {
+    try {
+      const response = await toggleFlagReview(reviewId);
+      // Reload the page to update the flag count
+      fetchSpecificDorm();
+      message.success(response.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
   // Scroll to the specific review when there is a hash in the URL (for when user clicks on a review in Profile)
   useEffect(() => {
     const hash = window.location.hash; // Gets the hash from the URL
-    console.log(hash);
     if (hash) {
       const reviewId = hash.replace("#", ""); // Extracts the review ID from the hash
       const reviewElement = document.getElementById(reviewId); // Finds the review element in the DOM
@@ -313,58 +334,6 @@ function DormInfo() {
         </div>
         <hr />
 
-        {/* <h2 className="text-lg font-semibold text-gray-600">Parent University</h2>
-        <hr />
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 my-10 text-gray-600 ">
-          <div
-            className="flex h-24 cursor-pointer"
-            onClick={() => navigate(`/uni/${dorm?.parentUniversity?._id}`)}
-          >
-            <img
-              src={dorm?.parentUniversity?.logoPic}
-              alt="University Logo"
-              className="rounded-sm object-cover"
-            />
-            <div className="flex justify-center items-center pl-5">
-              <span className="font-semibold">{dorm?.parentUniversity?.name}</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-start">
-            <span className="font-semibold">Bio:</span>
-            <span>{dorm?.parentUniversity?.bio}</span>
-          </div>
-        </div> */}
-
-        {/* <div className="flex justify-between items-center mt-5">
-          <span className="text font-semibold">Reviews</span>
-          <Button type="default" onClick={() => setShowReviewForm(true)}>
-            Add Review
-          </Button>
-        </div>
-
-        <div className="mt-5 flex flex-col gap-2">
-          {reviews.map((review) => (
-            <div
-              key={review?._id}
-              className="flex justify-between border-solid border p-2 rounded-sm border-gray-300"
-            >
-              <div className="flex flex-col">
-                <span className="text-gray-600 font-semibold text-md">
-                  {review?.createdBy?.name}
-                </span>
-                <Rate disabled value={review?.rating || 0} className="mt-2" />
-                <span className="text-gray-600 text-sm mt-2">{review?.comment}</span>
-              </div>
-
-              <div className="mr-5">
-                <span className="text-gray-600 text-sm">{getRelativeTime(review?.createdAt)}</span>
-              </div>
-            </div>
-          ))}
-        </div> */}
-
         {/* Rating & Reviews */}
         <h2 className="my-10 text-center text-3xl font-bold leading-10 sm:text-4xl">
           Rating & Reviews
@@ -386,9 +355,9 @@ function DormInfo() {
             <div className="grid h-full w-full grid-cols-12 rounded-3xl bg-gray-100 px-8 max-xl:mx-auto max-xl:max-w-3xl max-lg:py-8">
               <div className="col-span-12 flex items-center md:col-span-8">
                 <div className="flex h-full w-full flex-col items-center justify-evenly max-sm:gap-4 sm:flex-row">
+                  {/* Average Rating */}
                   <div className="flex flex-col items-center justify-center border-gray-200 sm:border-r sm:pr-3">
                     <h2 className="mb-4 text-center text-5xl font-bold">{dorm?.averageRating}</h2>
-
                     <div className="mb-4 flex items-center gap-3">
                       <Rate
                         disabled
@@ -398,11 +367,13 @@ function DormInfo() {
                       />
                     </div>
 
+                    {/* Number of Reviews */}
                     <p className="text-lg font-normal leading-8 text-gray-400">
                       {dorm.numberOfReviews} Reviews
                     </p>
                   </div>
 
+                  {/* Last Month's Rating */}
                   <div className="flex flex-col items-center justify-center border-gray-200 sm:border-r sm:pr-3">
                     <h2 className="mb-4 text-center text-5xl font-bold">
                       {getLastMonthAverageRating(reviews)}
@@ -422,6 +393,7 @@ function DormInfo() {
                 </div>
               </div>
 
+              {/* Buttons */}
               <div className="col-span-12 max-lg:mt-8 md:col-span-4 md:pl-8">
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <Button
@@ -457,11 +429,30 @@ function DormInfo() {
               <Rate disabled value={review?.rating} style={{ fontSize: 25, marginBottom: 4 }} />
               {/* Like and Flag Icons */}
               <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
-                <div onClick={toggleLike} style={{ fontSize: 20, cursor: "pointer" }}>
-                  {isLiked ? <LikeFilled /> : <LikeOutlined />}
+                {/* Like Icon */}
+                <div
+                  onClick={() => toggleLike(review?._id)}
+                  style={{ fontSize: 20, cursor: "pointer" }}
+                >
+                  {/* Render the like icon based on whether the user has already liked the review */}
+                  {/* We use the 'some' method to iterate over the likedBy array. For each objectId in the array, we convert it to a string using the toString() method. We then compare the string representation of the user's ObjectId with the string representation of the ObjectId in the likedBy array. If there is a match, we know that the user has already liked the review, and we render the like icon with a filled color. If there is no match, we know that the user has not yet liked the review, and we render the like icon with an outline color. */}
+                  {review?.likedBy.some((objectId) => objectId.toString() === user?._id) ? (
+                    <LikeFilled />
+                  ) : (
+                    <LikeOutlined />
+                  )}
+                  <span className="ml-2 text-gray-400">{review?.numberOfLikes}</span>
                 </div>
-                <div onClick={toggleFlag} style={{ fontSize: 20, cursor: "pointer" }}>
-                  {isFlagged ? <FlagFilled style={{ color: "red" }} /> : <FlagOutlined />}
+                {/* Flag Icon */}
+                <div
+                  onClick={() => toggleFlag(review?._id)}
+                  style={{ fontSize: 20, cursor: "pointer" }}
+                >
+                  {review?.flaggedBy.some((objectId) => objectId.toString() === user?._id) ? (
+                    <FlagFilled style={{ color: "red" }} />
+                  ) : (
+                    <FlagOutlined />
+                  )}
                 </div>
               </div>
             </div>

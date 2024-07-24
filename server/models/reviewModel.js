@@ -40,20 +40,27 @@ const reviewSchema = new Schema(
       ref: 'User',
       required: true,
     },
+    likedBy: [
+      {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'User',
+        required: false,
+      },
+    ],
     numberOfLikes: {
       type: Number,
       required: false,
       default: 0,
     },
-    isFlagged: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     flaggedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: [mongoose.Schema.Types.ObjectId],
       ref: 'User',
       required: false,
+    },
+    numberOfFlags: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   {
