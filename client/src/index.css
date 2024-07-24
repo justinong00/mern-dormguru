@@ -26,6 +26,13 @@ input {
   border-radius: 2px !important;
 }
 
+.ant-table-filter-dropdown-search-input {
+  height: 45px !important;
+  width: 100%;
+  border-radius: 2px !important;
+  align-items: center;
+}
+
 .ant-input-password {
   border-radius: 2px !important;
   padding-top: 0px;
@@ -218,6 +225,10 @@ table {
   background-size: cover;
   background-position: 50%;
   background-repeat: no-repeat;
+}
+
+.ant-table-column-title {
+  font-weight: 600;
 }
 
 /* Quick search & filter */
