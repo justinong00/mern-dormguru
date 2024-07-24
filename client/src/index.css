@@ -51,6 +51,10 @@ input {
   width: 100%;
 }
 
+.sort-select {
+  width: 140px;
+}
+
 .ant-form-item {
   margin-bottom: 0px !important;
 }

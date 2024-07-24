@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, message, Rate } from "antd";
+import { Button, message, Rate, Select } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
@@ -19,7 +19,7 @@ import "/node_modules/flag-icons/css/flag-icons.min.css";
 import "/node_modules/malaysia-state-flag-icon-css/css/flag-icon.min.css";
 import { getStateCode } from "../../helpers/stateCodesHelper.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
+import { faBuilding, faFaceFrown, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
 
 function DormInfo() {
   const [dorm, setDorm] = useState([]);
@@ -27,6 +27,10 @@ function DormInfo() {
   const [reviews, setReviews] = useState([]);
   const [visibleReviews, setVisibleReviews] = useState([]);
   const [allReviewsShown, setAllReviewsShown] = useState(false);
+  // Add state for sorting criteria
+  const [sortCriteria, setSortCriteria] = useState("mostRecent");
+  // Add state for checking if there are no reviews
+  const [noReviews, setNoReviews] = useState(false);
   // Initialize ratingCounts state with a default value of {5: 0, 4: 0, 3: 0, 2: 0, 1: 0} to store the number of reviews for each rating when calling countNumberOfReviewsForEachRating() during fetch
   const [ratingCounts, setRatingCounts] = useState({
     5: 0,
@@ -35,21 +39,11 @@ function DormInfo() {
     2: 0,
     1: 0,
   });
-  const [isFlagged, setIsFlagged] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const { id } = useParams();
-
-  // Toggle visibility of reviews
-  const toggleReviews = () => {
-    if (allReviewsShown) {
-      setVisibleReviews(reviews.slice(0, 2));
-    } else {
-      setVisibleReviews(reviews);
-    }
-    setAllReviewsShown(!allReviewsShown);
-  };
+  const { Option } = Select;
 
   /** Fetches a specific dorm and its reviews from the server. Updates the state with the fetched data.
    *
@@ -110,6 +104,85 @@ function DormInfo() {
     } catch (error) {
       message.error(error.message);
     }
+  };
+
+  /** Filters and sorts the reviews based on the current sort criteria, and updates the visible reviews accordingly.
+   *
+   * This effect is triggered whenever the `reviews`, `sortCriteria`, or `allReviewsShown` state changes.
+   *
+   * If `allReviewsShown` is true, all the filtered and sorted reviews will be displayed. Otherwise, only the first 2 reviews will be shown.
+   *
+   * @param {Array<Review>} reviews - The array of reviews to be filtered and sorted.
+   * @param {string} sortCriteria - The current sort criteria, which can be "mostHelpful", "mostRecent", or a rating-based criteria like "stars5".
+   * @param {boolean} allReviewsShown - Indicates whether all the filtered and sorted reviews should be displayed.
+   */
+  useEffect(() => {
+    const sortedAndFilteredReviews = reviews
+      .filter((review) => {
+        if (sortCriteria.startsWith("stars")) {
+          const rating = parseInt(sortCriteria.split("stars")[1], 10);
+          return review.rating === rating;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortCriteria === "mostHelpful") {
+          return b.numberOfLikes - a.numberOfLikes;
+        } else if (sortCriteria === "mostRecent") {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        return 0;
+      });
+
+    if (sortedAndFilteredReviews.length === 0) {
+      setNoReviews(true);
+    } else {
+      setNoReviews(false);
+    }
+
+    if (allReviewsShown) {
+      setVisibleReviews(sortedAndFilteredReviews);
+    } else {
+      setVisibleReviews(sortedAndFilteredReviews.slice(0, 2));
+    }
+  }, [reviews, sortCriteria, allReviewsShown]);
+
+  /** Toggles the visibility of all reviews based on the current sort criteria and the `allReviewsShown` state.
+   *
+   * If `allReviewsShown` is true, the first 2 sorted and filtered reviews will be displayed. Otherwise, all the sorted and filtered reviews will be shown.
+   *
+   * This function is responsible for updating the `visibleReviews` state based on the current sort criteria and the `allReviewsShown` flag.
+   */
+  const toggleReviews = () => {
+    const sortedAndFilteredReviews = reviews
+      .filter((review) => {
+        if (sortCriteria.startsWith("stars")) {
+          const rating = parseInt(sortCriteria.split("stars")[1], 10);
+          return review.rating === rating;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortCriteria === "mostHelpful") {
+          return b.numberOfLikes - a.numberOfLikes;
+        } else if (sortCriteria === "mostRecent") {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        return 0;
+      });
+
+    if (sortedAndFilteredReviews.length === 0) {
+      setNoReviews(true);
+    } else {
+      setNoReviews(false);
+    }
+
+    if (allReviewsShown) {
+      setVisibleReviews(sortedAndFilteredReviews.slice(0, 2));
+    } else {
+      setVisibleReviews(sortedAndFilteredReviews);
+    }
+    setAllReviewsShown(!allReviewsShown);
   };
 
   // Scroll to the specific review when there is a hash in the URL (for when user clicks on a review in Profile)
@@ -417,108 +490,137 @@ function DormInfo() {
           </div>
         </div>
 
+        {/* Sort Reviews by */}
+        <div className="xxs:flex-row xxs:items-center mb-10 flex w-full flex-col items-start gap-x-4 max-xl:mx-auto max-xl:max-w-2xl">
+          <h2 className="text-lg font-bold leading-10 sm:text-xl">Sort Reviews by</h2>
+          <div>
+            <Select
+              defaultValue="mostRecent"
+              onChange={(value) => setSortCriteria(value)}
+              className="sort-select"
+            >
+              <Option value="mostRecent">Most Recent</Option>
+              <Option value="mostHelpful">Most Helpful</Option>
+              <Option value="stars5">5 Stars</Option>
+              <Option value="stars4">4 Stars</Option>
+              <Option value="stars3">3 Stars</Option>
+              <Option value="stars2">2 Stars</Option>
+              <Option value="stars1">1 Star</Option>
+            </Select>
+          </div>
+        </div>
+
         {/* Reviews List */}
-        {visibleReviews.map((review) => (
-          <div
-            key={review?._id}
-            id={review?._id} // Ensure each review has the correct ID for scrolling
-            className="border-b border-gray-100 pb-8 max-xl:mx-auto max-xl:max-w-2xl"
-          >
-            <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-              {/* Rating */}
-              <Rate disabled value={review?.rating} style={{ fontSize: 25, marginBottom: 4 }} />
-              {/* Like and Flag Icons */}
-              <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
-                {/* Like Icon */}
-                <div
-                  onClick={() => toggleLike(review?._id)}
-                  style={{ fontSize: 20, cursor: "pointer" }}
-                >
-                  {/* Render the like icon based on whether the user has already liked the review */}
-                  {/* We use the 'some' method to iterate over the likedBy array. For each objectId in the array, we convert it to a string using the toString() method. We then compare the string representation of the user's ObjectId with the string representation of the ObjectId in the likedBy array. If there is a match, we know that the user has already liked the review, and we render the like icon with a filled color. If there is no match, we know that the user has not yet liked the review, and we render the like icon with an outline color. */}
-                  {review?.likedBy.some((objectId) => objectId.toString() === user?._id) ? (
-                    <LikeFilled />
-                  ) : (
-                    <LikeOutlined />
-                  )}
-                  <span className="ml-2 text-gray-400">{review?.numberOfLikes}</span>
-                </div>
-                {/* Flag Icon */}
-                <div
-                  onClick={() => toggleFlag(review?._id)}
-                  style={{ fontSize: 20, cursor: "pointer" }}
-                >
-                  {review?.flaggedBy.some((objectId) => objectId.toString() === user?._id) ? (
-                    <FlagFilled style={{ color: "red" }} />
-                  ) : (
-                    <FlagOutlined />
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Review Title */}
-            <p className="mb-4 text-xl font-semibold leading-9 sm:text-2xl">
-              {review?.title || "No title"}
-            </p>
-
-            <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-              {/* User Info */}
-              <div className="flex items-center gap-5">
-                <img
-                  src="https://pagedone.io/asset/uploads/1704349572.png"
-                  alt="John image"
-                  className="h-14 w-14"
-                />
-                <div className="flex flex-col">
-                  <h6 className="text-lg font-semibold leading-8">{review?.createdBy?.name}</h6>
-                  <div className="flex gap-2 max-[400px]:mt-2 max-[400px]:flex-col">
-                    {/* Country */}
-                    <span className="fi fi-my"></span>
-                    <span className="text-lg font-semibold leading-8">British Virgin Islands</span>
+        {noReviews ? (
+          <div className="xs:flex-row flex flex-col items-center justify-center gap-2 text-center text-gray-500">
+            <FontAwesomeIcon icon={faFaceFrown} className="h-8 w-8 text-gray-300" />
+            <span>No reviews available for the selected rating.</span>
+          </div>
+        ) : (
+          visibleReviews.map((review) => (
+            <div
+              key={review?._id}
+              id={review?._id} // Ensure each review has the correct ID for scrolling
+              className="border-b border-gray-100 pb-8 max-xl:mx-auto max-xl:max-w-2xl"
+            >
+              <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+                {/* Rating */}
+                <Rate disabled value={review?.rating} style={{ fontSize: 25, marginBottom: 4 }} />
+                {/* Like and Flag Icons */}
+                <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
+                  {/* Like Icon */}
+                  <div
+                    onClick={() => toggleLike(review?._id)}
+                    style={{ fontSize: 20, cursor: "pointer" }}
+                  >
+                    {/* Render the like icon based on whether the user has already liked the review */}
+                    {/* We use the 'some' method to iterate over the likedBy array. For each objectId in the array, we convert it to a string using the toString() method. We then compare the string representation of the user's ObjectId with the string representation of the ObjectId in the likedBy array. If there is a match, we know that the user has already liked the review, and we render the like icon with a filled color. If there is no match, we know that the user has not yet liked the review, and we render the like icon with an outline color. */}
+                    {review?.likedBy.some((objectId) => objectId.toString() === user?._id) ? (
+                      <LikeFilled />
+                    ) : (
+                      <LikeOutlined />
+                    )}
+                    <span className="ml-2 text-gray-400">{review?.numberOfLikes}</span>
+                  </div>
+                  {/* Flag Icon */}
+                  <div
+                    onClick={() => toggleFlag(review?._id)}
+                    style={{ fontSize: 20, cursor: "pointer" }}
+                  >
+                    {review?.flaggedBy.some((objectId) => objectId.toString() === user?._id) ? (
+                      <FlagFilled style={{ color: "red" }} />
+                    ) : (
+                      <FlagOutlined />
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Date */}
-              <p className="text-lg font-normal leading-8 text-gray-400">
-                {formatDateToMonthDayYear(review?.createdAt)}
+              {/* Review Title */}
+              <p className="mb-4 text-xl font-semibold leading-9 sm:text-2xl">
+                {review?.title || "No title"}
               </p>
-            </div>
 
-            {/* Rooms Stayed */}
-            <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:gap-2">
-              <h4 className="mb-2 font-medium leading-6 sm:mb-0">
-                <span className="font-bold">Room/Rooms Stayed:</span>
-              </h4>
-              <p className="leading-6">
-                {review?.roomsStayed?.map((room, index) => (
-                  <span key={index}>
-                    {roomOptions.find((option) => option.value === room)?.label}
-                    {index < review.roomsStayed.length - 1 && ", "}
-                  </span>
-                ))}
+              <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+                {/* User Info */}
+                <div className="flex items-center gap-5">
+                  <img
+                    src="https://pagedone.io/asset/uploads/1704349572.png"
+                    alt="John image"
+                    className="h-14 w-14"
+                  />
+                  <div className="flex flex-col">
+                    <h6 className="text-lg font-semibold leading-8">{review?.createdBy?.name}</h6>
+                    <div className="flex gap-2 max-[400px]:mt-2 max-[400px]:flex-col">
+                      {/* Country */}
+                      <span className="fi fi-my"></span>
+                      <span className="text-lg font-semibold leading-8">
+                        British Virgin Islands
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Date */}
+                <p className="text-lg font-normal leading-8 text-gray-400">
+                  {formatDateToMonthDayYear(review?.createdAt)}
+                </p>
+              </div>
+
+              {/* Rooms Stayed */}
+              <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                <h4 className="mb-2 font-medium leading-6 sm:mb-0">
+                  <span className="font-bold">Room/Rooms Stayed:</span>
+                </h4>
+                <p className="leading-6">
+                  {review?.roomsStayed?.map((room, index) => (
+                    <span key={index}>
+                      {roomOptions.find((option) => option.value === room)?.label}
+                      {index < review.roomsStayed.length - 1 && ", "}
+                    </span>
+                  ))}
+                </p>
+              </div>
+
+              {/* Date Stayed */}
+              <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                <h4 className="mb-2 font-medium leading-6 sm:mb-0">
+                  <span className="font-bold">From:</span>
+                </h4>
+                <p className="leading-6">
+                  {formatDateToMonthDayYear(review?.fromDate)} -{" "}
+                  {formatDateToMonthDayYear(review?.toDate)}
+                </p>
+              </div>
+
+              {/* Comment */}
+              <p className="text-lg font-normal leading-8 text-gray-400 max-xl:text-justify">
+                {review?.comment}
               </p>
+              <hr className="mt-8" />
             </div>
-
-            {/* Date Stayed */}
-            <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:gap-2">
-              <h4 className="mb-2 font-medium leading-6 sm:mb-0">
-                <span className="font-bold">From:</span>
-              </h4>
-              <p className="leading-6">
-                {formatDateToMonthDayYear(review?.fromDate)} -{" "}
-                {formatDateToMonthDayYear(review?.toDate)}
-              </p>
-            </div>
-
-            {/* Comment */}
-            <p className="text-lg font-normal leading-8 text-gray-400 max-xl:text-justify">
-              {review?.comment}
-            </p>
-            <hr className="mt-8" />
-          </div>
-        ))}
+          ))
+        )}
 
         {/* Review Form */}
         <div>
