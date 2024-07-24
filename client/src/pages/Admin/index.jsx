@@ -5,6 +5,7 @@ import Users from "./Users/index.jsx";
 import { useSelector } from "react-redux";
 import { Tabs } from "antd";
 import { useNavigate } from "react-router-dom";
+import Reviews from "./Reviews/index.jsx";
 
 /** Admin component responsible for rendering the admin interface
  *
@@ -34,6 +35,11 @@ function Admin() {
       label: "Users", // Label for the tab
       children: <Users />, // Content component for the tab
     },
+    {
+      key: "4",
+      label: "Reviews", // Label for the tab
+      children: <Reviews />, // Content component for the tab
+    },
   ];
 
   return (
@@ -51,7 +57,7 @@ function Admin() {
         />
       ) : (
         // Show a message if the user is not authorized
-        <div className="text-gray-600 text-md text-center mt-20">
+        <div className="text-md mt-20 text-center text-gray-600">
           You are not authorized to view this page
         </div>
       )}

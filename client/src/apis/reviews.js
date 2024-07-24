@@ -29,6 +29,18 @@ export const AddReview = async (data) => {
   }
 };
 
+export const GetAllReviews = async () => {
+  try {
+    const response = await apiRequest({
+      method: "GET",
+      endPoint: `/api/reviews`,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 /** Sends a GET request to the "/api/reviews/:id" endpoint on the server to retrieve all reviews for a specific dorm.
  *
  * @param {string} id - The ID of the dorm to retrieve reviews for.

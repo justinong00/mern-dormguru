@@ -61,6 +61,28 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
+// Get all reviews
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    // Find all reviews, sort them by creation date in descending order, and populate the related user and dorm fields
+    const reviews = await Review.find()
+      .sort({ createdAt: -1 })
+      .populate("createdBy")
+      .populate("dorm")
+      .populate({
+        path: "dorm",
+        populate: {
+          path: "parentUniversity",
+          select: "name"
+        }
+      });
+
+    res.status(200).json({ success: true, data: reviews });
+  } catch (err) {
+    res.status(500).json({ message: err.message, success: false });
+  }
+});
+
 // Get all reviews by dorm id
 router.get("/get-reviews-by-dorm/:id", authMiddleware, async (req, res) => {
   try {
