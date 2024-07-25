@@ -33,6 +33,11 @@ input {
   align-items: center;
 }
 
+.ant-input {
+  font-family: inherit;
+  font-weight: inherit;
+}
+
 .ant-input-password {
   border-radius: 2px !important;
   padding-top: 0px;

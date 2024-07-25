@@ -34,12 +34,18 @@ export const validationRules = {
   password: [
     {
       required: true,
-      message: "Password is required",
+      message: "Required",
     },
     {
       pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&]{8,15}$/,
       message:
         "Password must be between 8-15 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character(@.#$!%*?&^)",
+    },
+  ],
+  country: [
+    {
+      required: true,
+      message: "Required",
     },
   ],
   bio: [
