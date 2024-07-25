@@ -18,24 +18,13 @@ import { setLoading } from "../../../redux/loadersSlice.js";
 import { AddImage } from "../../../apis/images.js";
 import ImageUpload, { customValidateFileList } from "../../../components/ImageUpload.jsx";
 import { roomOptions } from "../../../helpers/roomOptions.js"; // Options for Rooms Offered
+import { dormTypeOptions } from "../../../helpers/dormTypeOptions.js";
 
 function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) {
   const dispatch = useDispatch(); // Redux dispatch function
   const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
   const [ParentUniversityOptions, setParentUniversityOptions] = useState([]); // State to store university options
-
-  // Options for dorm types
-  const dormTypeOptions = [
-    {
-      value: "On-Campus Accomodation",
-      label: "On-Campus Accomodation",
-    },
-    {
-      value: "Off-Campus Accomodation",
-      label: "Off-Campus Accomodation",
-    },
-  ];
 
   // Function to fetch university options from the backend
   const fetchParentUniversityOptions = async () => {

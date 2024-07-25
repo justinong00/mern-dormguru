@@ -6,6 +6,11 @@ import { DeleteReview, GetAllReviews } from "../../../apis/reviews.js";
 import { roomOptions } from "../../../helpers/roomOptions.js";
 import { formatDateToYYYY_MM_DD } from "../../../helpers/index.js";
 import { useNavigate } from "react-router-dom";
+import {
+  filterByDateRange,
+  filterByStayDuration,
+  roomFilters,
+} from "../../../helpers/columnFiltersHelper.js";
 
 const { RangePicker } = DatePicker;
 
@@ -60,33 +65,6 @@ function Reviews() {
     text: university,
     value: university,
   }));
-
-  // Generate filter options for rooms
-  const roomFilters = roomOptions.map((room) => ({
-    text: room.label,
-    value: room.value,
-  }));
-
-  // Function to filter the stay duration by date range
-  const filterByStayDuration = (record, fromDate, toDate) => {
-    if (!fromDate || !toDate) return true; // No filter applied
-    const filterFromDate = new Date(fromDate);
-    const filterToDate = new Date(toDate);
-
-    const reviewFromDate = new Date(record.fromDate);
-    const reviewToDate = new Date(record.toDate);
-
-    return reviewFromDate >= filterFromDate && reviewToDate <= filterToDate;
-  };
-
-  // Function to filter the posted date by date range
-  const filterByDateRange = (record, startDate, endDate) => {
-    // Normalize the record's date to midnight to ensure accurate date range comparison because we don't want to include the time in the comparison
-    const recordDate = new Date(new Date(record.createdAt).setHours(0, 0, 0, 0));
-    const filterStartDate = new Date(startDate);
-    const filterEndDate = new Date(endDate);
-    return recordDate >= filterStartDate && recordDate <= filterEndDate;
-  };
 
   // Table columns definition
   const columns = [
@@ -241,30 +219,25 @@ function Reviews() {
         </div>
       ),
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div className="p-2">
+        <div className="flex flex-col gap-2 p-2">
           <input
-            placeholder="Search Title"
+            placeholder="Enter title keyword"
             value={selectedKeys[0]?.title || ""}
             onChange={(e) => setSelectedKeys([{ ...selectedKeys[0], title: e.target.value }])}
-            style={{ width: 188, marginBottom: 8, display: "block" }}
           />
           <input
-            placeholder="Search Comment"
+            placeholder="Enter comment keyword"
             value={selectedKeys[0]?.comment || ""}
             onChange={(e) => setSelectedKeys([{ ...selectedKeys[0], comment: e.target.value }])}
-            style={{ width: 188, marginBottom: 8, display: "block" }}
           />
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            Search
-          </Button>
-          <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
-            Reset
-          </Button>
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
         </div>
       ),
       onFilter: (value, record) => {
@@ -345,24 +318,20 @@ function Reviews() {
       width: 80,
       render: (_, record) => record.createdBy.name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        <div style={{ padding: 8 }}>
+        <div className="flex flex-col gap-2 p-2">
           <input
-            placeholder="Search User"
+            placeholder="Enter keyword"
             value={selectedKeys[0] || ""}
             onChange={(e) => setSelectedKeys([e.target.value])}
-            style={{ width: 188, marginBottom: 8, display: "block" }}
           />
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            Search
-          </Button>
-          <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
-            Reset
-          </Button>
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
         </div>
       ),
       onFilter: (value, record) =>

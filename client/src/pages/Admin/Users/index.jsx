@@ -3,8 +3,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { GetAllUsers, UpdateUser } from "../../../apis/users.js";
-import { message, Switch, Table } from "antd";
+import { Button, message, Switch, Table, DatePicker } from "antd";
 import { formatDateToYYYY_MM_DD } from "../../../helpers/index.js";
+import { filterByDateRange } from "../../../helpers/columnFiltersHelper.js";
+
+const { RangePicker } = DatePicker;
 
 function Users() {
   const dispatch = useDispatch();
@@ -46,11 +49,50 @@ function Users() {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: 200,
+      fixed: "left",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div className="flex flex-col gap-2 p-2">
+          <input
+            placeholder="Enter keyword"
+            value={selectedKeys[0] || ""}
+            onChange={(e) => setSelectedKeys([e.target.value])}
+          />
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      width: 200,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div className="flex flex-col gap-2 p-2">
+          <input
+            placeholder="Enter keyword"
+            value={selectedKeys[0] || ""}
+            onChange={(e) => setSelectedKeys([e.target.value])}
+          />
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value, record) => record.email.toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Created At",
@@ -58,9 +100,31 @@ function Users() {
       key: "createdAt",
       width: 120,
       render: (text) => formatDateToYYYY_MM_DD(text),
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div className="flex w-64 flex-col gap-2 p-2">
+          <RangePicker
+            value={selectedKeys[0]}
+            onChange={(dates) => setSelectedKeys(dates ? [dates] : [])}
+          />
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value, record) => {
+        if (!value || value.length === 0) return true;
+        const [start, end] = value;
+        return filterByDateRange(record, start, end);
+      },
     },
     {
-      title: "Is Admin",
+      title: "Admin Status",
       dataIndex: "isAdmin",
       key: "isAdmin",
       fixed: "right",
@@ -71,9 +135,21 @@ function Users() {
           onChange={(checked) => updateUser({ ...record, isAdmin: checked })}
         />
       ),
+      filters: [
+        {
+          text: "Yes",
+          value: true,
+        },
+        {
+          text: "No",
+          value: false,
+        },
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => record.isAdmin === value,
     },
     {
-      title: "Is Active",
+      title: "Active Status",
       dataIndex: "isActive",
       key: "isActive",
       fixed: "right",
@@ -84,6 +160,18 @@ function Users() {
           onChange={(checked) => updateUser({ ...record, isActive: checked })}
         />
       ),
+      filters: [
+        {
+          text: "Yes",
+          value: true,
+        },
+        {
+          text: "No",
+          value: false,
+        },
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => record.isActive === value,
     },
   ];
 

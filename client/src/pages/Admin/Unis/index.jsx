@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Tooltip, message } from "antd";
+import { Button, Table, Tooltip, message, Input, DatePicker } from "antd";
 import UniForm from "./UniForm.jsx";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { DeleteUni, GetAllUnis } from "../../../apis/unis.js";
+import { SearchOutlined } from "@ant-design/icons";
+import { filterByYearRange } from "../../../helpers/columnFiltersHelper.js";
+import { getStateCode } from "../../../helpers/stateCodesHelper.js";
+
+const { RangePicker } = DatePicker;
 
 function Unis() {
   const dispatch = useDispatch(); // Redux dispatch function
@@ -57,21 +62,36 @@ function Unis() {
       key: "name",
       fixed: "left",
       width: 100,
-      className: " name-column",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div className="flex flex-col gap-2 p-2">
+          <input
+            placeholder="Enter keyword"
+            value={selectedKeys[0] || ""}
+            onChange={(e) => setSelectedKeys([e.target.value])}
+          />
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Bio",
       dataIndex: "bio",
       key: "bio",
       width: 200,
-      className: "",
     },
     {
       title: "Website URL",
       dataIndex: "websiteURL",
       key: "websiteURL",
       width: 150,
-      className: "",
     },
     {
       title: "Address",
@@ -79,17 +99,73 @@ function Unis() {
       key: "address",
       width: 150,
       render: (_, record) => (
-        <div className="">
-          {`${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`}
+        <div className="flex flex-col gap-y-1">
+          <span
+            className={`malaysia-state-flag-icon h-5 w-10 malaysia-state-flag-icon-${getStateCode(record?.state)}`}
+          ></span>
+          <span>{`${record?.address}, ${record?.postalCode}, ${record?.city}, ${record?.state}`}</span>
         </div>
       ),
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div className="flex flex-col gap-2 p-2">
+          <Input
+            placeholder="Enter keyword"
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          />
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
+        </div>
+      ),
+      /* filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#101820" : "rgba(0, 0, 0, 0.29)" }} />
+      ), */
+      onFilter: (value, record) => {
+        const combinedAddress =
+          `${record.address}, ${record.postalCode}, ${record.city}, ${record.state}`.toLowerCase();
+        return combinedAddress.includes(value.toLowerCase());
+      },
     },
     {
       title: "Established Year",
       dataIndex: "establishedYear",
       key: "establishedYear",
       width: 100,
-      className: "",
+      sorter: (a, b) => a.establishedYear - b.establishedYear,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div className="flex w-56 flex-col gap-2 p-2">
+          <RangePicker
+            picker="year"
+            value={selectedKeys[0]}
+            // Sets the selected years in selectedKeys.
+            onChange={(dates) => setSelectedKeys(dates ? [dates] : [])}
+          />
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => clearFilters()} size="small">
+              Reset
+            </Button>
+            <Button type="primary" onClick={() => confirm()} size="small">
+              Search
+            </Button>
+          </div>
+        </div>
+      ),
+      /* filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#101820" : "rgba(0, 0, 0, 0.29)" }} />
+      ), */
+      // onFilter extracts the start and end years from the value array, which contains moment objects.
+      onFilter: (value, record) => {
+        if (!value || value.length === 0) return true;
+        const [start, end] = value;
+        // The filterByYearRange function compares the record's established year with the selected year range.
+        return filterByYearRange(record, start, end);
+      },
     },
     {
       title: "Action",
