@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUsers } from "../redux/usersSlice.js";
 import { setLoading } from "../redux/loadersSlice.js";
-import { HiBadgeCheck } from "react-icons/hi";
-import { RiAdminFill } from "react-icons/ri";
 import { FaUserGraduate } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { RiShieldUserFill } from "react-icons/ri";
@@ -75,8 +73,18 @@ function ProtectedPage({ children }) {
               />
               <div className="flex items-center gap-x-1">
                 <span className="text-sm underline">{user?.name}</span>
-                <Tooltip title={user?.isAdmin ? "Admin" : "Verified Student"}>
-                  {user?.isAdmin ? <RiShieldUserFill /> : <FaUser />}
+                <Tooltip
+                  title={
+                    user?.isAdmin ? "Admin" : user.isVerifiedStudent ? "Verified Student" : "User"
+                  }
+                >
+                  {user?.isAdmin ? (
+                    <RiShieldUserFill />
+                  ) : user.isVerifiedStudent ? (
+                    <FaUserGraduate />
+                  ) : (
+                    <FaUser />
+                  )}
                 </Tooltip>
               </div>
             </div>
