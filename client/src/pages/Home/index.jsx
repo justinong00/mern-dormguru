@@ -24,7 +24,7 @@ function Home() {
   }, []);
 
   return (
-    <div className="h-screen-4/5 flex flex-col bg-gray-100 md:flex-row">
+    <div className="h-screen-4/5 flex flex-col gap-4 bg-gray-100 md:flex-row">
       {/* Image Container */}
       <div className="relative hidden flex-1 items-center justify-end bg-gray-200 md:flex">
         <img
@@ -34,7 +34,7 @@ function Home() {
         />
       </div>
       {/* Text Container */}
-      <div className="xs:justify-center xs:p-8 flex flex-1 flex-col justify-start px-8 py-12">
+      <div className="xxs:p-8 flex flex-1 flex-col justify-start px-4 py-4 md:justify-center">
         <h1 className="mb-6 text-3xl font-bold text-gray-800 md:text-4xl xl:text-5xl">
           Explore University Dorm Reviews
         </h1>
