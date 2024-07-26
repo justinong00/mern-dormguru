@@ -575,9 +575,9 @@ function DormInfo() {
                 {/* User Info */}
                 <div className="flex items-center gap-5">
                   <img
-                    src="https://pagedone.io/asset/uploads/1704349572.png"
-                    alt="John image"
-                    className="h-14 w-14"
+                    src={`${review?.createdBy?.profilePicture}`}
+                    alt="User Profile Picture"
+                    className="h-14 w-14 rounded-full"
                   />
                   <div className="flex flex-col">
                     <div className="xxs:flex-row flex flex-col gap-2">
