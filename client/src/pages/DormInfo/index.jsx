@@ -21,6 +21,8 @@ import { getStateCode } from "../../helpers/stateCodesHelper.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faFaceFrown, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
 import countryList from "react-select-country-list";
+import VerifiedStudentBadge from "./../../components/VerifiedStudentBadge";
+import { className } from "classnames";
 
 function DormInfo() {
   const [dorm, setDorm] = useState([]);
@@ -571,7 +573,12 @@ function DormInfo() {
                     className="h-14 w-14"
                   />
                   <div className="flex flex-col">
-                    <h6 className="text-lg font-semibold leading-8">{review?.createdBy?.name}</h6>
+                    <div className="xxs:flex-row flex flex-col gap-2">
+                      <h6 className="text-lg font-semibold leading-8">{review?.createdBy?.name}</h6>
+                      {review?.createdBy?.isVerifiedStudent && (
+                        <VerifiedStudentBadge className="xxs:max-w-none max-w-32" />
+                      )}
+                    </div>
                     <div className="flex gap-2 max-[400px]:mt-2 max-[400px]:flex-col">
                       {/* Country */}
                       <span className={`fi fi-${review?.createdBy?.country?.toLowerCase()}`}></span>
