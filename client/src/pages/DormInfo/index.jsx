@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, message, Rate, Select } from "antd";
+import { Button, message, Rate, Select, Tooltip } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
@@ -472,13 +472,20 @@ function DormInfo() {
               {/* Buttons */}
               <div className="col-span-12 max-lg:mt-8 md:col-span-4 md:pl-8">
                 <div className="flex h-full w-full flex-col items-center justify-center">
-                  <Button
-                    type="primary"
-                    onClick={() => setShowReviewForm(true)}
-                    className="mb-2 w-full whitespace-nowrap"
+                  <Tooltip
+                    title={
+                      !user.isVerifiedStudent ? "Sign up with school email to submit a review" : ""
+                    }
                   >
-                    Add Review
-                  </Button>
+                    <Button
+                      disabled={!user.isVerifiedStudent}
+                      type="primary"
+                      onClick={() => setShowReviewForm(true)}
+                      className="mb-2 w-full whitespace-nowrap"
+                    >
+                      Add Review
+                    </Button>
+                  </Tooltip>
                   <Button
                     disabled={reviews.length === 0}
                     type="default"
