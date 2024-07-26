@@ -282,6 +282,7 @@ function Dorms() {
           showDormForm={showDormForm}
           setShowDormForm={setShowDormForm}
           selectedDorm={selectedDorm}
+          setSelectedDorm={setSelectedDorm}
           reloadDorms={fetchDorms}
         />
       )}

@@ -9,23 +9,27 @@ import { getBase64, isJpgOrPng, isLt2MB } from "../helpers/imageHelper.js";
  * @returns {Promise} - A promise that resolves if the file list is not empty,
  *                      and rejects with the error message "Required" if it is empty.
  */
-export const customValidateFileList = (fileList, value) => {
+export const customValidateFileList = (fileList, value, initialImage) => {
   // Log the length of the file list
   console.log("InHelper: ", fileList.length);
-  // Handle when user in Edit state and does not update existing image but other fields
-  if (value) {
+  console.log("InitialImage: ", initialImage);
+
+  // If there is an initial image (user in edit state) and the file list is empty, but value is present, resolve the promise
+  if (initialImage && fileList.length === 0 && value) {
     return Promise.resolve();
   }
-  // Check if the file list is empty
+
+  // If there is no initial image or the initial image is removed, check the file list
   if (fileList.length === 0) {
     // If the file list is empty, reject the promise with the error message "Required"
     return Promise.reject("Required");
   }
+
   // If the file list is not empty, resolve the promise
   return Promise.resolve();
 };
 
-const ImageUpload = ({ fileList, setFileList, selectedItem, form, fieldName }) => {
+const ImageUpload = ({ fileList, setFileList, selectedItem, form, fieldName, setSelectedItem }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileListUpdated, setFileListUpdated] = useState(false);
@@ -42,7 +46,11 @@ const ImageUpload = ({ fileList, setFileList, selectedItem, form, fieldName }) =
     if (file.status === "removed") {
       setFileList([]);
       if (selectedItem?.[fieldName]) {
-        selectedItem[fieldName] = "";
+        // Update the selectedItem state using setSelectedItem function
+        setSelectedItem((prevSelectedItem) => ({
+          ...prevSelectedItem,
+          [fieldName]: "",
+        }));
       }
     } else {
       if (!isJpgOrPng(file) || !isLt2MB(file)) {

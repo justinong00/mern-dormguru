@@ -23,7 +23,7 @@ import ImageUpload, { customValidateFileList } from "../../../components/ImageUp
  * @param {Object} selectedUni - The university to be edited (if any).
  * @param {function} reloadUnis - Function to reload the list of universities.
  */
-function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
+function UniForm({ showUniForm, setShowUniForm, selectedUni, setSelectedUni, reloadUnis }) {
   const dispatch = useDispatch(); // Redux dispatch function
   const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
@@ -228,7 +228,8 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
                 {
                   required: true,
                   // Custom validator to check if fileList is not empty from index.js in helper folder
-                  validator: (_, value) => customValidateFileList(fileList, value),
+                  validator: (_, value) =>
+                    customValidateFileList(fileList, value, selectedUni?.logoPic),
                 },
               ]}
             >
@@ -238,6 +239,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, reloadUnis }) {
                 selectedItem={selectedUni}
                 form={form}
                 fieldName="logoPic"
+                setSelectedItem={setSelectedUni}
               />
             </Form.Item>
           </Col>

@@ -147,7 +147,7 @@ function Register() {
               rules={[
                 {
                   required: true,
-                  validator: (_, value) => customValidateFileList(fileList, value),
+                  validator: (_, value) => customValidateFileList(fileList, value, null),
                 },
               ]}
             >
@@ -157,6 +157,7 @@ function Register() {
                 selectedItem={null}
                 form={form}
                 fieldName="profilePicture"
+                setSelectedItem={null}
               />
             </Form.Item>
 
