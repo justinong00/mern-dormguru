@@ -490,7 +490,7 @@ function DormInfo() {
                   </Tooltip>
                   <Button
                     disabled={reviews.length === 0}
-                    type="default"
+                    type={!user.isVerifiedStudent ? "primary" : "default"}
                     onClick={toggleReviews}
                     className="w-full whitespace-nowrap"
                   >
