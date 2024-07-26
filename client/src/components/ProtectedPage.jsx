@@ -75,12 +75,12 @@ function ProtectedPage({ children }) {
                 <span className="text-sm underline">{user?.name}</span>
                 <Tooltip
                   title={
-                    user?.isAdmin ? "Admin" : user.isVerifiedStudent ? "Verified Student" : "User"
+                    user?.isAdmin ? "Admin" : user?.isVerifiedStudent ? "Verified Student" : "User"
                   }
                 >
                   {user?.isAdmin ? (
                     <RiShieldUserFill />
-                  ) : user.isVerifiedStudent ? (
+                  ) : user?.isVerifiedStudent ? (
                     <FaUserGraduate />
                   ) : (
                     <FaUser />
