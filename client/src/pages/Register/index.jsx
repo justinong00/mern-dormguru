@@ -10,6 +10,7 @@ import { countryOptions } from "../../helpers/countryOptions.jsx";
 import { AddProfilePicture } from "../../apis/images.js";
 import ImageUpload, { customValidateFileList } from "../../components/ImageUpload.jsx";
 import { FaUserGraduate } from "react-icons/fa";
+import VerifiedStudentBadge from "../../components/VerifiedStudentBadge.jsx";
 
 /** Register component for user registration. *
  *
@@ -93,10 +94,7 @@ function Register() {
                 We want DormGuru to be a trusted platform. Sign up with your school email to leave
                 reviews and earn this badge:
               </div>
-              <div className="text-xxs flex items-center gap-x-2 rounded-md border bg-black px-2 py-1 text-white xl:text-xs">
-                <span>Verified Student</span>
-                <FaUserGraduate />
-              </div>
+              <VerifiedStudentBadge />
             </div>
           </div>
           <Form

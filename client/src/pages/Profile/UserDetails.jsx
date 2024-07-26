@@ -10,6 +10,7 @@ import { countryOptions } from "../../helpers/countryOptions.jsx";
 import ImageUpload, { customValidateFileList } from "../../components/ImageUpload.jsx";
 import { AddProfilePicture } from "../../apis/images.js";
 import { FaUserGraduate } from "react-icons/fa";
+import VerifiedStudentBadge from "../../components/VerifiedStudentBadge.jsx";
 
 function UserDetails() {
   const dispatch = useDispatch();
@@ -100,12 +101,7 @@ function UserDetails() {
           label={
             <div className="mb-1 flex items-center gap-2">
               <span>Name</span>
-              {user.isVerifiedStudent && (
-                <div className="text-xxs flex items-center gap-x-2 rounded-md border bg-black px-2 py-1 text-white xl:text-xs">
-                  <span>Verified Student</span>
-                  <FaUserGraduate />
-                </div>
-              )}
+              {user.isVerifiedStudent && <VerifiedStudentBadge />}
             </div>
           }
           name="name"
