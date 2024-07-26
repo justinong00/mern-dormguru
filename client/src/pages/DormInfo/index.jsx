@@ -20,6 +20,7 @@ import "/node_modules/malaysia-state-flag-icon-css/css/flag-icon.min.css";
 import { getStateCode } from "../../helpers/stateCodesHelper.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faFaceFrown, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
+import countryList from "react-select-country-list";
 
 function DormInfo() {
   const [dorm, setDorm] = useState([]);
@@ -573,9 +574,9 @@ function DormInfo() {
                     <h6 className="text-lg font-semibold leading-8">{review?.createdBy?.name}</h6>
                     <div className="flex gap-2 max-[400px]:mt-2 max-[400px]:flex-col">
                       {/* Country */}
-                      <span className="fi fi-my"></span>
+                      <span className={`fi fi-${review?.createdBy?.country?.toLowerCase()}`}></span>
                       <span className="text-lg font-semibold leading-8">
-                        British Virgin Islands
+                        {`${countryList().getLabel(review?.createdBy?.country)}`}
                       </span>
                     </div>
                   </div>
