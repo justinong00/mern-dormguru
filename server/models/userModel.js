@@ -31,6 +31,11 @@ const userSchema = new Schema(
       required: true,
       default: false,
     },
+    isVerifiedStudent: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       required: true,

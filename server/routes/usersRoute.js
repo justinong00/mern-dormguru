@@ -14,12 +14,16 @@ router.post('/register', async (req, res) => {
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists) throw new Error('User with this email already exists');
 
+    // Check if email ends with '.edu.my'
+    const isVerifiedStudent = req.body.email.endsWith('.edu.my');
+
     // Hash Password
     const salt = await brcypt.genSalt(10);
     req.body.password = await brcypt.hash(req.body.password, salt);
 
-    // Create new user
-    await User.create(req.body);
+    // Create new user with the isVerifiedStudent flag
+    await User.create({ ...req.body, isVerifiedStudent });
+
     res
       .status(201)
       .json({ message: 'User registered successfully', success: true });

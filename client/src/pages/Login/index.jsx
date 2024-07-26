@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { Form, Button, message } from 'antd';
-import { Link } from 'react-router-dom';
-import { LoginUser } from '../../apis/users.js';
-import { useNavigate } from 'react-router-dom';
-import { antValidationError } from '../../helpers/index.js';
-import { useDispatch } from 'react-redux';
-import { setLoading } from '../../redux/loadersSlice.js';
+import React, { useEffect } from "react";
+import { Form, Button, message } from "antd";
+import { Link } from "react-router-dom";
+import { LoginUser } from "../../apis/users.js";
+import { useNavigate } from "react-router-dom";
+import { antValidationError, validationRules } from "../../helpers/index.js";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../../redux/loadersSlice.js";
 
 /** Login component for user login.
  *
@@ -29,16 +29,16 @@ function Login() {
 
       // Call the LoginUser function from users.js to log in the user
       const response = await LoginUser(values);
-      dispatch(setLoading(false));  // Sets the loading state to false
+      dispatch(setLoading(false)); // Sets the loading state to false
       console.log(values); // Log form values on submission
       // Store the JWT token in the local storage
-      localStorage.setItem('token', response.data);
+      localStorage.setItem("token", response.data);
 
       // Displays a success message using ant design's message component upon successful login
       message.success(response.message);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      dispatch(setLoading(false));  // Sets the loading state to false
+      dispatch(setLoading(false)); // Sets the loading state to false
       console.error(error); // Log error on submission
       // Displays an error message using ant design's message component upon failed login
       message.error(error.message);
@@ -47,17 +47,17 @@ function Login() {
 
   // If the user is already logged in, don't allow them to access the login page
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('/');
+    if (localStorage.getItem("token")) {
+      navigate("/");
     }
   }, []);
 
   return (
-    <div className="grid grid-cols-2 h-screen">
+    <div className="grid h-screen grid-cols-2">
       {/* Background section */}
       <div className="bg-primary flex flex-col items-center justify-center">
-        <h1 className="text-8xl text-yellow-500 font-semibold">DormGuru</h1>
-        <span className="text-md text-gray-300 mt-2">
+        <h1 className="text-8xl font-semibold text-yellow-500">DormGuru</h1>
+        <span className="text-md mt-2 text-gray-300">
           One stop for all your university dorm ratings and reviews in Malaysia
         </span>
       </div>
@@ -65,30 +65,22 @@ function Login() {
       {/* Login form section */}
       <div className="flex items-center justify-center">
         <div className="w-[400px]">
-          <h1 className="text-2xl my-5 mb-2">Login To Your Account</h1>
+          <h1 className="my-5 mb-2 text-2xl">Login To Your Account</h1>
           <hr />
           {/* Ant Design form component */}
-          <Form
-            layout="vertical"
-            className="flex flex-col gap-5 mt-3"
-            onFinish={onFinish}
-          >
+          <Form layout="vertical" className="mt-3 flex flex-col gap-5" onFinish={onFinish}>
             {/* Form item for email */}
-            <Form.Item label="Email" name="email" rules={antValidationError}>
+            <Form.Item label="Email" name="email" rules={validationRules["email"]}>
               <input type="email" />
             </Form.Item>
 
             {/* Form item for password */}
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={antValidationError}
-            >
+            <Form.Item label="Password" name="password" rules={validationRules["password"]}>
               <input type="password" />
             </Form.Item>
 
             {/* Form submit and register section */}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-y-2">
               {/* Submit button */}
               <Button type="primary" htmlType="submit" block>
                 Login
@@ -105,4 +97,3 @@ function Login() {
 }
 
 export default Login;
-

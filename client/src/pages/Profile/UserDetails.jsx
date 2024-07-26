@@ -9,6 +9,8 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { countryOptions } from "../../helpers/countryOptions.jsx";
 import ImageUpload, { customValidateFileList } from "../../components/ImageUpload.jsx";
 import { AddProfilePicture } from "../../apis/images.js";
+import { FaUserGraduate } from "react-icons/fa";
+import VerifiedStudentBadge from "../../components/VerifiedStudentBadge.jsx";
 
 function UserDetails() {
   const dispatch = useDispatch();
@@ -95,7 +97,16 @@ function UserDetails() {
         </Form.Item>
 
         {/* Name */}
-        <Form.Item label="Name" name="name" rules={validationRules["name"]}>
+        <Form.Item
+          label={
+            <div className="mb-1 flex items-center gap-2">
+              <span>Name</span>
+              {user.isVerifiedStudent && <VerifiedStudentBadge />}
+            </div>
+          }
+          name="name"
+          rules={validationRules["name"]}
+        >
           <Input type="text" />
         </Form.Item>
 

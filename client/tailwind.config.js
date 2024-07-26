@@ -45,6 +45,9 @@ export default {
         "screen-3/5": "60vh",
         "screen-4/5": "80vh",
       },
+      fontSize: {
+        xxs: "0.6rem",
+      },
     },
   },
   plugins: [require("@tailwindcss/aspect-ratio")],

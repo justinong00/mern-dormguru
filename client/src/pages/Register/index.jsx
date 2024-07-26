@@ -9,6 +9,8 @@ import { setLoading } from "../../redux/loadersSlice.js";
 import { countryOptions } from "../../helpers/countryOptions.jsx";
 import { AddProfilePicture } from "../../apis/images.js";
 import ImageUpload, { customValidateFileList } from "../../components/ImageUpload.jsx";
+import { FaUserGraduate } from "react-icons/fa";
+import VerifiedStudentBadge from "../../components/VerifiedStudentBadge.jsx";
 
 /** Register component for user registration. *
  *
@@ -83,9 +85,18 @@ function Register() {
 
       {/* Form section */}
       <div className="flex items-center justify-center">
-        <div className="w-[400px]">
+        <div className="w-4/6">
           <h1 className="my-5 mb-2 text-2xl">Register Your Account</h1>
           <hr />
+          <div className="border-primary mt-3 rounded-xl border-x-0 border-y-2 border-b-0 border-solid bg-gray-100 p-6 shadow-md">
+            <div className="flex flex-col items-center gap-2 sm:justify-between lg:flex-row">
+              <div className="text-center text-xs lg:w-6/12 lg:text-left xl:w-7/12 xl:text-sm 2xl:w-8/12">
+                We want DormGuru to be a trusted platform. Sign up with your school email to leave
+                reviews and earn this badge:
+              </div>
+              <VerifiedStudentBadge />
+            </div>
+          </div>
           <Form
             form={form}
             layout="vertical"

@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^2.2.5",
     "antd": "^5.18.0",
     "axios": "^1.7.2",
+    "classnames": "^2.5.1",
     "flag-icons": "^7.2.3",
     "malaysia-postcodes": "^2.3.0",
     "malaysia-state-flag-icon-css": "github:jwarby/malaysia-state-flag-icon-css",
