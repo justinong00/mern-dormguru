@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { Tabs } from "antd";
 import { useNavigate } from "react-router-dom";
 import Reviews from "./Reviews/index.jsx";
+import Profile from "./Profile/index.jsx";
 
 /** Admin component responsible for rendering the admin interface
  *
@@ -39,6 +40,11 @@ function Admin() {
       key: "4",
       label: "Reviews", // Label for the tab
       children: <Reviews />, // Content component for the tab
+    },
+    {
+      key: "5",
+      label: "Profile", // Label for the tab
+      children: <Profile />, // Content component for the tab
     },
   ];
 

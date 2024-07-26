@@ -240,6 +240,10 @@ table {
   font-weight: 600;
 }
 
+:where(.css-dev-only-do-not-override-1ivoayq).ant-input-affix-wrapper .anticon.ant-input-password-icon {
+  color: black;
+}
+
 /* Quick search & filter */
 .quick-search-results {
   height: 500px;
