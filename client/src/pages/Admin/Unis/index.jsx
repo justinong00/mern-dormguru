@@ -226,6 +226,7 @@ function Unis() {
           showUniForm={showUniForm} // Control the visibility of the UniForm
           setShowUniForm={setShowUniForm} // Function to hide the UniForm
           selectedUni={selectedUni} // Selected university for editing
+          setSelectedUni={setSelectedUni} // Function to set the selected university for editing
           reloadUnis={fetchUnis} // Function to reload universities
         />
       )}

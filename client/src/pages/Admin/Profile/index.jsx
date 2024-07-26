@@ -1,23 +1,24 @@
 import { Button, Checkbox, Form, Input, message, Select } from "antd";
 import React, { useEffect, useState } from "react";
-import { validationRules } from "../../helpers/index.js";
+import { validationRules } from "../../../helpers/index.js";
 import { useDispatch, useSelector } from "react-redux";
-import { setUsers } from "../../redux/usersSlice.js";
-import { setLoading } from "../../redux/loadersSlice.js";
-import { UpdateUser } from "../../apis/users.js";
+import { setUsers } from "../../../redux/usersSlice.js";
+import { setLoading } from "../../../redux/loadersSlice.js";
+import { UpdateUser } from "../../../apis/users.js";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { countryOptions } from "../../helpers/countryOptions.jsx";
-import ImageUpload, { customValidateFileList } from "../../components/ImageUpload.jsx";
-import { AddProfilePicture } from "../../apis/images.js";
+import { countryOptions } from "../../../helpers/countryOptions.jsx";
+import ImageUpload, { customValidateFileList } from "../../../components/ImageUpload.jsx";
+import { AddProfilePicture } from "../../../apis/images.js";
 
-function UserDetails() {
+function Profile() {
   const dispatch = useDispatch();
   const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const [localUser, setLocalUser] = useState({}); // State to store the user state from the Redux store so that we can pass the current state and function to the ImageUpload component
   const [updatePassword, setUpdatePassword] = useState(false); // State to toggle password fields
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
-
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
+
+  // Set the localUser state on component mount
   useEffect(() => {
     setLocalUser(user);
   }, []);
@@ -194,4 +195,4 @@ function UserDetails() {
   );
 }
 
-export default UserDetails;
+export default Profile;

@@ -90,19 +90,19 @@ function Reviews() {
       key: "dorm",
       width: 100,
       fixed: "left",
-      render: (_, record) => record.dorm.name,
+      render: (_, record) => record.dorm?.name,
       filters: dormFilters,
       filterSearch: true,
-      onFilter: (value, record) => record.dorm.name === value,
+      onFilter: (value, record) => record.dorm?.name === value,
     },
     {
       title: "University",
       key: "university",
       width: 100,
-      render: (_, record) => record.dorm.parentUniversity.name,
+      render: (_, record) => record.dorm?.parentUniversity?.name,
       filters: universityFilters,
       filterSearch: true,
-      onFilter: (value, record) => record.dorm.parentUniversity.name === value,
+      onFilter: (value, record) => record.dorm?.parentUniversity?.name === value,
     },
     {
       title: "Rating",
@@ -126,16 +126,16 @@ function Reviews() {
       width: 120,
       render: (_, record) => (
         <div>
-          {record.roomsStayed.map((room, index) => (
+          {record.roomsStayed?.map((room, index) => (
             <div key={room}>
               {roomOptions.find((roomOption) => roomOption.value === room)?.label}
-              {index < record.roomsStayed.length - 1 ? ", " : ""}
+              {index < record.roomsStayed?.length - 1 ? ", " : ""}
             </div>
           ))}
         </div>
       ),
       filters: roomFilters,
-      onFilter: (value, record) => record.roomsStayed.includes(value),
+      onFilter: (value, record) => record.roomsStayed?.includes(value),
     },
     {
       title: "Stay Duration",
@@ -316,7 +316,7 @@ function Reviews() {
       dataIndex: "createdBy",
       key: "createdBy",
       width: 80,
-      render: (_, record) => record.createdBy.name,
+      render: (_, record) => record.createdBy?.name,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div className="flex flex-col gap-2 p-2">
           <input
@@ -335,7 +335,7 @@ function Reviews() {
         </div>
       ),
       onFilter: (value, record) =>
-        record.createdBy.name.toLowerCase().includes(value.toLowerCase()),
+        record.createdBy?.name.toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Likes",
@@ -365,7 +365,7 @@ function Reviews() {
               onClick={(e) => {
                 // Stop event bubbling to the parent card to prevent it from triggering the onClick event
                 e.stopPropagation();
-                deleteReview(record._id, record.dorm._id);
+                deleteReview(record._id, record.dorm?._id);
               }}
             ></i>
           </Tooltip>
@@ -386,7 +386,7 @@ function Reviews() {
         onRow={(record) => {
           return {
             onClick: () => {
-              navigate(`/dorm/${record.dorm._id}#${record._id}`);
+              navigate(`/dorm/${record.dorm?._id}#${record._id}`);
             },
             style: {
               cursor: "pointer",

@@ -10,7 +10,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    profilePic: {
+    profilePicture: {
       type: String,
       required: false,
     },
@@ -19,6 +19,10 @@ const userSchema = new Schema(
       required: true,
     },
     password: {
+      type: String,
+      required: true,
+    },
+    country: {
       type: String,
       required: true,
     },

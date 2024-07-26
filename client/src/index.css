@@ -33,6 +33,11 @@ input {
   align-items: center;
 }
 
+.ant-input {
+  font-family: inherit;
+  font-weight: inherit;
+}
+
 .ant-input-password {
   border-radius: 2px !important;
   padding-top: 0px;
@@ -233,6 +238,10 @@ table {
 
 .ant-table-column-title {
   font-weight: 600;
+}
+
+:where(.css-dev-only-do-not-override-1ivoayq).ant-input-affix-wrapper .anticon.ant-input-password-icon {
+  color: black;
 }
 
 /* Quick search & filter */

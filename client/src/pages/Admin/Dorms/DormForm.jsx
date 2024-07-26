@@ -20,7 +20,7 @@ import ImageUpload, { customValidateFileList } from "../../../components/ImageUp
 import { roomOptions } from "../../../helpers/roomOptions.js"; // Options for Rooms Offered
 import { dormTypeOptions } from "../../../helpers/dormTypeOptions.js";
 
-function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) {
+function DormForm({ showDormForm, setShowDormForm, selectedDorm, setSelectedDorm, reloadDorms }) {
   const dispatch = useDispatch(); // Redux dispatch function
   const [form] = Form.useForm(); // Create a form instance using Ant Design's useForm hook
   const [fileList, setFileList] = useState([]); // State to store the uploaded file list
@@ -195,7 +195,8 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
           rules={[
             {
               required: true,
-              validator: (_, value) => customValidateFileList(fileList, value),
+              validator: (_, value) =>
+                customValidateFileList(fileList, value, selectedDorm?.coverPhotos),
             },
           ]}
         >
@@ -205,6 +206,7 @@ function DormForm({ showDormForm, setShowDormForm, selectedDorm, reloadDorms }) 
             selectedItem={selectedDorm}
             form={form}
             fieldName="coverPhotos"
+            setSelectedItem={setSelectedDorm}
           />
         </Form.Item>
 

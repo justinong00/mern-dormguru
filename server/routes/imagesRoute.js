@@ -52,22 +52,65 @@ const upload = multer({ storage: storage }); // Multer instance with storage con
 router.post("/", authMiddleware, upload.single("image"), async (req, res) => {
   try {
     // Extract university or dorm name from the request body
-    const { uniName, dormName } = req.body;
+    const { uniName, dormName, registerName } = req.body;
     console.log("Request Body:", req.body); // Log the request body for debugging
 
     // Determine the correct destination folder based on the presence of uniName or dormName
-    const folder = uniName ? "uniLogos" : dormName ? "dormCoverPhotos" : null;
-
+    const folder = uniName ? "uniLogos" : dormName ? "dormCoverPhotos" : registerName ? "profilePhotos" : null;
+    
     if (!folder) {
       // Throw an error if neither uniName nor dormName is present in the request body
-      throw new Error("Request body must contain either 'uniName' or 'dormName'");
+      throw new Error("Request body must contain either 'uniName' or 'dormName' or 'registerName'");
     }
 
     const currentDateTime = dayjs().format("YYYY-MM-DD_HH-mm-ss"); // Generate a timestamp for unique filenames
 
     const originalName = req.file.originalname; // Get the original filename of the uploaded file
     const fileExtension = originalName.substring(originalName.lastIndexOf(".")); // Extract the file extension
-    const fileName = `${currentDateTime}_${uniName || dormName}${fileExtension}`; // Construct the new filename
+    const fileName = `${currentDateTime}_${uniName || dormName || registerName}${fileExtension}`; // Construct the new filename
+    const filePath = `../client/public/${folder}/${fileName}`; // Determine the full path to save the file
+
+    // Write the file from memory to the correct destination with the new filename
+    fs.writeFileSync(filePath, req.file.buffer);
+    console.log("File Path:", filePath); // Log the file path for debugging
+
+    // Upload the image to Cloudinary
+    const result = await cloudinaryConfig.uploader.upload(filePath, {
+      folder: `dormguru/${folder}`, // Cloudinary folder name
+      use_filename: false, // Do not use the original filename
+      unique_filename: false, // Use our custom filename handling
+    });
+    const imageURL = result.secure_url; // Get the secure URL of the uploaded image from Cloudinary
+    console.log("Image URL:", imageURL); // Log the image URL for debugging
+
+    // Respond with the URL of the uploaded image
+    res.status(201).json({ message: "Image uploaded successfully", success: true, data: imageURL });
+  } catch (err) {
+    // Handle errors and respond with a 500 status code
+    res.status(500).json({ message: err.message, success: false });
+  }
+});
+
+// Same as post("/") route but removed authMiddleware to allow for uploading of profile pictures in registration page
+router.post("/add-profile-picture", upload.single("image"), async (req, res) => {
+  try {
+    // Extract university or dorm name from the request body
+    const { uniName, dormName, registerName } = req.body;
+    console.log("Request Body:", req.body); // Log the request body for debugging
+
+    // Determine the correct destination folder based on the presence of uniName or dormName
+    const folder = uniName ? "uniLogos" : dormName ? "dormCoverPhotos" : registerName ? "profilePhotos" : null;
+    
+    if (!folder) {
+      // Throw an error if neither uniName nor dormName is present in the request body
+      throw new Error("Request body must contain either 'uniName' or 'dormName' or 'registerName'");
+    }
+
+    const currentDateTime = dayjs().format("YYYY-MM-DD_HH-mm-ss"); // Generate a timestamp for unique filenames
+
+    const originalName = req.file.originalname; // Get the original filename of the uploaded file
+    const fileExtension = originalName.substring(originalName.lastIndexOf(".")); // Extract the file extension
+    const fileName = `${currentDateTime}_${uniName || dormName || registerName}${fileExtension}`; // Construct the new filename
     const filePath = `../client/public/${folder}/${fileName}`; // Determine the full path to save the file
 
     // Write the file from memory to the correct destination with the new filename
