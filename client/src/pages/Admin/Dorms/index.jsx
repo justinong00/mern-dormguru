@@ -93,7 +93,7 @@ function Dorms() {
           </div>
         </div>
       ),
-      onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
+      onFilter: (value, record) => record.name?.toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Description",
@@ -147,16 +147,16 @@ function Dorms() {
       width: 150,
       render: (_, record) => (
         <div>
-          {record.roomsOffered.map((room, index) => (
+          {record.roomsOffered?.map((room, index) => (
             <div key={room}>
               {roomOptions.find((roomOption) => roomOption.value === room)?.label}
-              {index < record.roomsOffered.length - 1 ? ", " : ""}
+              {index < record.roomsOffered?.length - 1 ? ", " : ""}
             </div>
           ))}
         </div>
       ),
       filters: roomFilters,
-      onFilter: (value, record) => record.roomsOffered.includes(value),
+      onFilter: (value, record) => record.roomsOffered?.includes(value),
     },
     {
       title: "Parent University",
@@ -182,7 +182,7 @@ function Dorms() {
         </div>
       ),
       onFilter: (value, record) =>
-        record.parentUniversity.name.toLowerCase().includes(value.toLowerCase()),
+        record.parentUniversity?.name?.toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Dorm Type",

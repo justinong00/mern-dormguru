@@ -57,7 +57,7 @@ function Reviews() {
       render: (_, record) => {
         return (
           <img
-            src={record.dorm.coverPhotos || ""}
+            src={record.dorm?.coverPhotos || ""}
             alt="coverPhotos"
             className="h-20 w-20 object-contain"
           />
@@ -70,7 +70,7 @@ function Reviews() {
       key: "dorm",
       width: 100,
       fixed: "left",
-      render: (_, record) => record.dorm.name,
+      render: (_, record) => record.dorm?.name,
     },
     {
       title: "Rating",
@@ -86,10 +86,10 @@ function Reviews() {
       width: 120,
       render: (_, record) => (
         <div>
-          {record.roomsStayed.map((room, index) => (
+          {record.roomsStayed?.map((room, index) => (
             <div key={room}>
               {roomOptions.find((roomOption) => roomOption.value === room)?.label}
-              {index < record.roomsStayed.length - 1 ? ", " : ""}
+              {index < record.roomsStayed?.length - 1 ? ", " : ""}
             </div>
           ))}
         </div>
