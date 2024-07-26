@@ -433,7 +433,9 @@ function DormInfo() {
                 <div className="flex h-full w-full flex-col items-center justify-evenly max-sm:gap-4 sm:flex-row">
                   {/* Average Rating */}
                   <div className="flex flex-col items-center justify-center border-gray-200 sm:border-r sm:pr-3">
-                    <h2 className="mb-4 text-center text-5xl font-bold">{dorm?.averageRating}</h2>
+                    <h2 className="mb-4 text-center text-5xl font-bold">
+                      {dorm.averageRating === 0 ? "0" : dorm.averageRating?.toFixed(1)}
+                    </h2>
                     <div className="mb-4 flex items-center gap-3">
                       <Rate
                         disabled

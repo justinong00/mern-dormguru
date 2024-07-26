@@ -88,7 +88,8 @@ function Filters({ filters, setFilters }) {
                   <div className="w-full">
                     {/* dorm rating and name */}
                     <p className="mb-1 text-lg font-semibold">
-                      {dorm.averageRating} <StarFilled style={{ color: "#fadb14" }} /> {dorm.name}
+                      {dorm.averageRating === 0 ? "0" : dorm.averageRating.toFixed(1)}{" "}
+                      <StarFilled style={{ color: "#fadb14" }} /> {dorm.name}
                     </p>
 
                     {/* dorm university */}
