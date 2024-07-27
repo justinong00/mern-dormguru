@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Form, Button, message } from "antd";
+import { Form, Button, message, Input } from "antd";
 import { Link } from "react-router-dom";
 import { LoginUser } from "../../apis/users.js";
 import { useNavigate } from "react-router-dom";
@@ -53,30 +53,32 @@ function Login() {
   }, []);
 
   return (
-    <div className="grid h-screen grid-cols-2">
+    <div className="flex flex-col md:min-h-screen md:flex-row">
       {/* Background section */}
-      <div className="bg-primary flex flex-col items-center justify-center">
-        <h1 className="text-8xl font-semibold text-yellow-500">DormGuru</h1>
-        <span className="text-md mt-2 text-gray-300">
+      <div className="bg-primary flex flex-1 flex-col items-center justify-center p-6 md:p-12">
+        <h1 className="text-4xl font-semibold text-yellow-500 md:text-6xl lg:text-7xl xl:text-8xl">
+          DormGuru
+        </h1>
+        <span className="text-md mt-2 text-center text-gray-300">
           One stop for all your university dorm ratings and reviews in Malaysia
         </span>
       </div>
 
-      {/* Login form section */}
-      <div className="flex items-center justify-center">
-        <div className="w-[400px]">
-          <h1 className="my-5 mb-2 text-2xl">Login To Your Account</h1>
+      {/* Form section */}
+      <div className="flex flex-1 items-center justify-center p-6 md:p-12">
+        <div className="w-full max-w-md">
+          <h1 className="my-5 mb-2 text-center text-2xl md:text-left">Login To Your Account</h1>
           <hr />
           {/* Ant Design form component */}
           <Form layout="vertical" className="mt-3 flex flex-col gap-5" onFinish={onFinish}>
             {/* Form item for email */}
             <Form.Item label="Email" name="email" rules={validationRules["email"]}>
-              <input type="email" />
+              <Input type="email" placeholder="Enter your email" />
             </Form.Item>
 
             {/* Form item for password */}
             <Form.Item label="Password" name="password" rules={validationRules["password"]}>
-              <input type="password" />
+              <Input.Password placeholder="Enter your password" />
             </Form.Item>
 
             {/* Form submit and register section */}
@@ -87,7 +89,9 @@ function Login() {
               </Button>
 
               {/* Link to register page */}
-              <Link to="/register">Don't have an account? Register here</Link>
+              <Link to="/register" className="text-center md:text-left">
+                Don't have an account? Register here
+              </Link>
             </div>
           </Form>
         </div>
