@@ -13,7 +13,14 @@ import {
   renderRatingBar,
 } from "../../helpers/ratingHelpers.jsx";
 import { formatDateToMonthDayYear } from "../../helpers/index.js";
-import { LikeOutlined, LikeFilled, FlagOutlined, FlagFilled } from "@ant-design/icons";
+import {
+  LikeOutlined,
+  LikeFilled,
+  FlagOutlined,
+  FlagFilled,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { roomOptions } from "../../helpers/roomOptions.js";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import "/node_modules/malaysia-state-flag-icon-css/css/flag-icon.min.css";
@@ -22,18 +29,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding, faFaceFrown, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
 import countryList from "react-select-country-list";
 import VerifiedStudentBadge from "./../../components/VerifiedStudentBadge";
-import { className } from "classnames";
 
 function DormInfo() {
   const [dorm, setDorm] = useState([]);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const [userReview, setUserReview] = useState(null);
   const [visibleReviews, setVisibleReviews] = useState([]);
   const [allReviewsShown, setAllReviewsShown] = useState(false);
   // Add state for sorting criteria
   const [sortCriteria, setSortCriteria] = useState("mostRecent");
   // Add state for checking if there are no reviews
-  const [noReviews, setNoReviews] = useState(false);
+  const [noReviews, setNoReviews] = useState(true);
   // Initialize ratingCounts state with a default value of {5: 0, 4: 0, 3: 0, 2: 0, 1: 0} to store the number of reviews for each rating when calling countNumberOfReviewsForEachRating() during fetch
   const [ratingCounts, setRatingCounts] = useState({
     5: 0,
@@ -47,6 +54,15 @@ function DormInfo() {
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const { id } = useParams();
   const { Option } = Select;
+
+  // Define edit and delete handlers
+  const editReview = (reviewId) => {
+    // Handle review edit action
+  };
+
+  const deleteReview = (reviewId) => {
+    // Handle review delete action
+  };
 
   /** Fetches a specific dorm and its reviews from the server. Updates the state with the fetched data.
    *
@@ -62,8 +78,19 @@ function DormInfo() {
         GetAllReviewsForDorm(id),
       ]);
       setDorm(dormResponse.data);
-      setReviews(reviewsResponse.data);
-      setVisibleReviews(reviewsResponse.data.slice(0, 2)); // Display only 2 reviews initially
+      /* 
+      // Sort reviews to put user's review first
+      const userFirstReviews = reviewsResponse.data.sort((a, b) => {
+        if (a.createdBy._id === user._id) return -1;
+        if (b.createdBy._id === user._id) return 1;
+        return 0;
+      }); */
+
+      setReviews(reviewsResponse.data.filter((review) => review.createdBy._id !== user._id)); // Get all reviews
+      setUserReview(reviewsResponse.data.find((review) => review.createdBy._id === user._id)); // Get the user's review
+      setVisibleReviews(
+        reviewsResponse.data.filter((review) => review.createdBy._id !== user._id).slice(0, 2),
+      ); // Get the first 2 reviews
       setRatingCounts(countNumberOfReviewsForEachRating(reviewsResponse.data)); // Update the number of reviews for each rating
       dispatch(setLoading(false));
     } catch (error) {
@@ -121,6 +148,7 @@ function DormInfo() {
    */
   useEffect(() => {
     console.log(reviews);
+    console.log(visibleReviews);
     const sortedAndFilteredReviews = reviews
       .filter((review) => {
         if (sortCriteria.startsWith("stars")) {
@@ -511,23 +539,139 @@ function DormInfo() {
           </div>
         </div>
 
-        {/* Sort Reviews by */}
-        <div className="xxs:flex-row xxs:items-center mb-10 flex w-full flex-col items-start gap-x-4 max-xl:mx-auto max-xl:max-w-2xl">
-          <h2 className="text-lg font-bold leading-10 sm:text-xl">Sort Reviews by</h2>
-          <div>
-            <Select
-              defaultValue="mostRecent"
-              onChange={(value) => setSortCriteria(value)}
-              className="sort-select"
-            >
-              <Option value="mostRecent">Most Recent</Option>
-              <Option value="mostHelpful">Most Helpful</Option>
-              <Option value="stars5">5 Stars</Option>
-              <Option value="stars4">4 Stars</Option>
-              <Option value="stars3">3 Stars</Option>
-              <Option value="stars2">2 Stars</Option>
-              <Option value="stars1">1 Star</Option>
-            </Select>
+        {/* Your Review Section - will only render if user has submitted a dorm review in the past */}
+        {userReview && (
+          <div
+            key={userReview?._id}
+            id={userReview?._id} // Ensure each review has the correct ID for scrolling
+            className="mb-10 border-b border-gray-100 max-xl:mx-auto max-xl:max-w-2xl"
+          >
+            {/* Section Header */}
+            <h2 className="bold mb-10 text-center text-3xl font-bold leading-9 sm:text-left">
+              Your Review
+            </h2>
+
+            <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+              {/* Rating */}
+              <Rate disabled value={userReview?.rating} style={{ fontSize: 25, marginBottom: 4 }} />
+              {/* Edit and Delete Icons */}
+              <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
+                {/* Edit Icon */}
+                <div
+                  onClick={() => editReview(userReview?._id)}
+                  style={{ fontSize: 20, cursor: "pointer" }}
+                >
+                  <EditOutlined />
+                </div>
+                {/* Delete Icon */}
+                <div
+                  onClick={() => deleteReview(userReview?._id)}
+                  style={{ fontSize: 20, cursor: "pointer" }}
+                >
+                  <DeleteOutlined />
+                </div>
+              </div>
+            </div>
+
+            {/* Review Title */}
+            <p className="mb-4 text-xl font-semibold leading-9 sm:text-2xl">
+              {userReview?.title || "No title"}
+            </p>
+
+            <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+              {/* User Info */}
+              <div className="flex items-center gap-5">
+                <img
+                  src={`${userReview?.createdBy?.profilePicture}`}
+                  alt="User Profile Picture"
+                  className="h-14 w-14 rounded-full"
+                />
+                <div className="flex flex-col">
+                  <div className="xxs:flex-row flex flex-col gap-2">
+                    <h6 className="text-lg font-semibold leading-8">
+                      {userReview?.createdBy?.name}
+                    </h6>
+                    {userReview?.createdBy?.isVerifiedStudent && (
+                      <VerifiedStudentBadge className="xxs:max-w-none max-w-32" />
+                    )}
+                  </div>
+                  <div className="flex gap-2 max-[400px]:mt-2 max-[400px]:flex-col">
+                    {/* Country */}
+                    <span
+                      className={`fi fi-${userReview?.createdBy?.country?.toLowerCase()}`}
+                    ></span>
+                    <span className="text-lg font-semibold leading-8">
+                      {`${countryList().getLabel(userReview?.createdBy?.country)}`}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Date */}
+              <p className="text-lg font-normal leading-8 text-gray-400">
+                {formatDateToMonthDayYear(userReview?.createdAt)}
+              </p>
+            </div>
+
+            {/* Rooms Stayed */}
+            <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:gap-2">
+              <h4 className="mb-2 font-medium leading-6 sm:mb-0">
+                <span className="font-bold">Room/Rooms Stayed:</span>
+              </h4>
+              <p className="leading-6">
+                {userReview?.roomsStayed?.map((room, index) => (
+                  <span key={index}>
+                    {roomOptions.find((option) => option.value === room)?.label}
+                    {index < userReview.roomsStayed.length - 1 && ", "}
+                  </span>
+                ))}
+              </p>
+            </div>
+
+            {/* Date Stayed */}
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:gap-2">
+              <h4 className="mb-2 font-medium leading-6 sm:mb-0">
+                <span className="font-bold">From:</span>
+              </h4>
+              <p className="leading-6">
+                {formatDateToMonthDayYear(userReview?.fromDate)} -{" "}
+                {formatDateToMonthDayYear(userReview?.toDate)}
+              </p>
+            </div>
+
+            {/* Comment */}
+            <p className="text-lg font-normal leading-8 text-gray-400 max-xl:text-justify">
+              {userReview?.comment}
+            </p>
+            <hr className="mt-8" />
+          </div>
+        )}
+
+        {/* Other Reviews Section */}
+        <div className="mb-5 flex w-full flex-col justify-between gap-10 max-xl:mx-auto max-xl:max-w-2xl sm:mb-10 sm:flex-row sm:items-center sm:gap-5">
+          {/* Section Header */}
+          <h2 className="bold text-center text-3xl font-bold leading-9 sm:text-left">
+            Other Reviews
+          </h2>
+
+          {/* Sort Reviews */}
+          <div className="xs:flex-row xs:items-center xs:gap-x-4 flex flex-col">
+            <h2 className="text-lg font-bold leading-10 sm:text-xl">Sort Reviews by</h2>
+            <div>
+              <Select
+                defaultValue="mostRecent"
+                onChange={(value) => setSortCriteria(value)}
+                className="sort-select"
+              >
+                <Option value="mostRecent">Most Recent</Option>
+                <Option value="mostHelpful">Most Helpful</Option>
+                <Option value="stars5">5 Stars</Option>
+                <Option value="stars4">4 Stars</Option>
+                <Option value="stars3">3 Stars</Option>
+                <Option value="stars2">2 Stars</Option>
+                <Option value="stars1">1 Star</Option>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -542,7 +686,7 @@ function DormInfo() {
             <div
               key={review?._id}
               id={review?._id} // Ensure each review has the correct ID for scrolling
-              className="border-b border-gray-100 pb-8 max-xl:mx-auto max-xl:max-w-2xl"
+              className="mb-10 border-b border-gray-100 max-xl:mx-auto max-xl:max-w-2xl"
             >
               <div className="mb-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
                 {/* Rating */}
