@@ -51,7 +51,7 @@ function ProtectedPage({ children }) {
   // Renders the current user's name and the children components
   return (
     <div>
-      <div className="bg-primary xxs:flex-row xxs:items-center flex flex-col justify-between gap-y-2 p-5">
+      <div className="bg-primary flex flex-col justify-between gap-y-2 p-5 sm:flex-row sm:items-center">
         <span
           className="cursor-pointer text-2xl font-semibold text-yellow-500"
           onClick={() => navigate("/")}
@@ -59,45 +59,50 @@ function ProtectedPage({ children }) {
           DormGuru
         </span>
 
-        <div className="xxs:justify-between xxs:w-auto flex w-40 items-center gap-2 rounded bg-yellow-500 p-2">
-          <Tooltip title="Profile">
-            <div
-              className="text-primary border-primary flex cursor-pointer items-center justify-between gap-2 border-y-0 border-l-0 border-r-2 border-solid pr-3"
-              // Redirects to the admin page if the user is an admin, otherwise to the user's profile page
-              onClick={() => navigate(user.isAdmin ? "/admin" : "/profile")}
-            >
-              <img
-                src={`${user?.profilePicture}`}
-                alt="profilePic"
-                className="ring-primary cursor p h-8 w-8 rounded-full ring-2"
-              />
-              <div className="flex items-center gap-x-1">
-                <span className="text-sm underline">{user?.name}</span>
-                <Tooltip
-                  title={
-                    user?.isAdmin ? "Admin" : user?.isVerifiedStudent ? "Verified Student" : "User"
-                  }
-                >
-                  {user?.isAdmin ? (
-                    <RiShieldUserFill />
-                  ) : user?.isVerifiedStudent ? (
-                    <FaUserGraduate />
-                  ) : (
-                    <FaUser />
-                  )}
-                </Tooltip>
+        <div className="flex items-center gap-2 rounded p-1 sm:bg-yellow-500">
+          <div className="flex items-center gap-2 rounded bg-yellow-500 p-1 sm:bg-transparent sm:p-0">
+            <Tooltip title="Profile">
+              <div
+                className="text-primary border-primary flex cursor-pointer items-center gap-2 border-y-0 border-l-0 border-r-2 border-solid pr-2"
+                onClick={() => navigate(user.isAdmin ? "/admin" : "/profile")}
+              >
+                <img
+                  src={`${user?.profilePicture}`}
+                  alt="profilePic"
+                  className="ring-primary cursor p h-8 w-8 rounded-full ring-2"
+                />
+                <div className="flex items-center gap-x-1">
+                  <span className="text-sm font-bold">{user?.name}</span>
+                  <Tooltip
+                    title={
+                      user?.isAdmin
+                        ? "Admin"
+                        : user?.isVerifiedStudent
+                          ? "Verified Student"
+                          : "User"
+                    }
+                  >
+                    {user?.isAdmin ? (
+                      <RiShieldUserFill />
+                    ) : user?.isVerifiedStudent ? (
+                      <FaUserGraduate />
+                    ) : (
+                      <FaUser />
+                    )}
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-          </Tooltip>
-          <Tooltip title="Logout">
-            <i
-              className="ri-logout-box-r-line"
-              onClick={() => {
-                localStorage.removeItem("token");
-                navigate("/login");
-              }}
-            ></i>
-          </Tooltip>
+            </Tooltip>
+            <Tooltip title="Logout">
+              <i
+                className="ri-logout-box-r-line"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  navigate("/login");
+                }}
+              ></i>
+            </Tooltip>
+          </div>
         </div>
       </div>
 
