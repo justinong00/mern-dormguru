@@ -3,9 +3,10 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../../../redux/loadersSlice.js";
 import { GetAllUsers, UpdateUser } from "../../../apis/users.js";
-import { Button, message, Switch, Table, DatePicker } from "antd";
+import { Button, message, Switch, Table, DatePicker, Tag } from "antd";
 import { formatDateToYYYY_MM_DD } from "../../../helpers/index.js";
 import { filterByDateRange } from "../../../helpers/columnFiltersHelper.js";
+import { countryOptions } from "./../../../helpers/countryOptions";
 
 const { RangePicker } = DatePicker;
 
@@ -44,12 +45,31 @@ function Users() {
     fetchAllUsers();
   }, []);
 
+  // Generate filter options for country
+  const countryFilters = Array.from(new Set(users.map((user) => user.country))).map((country) => ({
+    text: countryOptions.find((option) => option.value === country)?.labelForSearch,
+    value: country,
+  }));
+
   const columns = [
+    {
+      title: "User",
+      dataIndex: "profilePicture",
+      key: "profilePicture",
+      width: 50,
+      render: (profilePicture) => (
+        <img
+          src={profilePicture}
+          alt="Profile Picture"
+          className="h-10 w-10 rounded-full object-cover md:h-12 md:w-12"
+        />
+      ),
+    },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: 200,
+      width: 100,
       fixed: "left",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div className="flex flex-col gap-2 p-2">
@@ -71,10 +91,20 @@ function Users() {
       onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
     },
     {
+      title: "Country",
+      dataIndex: "country",
+      key: "country",
+      width: 150,
+      render: (country) => countryOptions.find((option) => option.value === country)?.label,
+      filters: countryFilters,
+      filterSearch: true,
+      onFilter: (value, record) => record.country === value,
+    },
+    {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      width: 200,
+      width: 150,
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div className="flex flex-col gap-2 p-2">
           <input
@@ -95,10 +125,33 @@ function Users() {
       onFilter: (value, record) => record.email.toLowerCase().includes(value.toLowerCase()),
     },
     {
+      title: "Verified Student",
+      dataIndex: "isVerifiedStudent",
+      key: "isVerifiedStudent",
+      width: 100,
+      render: (isVerifiedStudent) => (
+        <Tag color={isVerifiedStudent ? "green" : "volcano"}>
+          {isVerifiedStudent ? "YES" : "NO"}
+        </Tag>
+      ),
+      filters: [
+        {
+          text: "YES",
+          value: true,
+        },
+        {
+          text: "NO",
+          value: false,
+        },
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => record.isVerifiedStudent === value,
+    },
+    {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: 120,
+      width: 80,
       render: (text) => formatDateToYYYY_MM_DD(text),
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -127,8 +180,7 @@ function Users() {
       title: "Admin Status",
       dataIndex: "isAdmin",
       key: "isAdmin",
-      fixed: "right",
-      width: 100,
+      width: 80,
       render: (text, record) => (
         <Switch
           checked={text}
@@ -152,8 +204,7 @@ function Users() {
       title: "Active Status",
       dataIndex: "isActive",
       key: "isActive",
-      fixed: "right",
-      width: 100,
+      width: 80,
       render: (text, record) => (
         <Switch
           checked={text}
