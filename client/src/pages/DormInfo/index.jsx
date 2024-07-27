@@ -120,6 +120,7 @@ function DormInfo() {
    * @param {boolean} allReviewsShown - Indicates whether all the filtered and sorted reviews should be displayed.
    */
   useEffect(() => {
+    console.log(reviews);
     const sortedAndFilteredReviews = reviews
       .filter((review) => {
         if (sortCriteria.startsWith("stars")) {
@@ -201,7 +202,8 @@ function DormInfo() {
   }, [visibleReviews]); // When the component first mounts, visibleReviews might be empty or not fully populated yet. By including visibleReviews in the dependency array, you ensure that the effect runs after the reviews have been fetched and rendered. Without visibleReviews as a dependency, the useEffect might run before the review elements are present in the DOM. This would result in document.getElementById(reviewId) returning null because the elements are not yet created.
 
   return (
-    dorm && (
+    dorm &&
+    reviews && (
       <div className="mx-auto w-full max-w-7xl px-4 md:px-5 lg:px-6">
         {/* Title Section */}
         <div className="bg-primary rounded-xl p-4">
@@ -476,11 +478,18 @@ function DormInfo() {
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <Tooltip
                     title={
-                      !user.isVerifiedStudent ? "Sign up with school email to submit a review" : ""
+                      !user.isVerifiedStudent
+                        ? "Sign up with school email to submit a review"
+                        : reviews.some((review) => review.createdBy._id === user._id)
+                          ? "You have already submitted a review for this dorm"
+                          : ""
                     }
                   >
                     <Button
-                      disabled={!user.isVerifiedStudent}
+                      disabled={
+                        !user.isVerifiedStudent ||
+                        reviews.some((review) => review.createdBy._id === user._id)
+                      }
                       type="primary"
                       onClick={() => setShowReviewForm(true)}
                       className="mb-2 w-full whitespace-nowrap"
@@ -526,7 +535,7 @@ function DormInfo() {
         {noReviews ? (
           <div className="xs:flex-row flex flex-col items-center justify-center gap-2 text-center text-gray-500">
             <FontAwesomeIcon icon={faFaceFrown} className="h-8 w-8 text-gray-300" />
-            <span>No reviews available for the selected rating.</span>
+            <span>No reviews available.</span>
           </div>
         ) : (
           visibleReviews.map((review) => (
