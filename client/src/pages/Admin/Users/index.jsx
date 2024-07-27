@@ -61,7 +61,7 @@ function Users() {
         <img
           src={profilePicture}
           alt="Profile Picture"
-          className="h-10 w-10 rounded-full object-cover md:h-12 md:w-12"
+          className="border-primary h-10 w-10 rounded-full border-2 border-solid object-cover md:h-12 md:w-12"
         />
       ),
     },
