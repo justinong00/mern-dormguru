@@ -11,12 +11,14 @@ import {
   filterByYearRange,
   roomFilters,
 } from "../../../helpers/columnFiltersHelper.js";
+import { useNavigate } from "react-router-dom";
 
 const { RangePicker } = DatePicker;
 
 function Dorms() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [dorms, setDorms] = useState([]);
   const [showDormForm, setShowDormForm] = useState(false);
   const [selectedDorm, setSelectedDorm] = useState(null);
@@ -239,7 +241,8 @@ function Dorms() {
           <Tooltip title="Edit Dorm">
             <i
               className="ri-pencil-line"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSelectedDorm(record);
                 setShowDormForm(true);
                 // navigate(`/admin/dorms/edit/${record._id}`);
@@ -247,7 +250,13 @@ function Dorms() {
             ></i>
           </Tooltip>
           <Tooltip title="Delete Dorm">
-            <i className="ri-delete-bin-line" onClick={() => deleteDorm(record._id)}></i>
+            <i
+              className="ri-delete-bin-line"
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteDorm(record._id);
+              }}
+            ></i>
           </Tooltip>
         </div>
       ),
@@ -275,6 +284,16 @@ function Dorms() {
         rowKey={(record) => record._id}
         className="mt-5"
         scroll={{ x: 1500 }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              navigate(`/dorm/${record._id}`);
+            },
+            style: {
+              cursor: "pointer",
+            },
+          };
+        }}
       />
 
       {showDormForm && (

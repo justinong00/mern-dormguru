@@ -7,11 +7,13 @@ import { DeleteUni, GetAllUnis } from "../../../apis/unis.js";
 import { SearchOutlined } from "@ant-design/icons";
 import { filterByYearRange } from "../../../helpers/columnFiltersHelper.js";
 import { getStateCode } from "../../../helpers/stateCodesHelper.js";
+import { useNavigate } from "react-router-dom";
 
 const { RangePicker } = DatePicker;
 
 function Unis() {
   const dispatch = useDispatch(); // Redux dispatch function
+  const navigate = useNavigate(); // React Router's navigate function
   const [unis, setUnis] = useState([]);
   const [showUniForm, setShowUniForm] = useState(false);
   const [selectedUni, setSelectedUni] = useState(null);
@@ -179,14 +181,21 @@ function Unis() {
             <Tooltip title="Edit University">
               <i
                 className="ri-pencil-line"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setSelectedUni(record); // Set the selected university for editing
                   setShowUniForm(true); // Show the UniForm
                 }}
               ></i>
             </Tooltip>
             <Tooltip title="Delete University">
-              <i className="ri-delete-bin-line" onClick={() => deleteUni(record._id)}></i>
+              <i
+                className="ri-delete-bin-line"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteUni(record._id);
+                }}
+              ></i>
             </Tooltip>
           </div>
         );
@@ -219,6 +228,16 @@ function Unis() {
         rowKey={(record) => record.logoPic}
         className="mt-5"
         scroll={{ x: 1300 }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              navigate(`/uni/${record._id}`);
+            },
+            style: {
+              cursor: "pointer",
+            },
+          };
+        }}
       />
 
       {showUniForm && (
