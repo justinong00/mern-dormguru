@@ -73,10 +73,12 @@ function Register() {
 
   return (
     // The main container for the registration page
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex flex-col md:min-h-screen md:flex-row">
       {/* Background section */}
       <div className="bg-primary flex flex-1 flex-col items-center justify-center p-6 md:p-12">
-        <h1 className="text-4xl font-semibold text-yellow-500 md:text-6xl lg:text-8xl">DormGuru</h1>
+        <h1 className="text-4xl font-semibold text-yellow-500 md:text-6xl lg:text-7xl xl:text-8xl">
+          DormGuru
+        </h1>
         <span className="text-md mt-2 text-center text-gray-300">
           One stop for all your university dorm ratings and reviews in Malaysia
         </span>
@@ -177,7 +179,7 @@ function Register() {
               </Button>
 
               {/* Link to login page */}
-              <Link to="/login" className="text-center">
+              <Link to="/login" className="text-center md:text-left">
                 Already have an account? Login here
               </Link>
             </div>
