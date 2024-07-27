@@ -9,7 +9,6 @@ import { setLoading } from "../../redux/loadersSlice.js";
 import { countryOptions } from "../../helpers/countryOptions.jsx";
 import { AddProfilePicture } from "../../apis/images.js";
 import ImageUpload, { customValidateFileList } from "../../components/ImageUpload.jsx";
-import { FaUserGraduate } from "react-icons/fa";
 import VerifiedStudentBadge from "../../components/VerifiedStudentBadge.jsx";
 
 /** Register component for user registration. *
@@ -74,27 +73,27 @@ function Register() {
 
   return (
     // The main container for the registration page
-    <div className="grid h-screen grid-cols-2">
+    <div className="flex min-h-screen flex-col md:flex-row">
       {/* Background section */}
-      <div className="bg-primary flex flex-col items-center justify-center">
-        <h1 className="text-8xl font-semibold text-yellow-500">DormGuru</h1>
-        <span className="text-md mt-2 text-gray-300">
+      <div className="bg-primary flex flex-1 flex-col items-center justify-center p-6 md:p-12">
+        <h1 className="text-4xl font-semibold text-yellow-500 md:text-6xl lg:text-8xl">DormGuru</h1>
+        <span className="text-md mt-2 text-center text-gray-300">
           One stop for all your university dorm ratings and reviews in Malaysia
         </span>
       </div>
 
       {/* Form section */}
-      <div className="flex items-center justify-center">
-        <div className="w-4/6">
-          <h1 className="my-5 mb-2 text-2xl">Register Your Account</h1>
+      <div className="flex flex-1 items-center justify-center p-6 md:p-12">
+        <div className="w-full max-w-md">
+          <h1 className="my-5 mb-2 text-center text-2xl md:text-left">Register Your Account</h1>
           <hr />
-          <div className="border-primary mt-3 rounded-xl border-x-0 border-y-2 border-b-0 border-solid bg-gray-100 p-6 shadow-md">
+          <div className="border-primary mt-3 rounded-xl border-2 bg-gray-100 p-6 shadow-md">
             <div className="flex flex-col items-center gap-2 sm:justify-between lg:flex-row">
-              <div className="text-center text-xs lg:w-6/12 lg:text-left xl:w-7/12 xl:text-sm 2xl:w-8/12">
+              <div className="text-center text-xs lg:w-7/12 lg:text-left">
                 We want DormGuru to be a trusted platform. Sign up with your school email to leave
                 reviews and earn this badge:
               </div>
-              <VerifiedStudentBadge />
+              <VerifiedStudentBadge className="lg:text-xxs xl:text-xs" />
             </div>
           </div>
           <Form
@@ -178,7 +177,9 @@ function Register() {
               </Button>
 
               {/* Link to login page */}
-              <Link to="/login">Already have an account? Login here</Link>
+              <Link to="/login" className="text-center">
+                Already have an account? Login here
+              </Link>
             </div>
           </Form>
         </div>
