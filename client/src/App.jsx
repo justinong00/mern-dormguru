@@ -10,6 +10,7 @@ import Admin from "./pages/Admin/index.jsx";
 import DormForm from "./pages/Admin/Dorms/DormForm.jsx";
 import DormInfo from "./pages/DormInfo/index.jsx";
 import UniInfo from "./pages/UniInfo/index.jsx";
+import Footer from "./components/Footer.jsx";
 
 function App() {
   const { loading } = useSelector((state) => state.loaders);
@@ -17,73 +18,72 @@ function App() {
     <>
       {loading && <Spinner />}
       <BrowserRouter>
-        <Routes>
-          {/* Protected page route for Home */}
-          <Route
-            path="/"
-            element={
-              <ProtectedPage>
-                <Home />
-              </ProtectedPage>
-            }
-          />
-          {/* Protected page route for accessing a specific dorm info page*/}
-          <Route
-            path="/dorm/:id"
-            element={
-              <ProtectedPage>
-                <DormInfo />
-              </ProtectedPage>
-            }
-          />
-          {/* Protected page route for accessing a specific uni info page*/}
-          <Route
-            path="/uni/:id"
-            element={
-              <ProtectedPage>
-                <UniInfo />
-              </ProtectedPage>
-            }
-          />
-          {/* Protected page route for Profile*/}
-          <Route
-            path="/profile"
-            element={
-              <ProtectedPage>
-                <Profile />
-              </ProtectedPage>
-            }
-          />
-          {/* Protected page route for Admin*/}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedPage>
-                <Admin />
-              </ProtectedPage>
-            }
-          />
-          {/* Protected page route for adding a new dorm*/}
-          {/* <Route
-            path="/admin/dorms/add"
-            element={
-              <ProtectedPage>
-                <DormForm />
-              </ProtectedPage>
-            }
-          /> */}
-          {/* Protected page route for editing a new dorm*/}
-          {/* <Route
-            path="/admin/dorms/edit/:id"
-            element={
-              <ProtectedPage>
-                <DormForm />
-              </ProtectedPage>
-            }
-          /> */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+        <div className="flex min-h-screen flex-grow flex-col">
+          <Routes>
+            {/* Protected page route for Home */}
+            <Route
+              path="/"
+              element={
+                <>
+                  <ProtectedPage>
+                    <Home />
+                  </ProtectedPage>
+                  <Footer />
+                </>
+              }
+            />
+            {/* Protected page route for accessing a specific dorm info page*/}
+            <Route
+              path="/dorm/:id"
+              element={
+                <>
+                  <ProtectedPage>
+                    <DormInfo />
+                  </ProtectedPage>
+                  <Footer />
+                </>
+              }
+            />
+            {/* Protected page route for accessing a specific uni info page*/}
+            <Route
+              path="/uni/:id"
+              element={
+                <>
+                  <ProtectedPage>
+                    <UniInfo />
+                  </ProtectedPage>
+                  <Footer />
+                </>
+              }
+            />
+            {/* Protected page route for Profile*/}
+            <Route
+              path="/profile"
+              element={
+                <>
+                  <ProtectedPage>
+                    <Profile />
+                  </ProtectedPage>
+                  <Footer />
+                </>
+              }
+            />
+            {/* Protected page route for Admin*/}
+            <Route
+              path="/admin"
+              element={
+                <>
+                  <ProtectedPage>
+                    <Admin />
+                  </ProtectedPage>
+                  <Footer />
+                </>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </div>
       </BrowserRouter>
     </>
   );
