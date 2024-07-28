@@ -708,33 +708,35 @@ function DormInfo() {
                 {/* Rating */}
                 <Rate disabled value={review?.rating} style={{ fontSize: 25, marginBottom: 4 }} />
                 {/* Like and Flag Icons */}
-                <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
-                  {/* Like Icon */}
-                  <div
-                    onClick={() => toggleLike(review?._id)}
-                    style={{ fontSize: 20, cursor: "pointer" }}
-                  >
-                    {/* Render the like icon based on whether the user has already liked the review */}
-                    {/* We use the 'some' method to iterate over the likedBy array. For each objectId in the array, we convert it to a string using the toString() method. We then compare the string representation of the user's ObjectId with the string representation of the ObjectId in the likedBy array. If there is a match, we know that the user has already liked the review, and we render the like icon with a filled color. If there is no match, we know that the user has not yet liked the review, and we render the like icon with an outline color. */}
-                    {review?.likedBy.some((objectId) => objectId.toString() === user?._id) ? (
-                      <LikeFilled />
-                    ) : (
-                      <LikeOutlined />
-                    )}
-                    <span className="ml-2 text-gray-400">{review?.numberOfLikes}</span>
+                {!user?.isAdmin && (
+                  <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
+                    {/* Like Icon */}
+                    <div
+                      onClick={() => toggleLike(review?._id)}
+                      style={{ fontSize: 20, cursor: "pointer" }}
+                    >
+                      {/* Render the like icon based on whether the user has already liked the review */}
+                      {/* We use the 'some' method to iterate over the likedBy array. For each objectId in the array, we convert it to a string using the toString() method. We then compare the string representation of the user's ObjectId with the string representation of the ObjectId in the likedBy array. If there is a match, we know that the user has already liked the review, and we render the like icon with a filled color. If there is no match, we know that the user has not yet liked the review, and we render the like icon with an outline color. */}
+                      {review?.likedBy.some((objectId) => objectId.toString() === user?._id) ? (
+                        <LikeFilled />
+                      ) : (
+                        <LikeOutlined />
+                      )}
+                      <span className="ml-2 text-gray-400">{review?.numberOfLikes}</span>
+                    </div>
+                    {/* Flag Icon */}
+                    <div
+                      onClick={() => toggleFlag(review?._id)}
+                      style={{ fontSize: 20, cursor: "pointer" }}
+                    >
+                      {review?.flaggedBy.some((objectId) => objectId.toString() === user?._id) ? (
+                        <FlagFilled style={{ color: "red" }} />
+                      ) : (
+                        <FlagOutlined />
+                      )}
+                    </div>
                   </div>
-                  {/* Flag Icon */}
-                  <div
-                    onClick={() => toggleFlag(review?._id)}
-                    style={{ fontSize: 20, cursor: "pointer" }}
-                  >
-                    {review?.flaggedBy.some((objectId) => objectId.toString() === user?._id) ? (
-                      <FlagFilled style={{ color: "red" }} />
-                    ) : (
-                      <FlagOutlined />
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Review Title */}
