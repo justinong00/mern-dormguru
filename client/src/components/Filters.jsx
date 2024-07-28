@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import GetQuickSearchFilterResults from "../apis/filters.js";
-import { message } from "antd";
+import { message, Spin } from "antd";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import "/node_modules/malaysia-state-flag-icon-css/css/flag-icon.min.css";
 import { getStateCode } from "../helpers/stateCodesHelper.js";
 import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
+import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Filters({ filters, setFilters }) {
   const [hideResults, setHideResults] = useState(false);
   const [results, setResults] = useState([]);
+  // to track loading state of the fetchQuickSearchFilterResults function
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchQuickSearchFilterResults = async () => {
@@ -19,11 +23,16 @@ function Filters({ filters, setFilters }) {
       setResults(response.data);
     } catch (error) {
       message.error(error.message);
+    } finally {
+      // Set loading to false when fetching ends
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (filters.search) {
+      // Set initial load to true when starting a new search (have to be placed here instead of the start of the fetchQuickSearchFilterResults function because the state won't be updated there due to useEffect)
+      setLoading(true);
       // Implement debounce for search input (This debounce mechanism helps to reduce unnecessary API calls by waiting for the user to pause typing before fetching results, improving performance and reducing server load.)
       // Wait 500ms after user stops typing before fetching results
       const debounce = setTimeout(() => {
@@ -62,13 +71,19 @@ function Filters({ filters, setFilters }) {
         />
       </div>
 
-      {/* QuickSearchFilterResults div */}
-      {filters.search && !hideResults && results?.dorms?.length > 0 && (
-        // Drop down results container
+      {/* QuickSearchFilterResults dropdown */}
+      {filters.search && !hideResults && (
+        // Dropdown container for search results
         <div className="absolute z-50 max-h-64 w-full overflow-y-auto border border-solid border-gray-300 bg-white shadow-md">
-          {results?.dorms?.length > 0 && (
+          {/* Display loading indicator while results are being fetched */}
+          {loading ? (
+            <div className="flex items-center justify-center p-4">
+              <Spin size="large" className="my-4" />
+            </div>
+          ) : results?.dorms?.length > 0 ? (
             // List of results
             <ul>
+              {/* Iterate over each dorm result and display its details */}
               {results.dorms.map((dorm) => (
                 <li
                   key={dorm._id}
@@ -115,6 +130,12 @@ function Filters({ filters, setFilters }) {
                 </li>
               ))}
             </ul>
+          ) : (
+            // Display 'No results found' message when there are no search results
+            <div className="flex flex-col items-center justify-center gap-2 p-4 text-gray-500">
+              <FontAwesomeIcon icon={faFaceFrown} className="h-8 w-8 text-gray-300" />
+              <span>No results found. Please try a different search.</span>
+            </div>
           )}
         </div>
       )}
