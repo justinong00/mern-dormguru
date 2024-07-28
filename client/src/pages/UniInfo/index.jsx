@@ -12,6 +12,8 @@ import { GetUniById } from "./../../apis/unis";
 import { GetDormsByUniId } from "../../apis/dorms.js";
 import { roundToHalf } from "../../helpers/roundToHalf.js";
 import AvailableDormCard from "../../components/AvailableDormCard.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 
 function UniInfo() {
   const [uni, setUni] = useState(null);
@@ -195,6 +197,12 @@ function UniInfo() {
         {/* Available Dorms Content */}
         {/* Grid for the dorm cards */}
         <div className="mb-10 grid grid-cols-12 gap-x-4 gap-y-8 md:gap-x-8">
+          {dorms.length === 0 && (
+            <div className="xs:flex-row col-span-12 flex flex-col items-center justify-center gap-2 text-center text-gray-500">
+              <FontAwesomeIcon icon={faFaceFrown} className="h-8 w-8 text-gray-300" />
+              <span>No dorms available.</span>
+            </div>
+          )}
           {dorms.length === 1 && (
             <>
               <div className="md:col-span-3 lg:col-span-4"></div>
