@@ -506,18 +506,17 @@ function DormInfo() {
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <Tooltip
                     title={
-                      !user.isVerifiedStudent
+                      !user.isVerifiedStudent && !user.isAdmin
                         ? "Sign up with school email to submit a review"
-                        : reviews.some((review) => review.createdBy._id === user._id)
+                        : !user.isAdmin && userReview
                           ? "You have already submitted a review for this dorm"
-                          : ""
+                          : user.isAdmin
+                            ? "Admins cannot review dorms"
+                            : ""
                     }
                   >
                     <Button
-                      disabled={
-                        !user.isVerifiedStudent ||
-                        reviews.some((review) => review.createdBy._id === user._id)
-                      }
+                      disabled={!user.isVerifiedStudent || user.isAdmin || userReview}
                       type="primary"
                       onClick={() => setShowReviewForm(true)}
                       className="mb-2 w-full whitespace-nowrap"
