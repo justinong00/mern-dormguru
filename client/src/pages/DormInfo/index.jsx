@@ -651,7 +651,7 @@ function DormInfo() {
         <div className="mb-5 flex w-full flex-col justify-between gap-10 max-xl:mx-auto max-xl:max-w-2xl sm:mb-10 sm:flex-row sm:items-center sm:gap-5">
           {/* Section Header */}
           <h2 className="bold text-center text-3xl font-bold leading-9 sm:text-left">
-            Other Reviews
+            {userReview ? "Other Reviews" : "Reviews"}
           </h2>
 
           {/* Sort Reviews */}
@@ -677,7 +677,7 @@ function DormInfo() {
 
         {/* Reviews List */}
         {noReviews ? (
-          <div className="xs:flex-row flex flex-col items-center justify-center gap-2 text-center text-gray-500">
+          <div className="xs:flex-row my-10 flex flex-col items-center justify-center gap-2 text-center text-gray-500">
             <FontAwesomeIcon icon={faFaceFrown} className="h-8 w-8 text-gray-300" />
             <span>No reviews available.</span>
           </div>
@@ -787,7 +787,6 @@ function DormInfo() {
               <p className="text-lg font-normal leading-8 text-gray-400 max-xl:text-justify">
                 {review?.comment}
               </p>
-              <hr className="mt-8" />
             </div>
           ))
         )}
