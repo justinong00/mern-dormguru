@@ -1,4 +1,4 @@
-import { Button, Input, Table, Tooltip, message, DatePicker } from "antd";
+import { Button, Input, Table, Tooltip, message, DatePicker, Popconfirm } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
@@ -250,13 +250,18 @@ function Dorms() {
             ></i>
           </Tooltip>
           <Tooltip title="Delete Dorm">
-            <i
-              className="ri-delete-bin-line"
-              onClick={(e) => {
+            <Popconfirm
+              title="Are you sure you want to delete this?"
+              onConfirm={(e) => {
                 e.stopPropagation();
                 deleteDorm(record._id);
               }}
-            ></i>
+              okText="Yes"
+              cancelText="No"
+              onCancel={(e) => e.stopPropagation()}
+            >
+              <i className="ri-delete-bin-line" onClick={(e) => e.stopPropagation()}></i>
+            </Popconfirm>
           </Tooltip>
         </div>
       ),

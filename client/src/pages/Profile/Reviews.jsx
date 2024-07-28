@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { message, Rate, Table, Tooltip } from "antd";
+import { message, Popconfirm, Rate, Table, Tooltip } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetAllReviewsForUser } from "../../apis/reviews.js";
 import { formatDateToYYYY_MM_DD } from "../../helpers/index.js";
@@ -150,14 +150,18 @@ function Reviews() {
               ></i>
             </Tooltip>
             <Tooltip title="Delete Review">
-              <i
-                className="ri-delete-bin-line"
-                onClick={(e) => {
-                  // Stop event bubbling to the parent card to prevent it from triggering the onClick event
+              <Popconfirm
+                title="Are you sure you want to delete this?"
+                onConfirm={(e) => {
                   e.stopPropagation();
                   deleteReview(record._id, record.dorm._id);
                 }}
-              ></i>
+                okText="Yes"
+                cancelText="No"
+                onCancel={(e) => e.stopPropagation()}
+              >
+                <i className="ri-delete-bin-line" onClick={(e) => e.stopPropagation()}></i>
+              </Popconfirm>
             </Tooltip>
           </div>
         );

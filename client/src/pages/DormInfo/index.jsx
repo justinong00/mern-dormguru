@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, message, Rate, Select, Tooltip } from "antd";
+import { Button, message, Popconfirm, Rate, Select, Tooltip } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
@@ -569,15 +569,23 @@ function DormInfo() {
                   onClick={() => setShowReviewForm(true)}
                   style={{ fontSize: 20, cursor: "pointer" }}
                 >
-                  <EditOutlined />
+                  <Tooltip title="Edit Review">
+                    <EditOutlined />
+                  </Tooltip>
                 </div>
                 {/* Delete Icon */}
-                <div
-                  onClick={() => deleteReview(userReview._id, userReview.dorm._id)}
-                  style={{ fontSize: 20, cursor: "pointer" }}
+                <Popconfirm
+                  title="Are you sure you want to delete this?"
+                  onConfirm={() => deleteReview(userReview._id, userReview.dorm._id)}
+                  okText="Yes"
+                  cancelText="No"
                 >
-                  <DeleteOutlined />
-                </div>
+                  <Tooltip title="Delete Review">
+                    <div style={{ fontSize: 20, cursor: "pointer" }}>
+                      <DeleteOutlined />
+                    </div>
+                  </Tooltip>
+                </Popconfirm>
               </div>
             </div>
 

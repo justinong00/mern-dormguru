@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Tooltip, message, Input, DatePicker } from "antd";
+import { Button, Table, Tooltip, message, Input, DatePicker, Popconfirm } from "antd";
 import UniForm from "./UniForm.jsx";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/loadersSlice.js";
@@ -189,13 +189,18 @@ function Unis() {
               ></i>
             </Tooltip>
             <Tooltip title="Delete University">
-              <i
-                className="ri-delete-bin-line"
-                onClick={(e) => {
+              <Popconfirm
+                title="Are you sure you want to delete this?"
+                onConfirm={(e) => {
                   e.stopPropagation();
                   deleteUni(record._id);
                 }}
-              ></i>
+                okText="Yes"
+                cancelText="No"
+                onCancel={(e) => e.stopPropagation()}
+              >
+                <i className="ri-delete-bin-line" onClick={(e) => e.stopPropagation()}></i>
+              </Popconfirm>
             </Tooltip>
           </div>
         );

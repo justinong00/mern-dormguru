@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { setLoading } from "../../../redux/loadersSlice.js";
-import { Button, message, Rate, Table, Tooltip, DatePicker } from "antd";
+import { Button, message, Rate, Table, Tooltip, DatePicker, Popconfirm } from "antd";
 import { useDispatch } from "react-redux";
 import { DeleteReview, GetAllReviews } from "../../../apis/reviews.js";
 import { roomOptions } from "../../../helpers/roomOptions.js";
@@ -360,14 +360,18 @@ function Reviews() {
       render: (_, record) => {
         return (
           <Tooltip title="Delete Review">
-            <i
-              className="ri-delete-bin-line"
-              onClick={(e) => {
-                // Stop event bubbling to the parent card to prevent it from triggering the onClick event
+            <Popconfirm
+              title="Are you sure you want to delete this?"
+              onConfirm={(e) => {
                 e.stopPropagation();
                 deleteReview(record._id, record.dorm?._id);
               }}
-            ></i>
+              okText="Yes"
+              cancelText="No"
+              onCancel={(e) => e.stopPropagation()}
+            >
+              <i className="ri-delete-bin-line" onClick={(e) => e.stopPropagation()}></i>
+            </Popconfirm>
           </Tooltip>
         );
       },
