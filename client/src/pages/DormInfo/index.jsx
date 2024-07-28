@@ -5,7 +5,12 @@ import { Button, message, Rate, Select, Tooltip } from "antd";
 import { setLoading } from "../../redux/loadersSlice.js";
 import { GetDormById } from "../../apis/dorms.js";
 import ReviewForm from "./ReviewForm.jsx";
-import { GetAllReviewsForDorm, toggleFlagReview, toggleLikeReview } from "../../apis/reviews.js";
+import {
+  DeleteReview,
+  GetAllReviewsForDorm,
+  toggleFlagReview,
+  toggleLikeReview,
+} from "../../apis/reviews.js";
 import { roundToHalf } from "./../../helpers/roundToHalf";
 import {
   getLastMonthAverageRating,
@@ -54,15 +59,6 @@ function DormInfo() {
   const { user } = useSelector((state) => state.users); // Get the users state from the Redux store
   const { id } = useParams();
   const { Option } = Select;
-
-  // Define edit and delete handlers
-  const editReview = (reviewId) => {
-    // Handle review edit action
-  };
-
-  const deleteReview = (reviewId) => {
-    // Handle review delete action
-  };
 
   /** Fetches a specific dorm and its reviews from the server. Updates the state with the fetched data.
    *
@@ -228,6 +224,19 @@ function DormInfo() {
       }
     }
   }, [visibleReviews]); // When the component first mounts, visibleReviews might be empty or not fully populated yet. By including visibleReviews in the dependency array, you ensure that the effect runs after the reviews have been fetched and rendered. Without visibleReviews as a dependency, the useEffect might run before the review elements are present in the DOM. This would result in document.getElementById(reviewId) returning null because the elements are not yet created.
+
+  const deleteReview = async (id, dormId) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await DeleteReview(id, { dorm: dormId });
+      message.success(response.message);
+      fetchSpecificDorm();
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      message.error(error.message);
+    }
+  };
 
   return (
     dorm &&
@@ -564,7 +573,7 @@ function DormInfo() {
                 </div>
                 {/* Delete Icon */}
                 <div
-                  onClick={() => deleteReview(userReview?._id)}
+                  onClick={() => deleteReview(userReview._id, userReview.dorm._id)}
                   style={{ fontSize: 20, cursor: "pointer" }}
                 >
                   <DeleteOutlined />
@@ -792,6 +801,7 @@ function DormInfo() {
 
         {/* Review Form */}
         <div>
+          {/* Edit Review */}
           {showReviewForm && userReview ? (
             <ReviewForm
               dorm={userReview.dorm}
@@ -801,6 +811,7 @@ function DormInfo() {
               selectedReview={userReview}
             />
           ) : (
+            // Add Review
             showReviewForm && (
               <ReviewForm
                 dorm={dorm}
