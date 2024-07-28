@@ -86,7 +86,7 @@ function DormInfo() {
         return 0;
       }); */
 
-      setReviews(reviewsResponse.data.filter((review) => review.createdBy._id !== user._id)); // Get all reviews
+      setReviews(reviewsResponse.data.filter((review) => review.createdBy._id !== user._id)); // Get all reviews except the user's review
       setUserReview(reviewsResponse.data.find((review) => review.createdBy._id === user._id)); // Get the user's review
       setVisibleReviews(
         reviewsResponse.data.filter((review) => review.createdBy._id !== user._id).slice(0, 2),
@@ -557,7 +557,7 @@ function DormInfo() {
               <div className="flex justify-start gap-4 sm:flex-row sm:justify-end">
                 {/* Edit Icon */}
                 <div
-                  onClick={() => editReview(userReview?._id)}
+                  onClick={() => setShowReviewForm(true)}
                   style={{ fontSize: 20, cursor: "pointer" }}
                 >
                   <EditOutlined />
@@ -792,13 +792,23 @@ function DormInfo() {
 
         {/* Review Form */}
         <div>
-          {showReviewForm && (
+          {showReviewForm && userReview ? (
             <ReviewForm
-              dorm={dorm}
+              dorm={userReview.dorm}
               reloadData={fetchSpecificDorm}
               showReviewForm={showReviewForm}
               setShowReviewForm={setShowReviewForm}
+              selectedReview={userReview}
             />
+          ) : (
+            showReviewForm && (
+              <ReviewForm
+                dorm={dorm}
+                reloadData={fetchSpecificDorm}
+                showReviewForm={showReviewForm}
+                setShowReviewForm={setShowReviewForm}
+              />
+            )
           )}
         </div>
       </div>
