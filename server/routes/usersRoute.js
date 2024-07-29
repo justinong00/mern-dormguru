@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
     if (!user) throw new Error('User with this email does not exist');
 
     // Check if user is active
-    if (!user.isActive) throw new Error('User is not active');
+    if (!user.isActive) throw new Error('User is banned');
 
     // Check if password is correct
     const validPassword = await brcypt.compare(
