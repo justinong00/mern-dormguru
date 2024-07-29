@@ -63,7 +63,7 @@ function ReviewForm({
     <Modal
       open={showReviewForm}
       onCancel={() => setShowReviewForm(false)}
-      title={selectedReview ? "Update Review" : "Add Review"}
+      title={selectedReview ? "Edit Review" : "Add Review"}
       centered // Center the modal on the screen
       width="90%" // Set the width of the modal for smaller screens
       style={{ maxWidth: 500, width: "100%" }} // Set a maximum width for larger screens
