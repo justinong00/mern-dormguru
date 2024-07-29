@@ -183,7 +183,7 @@ function ReviewForm({
 
         <Row gutter={16}>
           <Col span={24}>
-            <Form.Item label="Comments" name="comment" rules={validationRules["comment"]}>
+            <Form.Item label="Comment" name="comment" rules={validationRules["comment"]}>
               <Input.TextArea
                 autoSize={{ minRows: 5 }}
                 allowClear

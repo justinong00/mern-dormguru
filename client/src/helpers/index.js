@@ -141,7 +141,7 @@ export const validationRules = {
     },
     {
       min: 20,
-      message: "Bio must be at least 20 characters",
+      message: "Comment must be at least 20 characters",
     },
   ],
 };
