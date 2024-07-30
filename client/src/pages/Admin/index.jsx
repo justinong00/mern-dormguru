@@ -28,7 +28,7 @@ function Admin() {
     },
     {
       key: "2",
-      label: "University", // Label for the tab
+      label: "Universities", // Label for the tab
       children: <Unis />, // Content component for the tab
     },
     {
