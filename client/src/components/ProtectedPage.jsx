@@ -99,6 +99,7 @@ function ProtectedPage({ children }) {
                 onClick={() => {
                   localStorage.removeItem("token");
                   navigate("/login");
+                  message.success("User logged out successfully");
                 }}
               ></i>
             </Tooltip>
