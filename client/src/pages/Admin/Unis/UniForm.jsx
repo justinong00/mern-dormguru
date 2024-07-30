@@ -159,7 +159,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, setSelectedUni, rel
     <Modal
       open={showUniForm} // Control the visibility of the modal
       onCancel={() => setShowUniForm(false)} // Close the modal
-      title={selectedUni ? "Update University" : "Add University"}
+      title={selectedUni ? "Edit University" : "Add University"}
       centered // Center the modal on the screen
       width="90%" // Set the width of the modal for smaller screens
       style={{ maxWidth: 800 }} // Set a maximum width for larger screens
