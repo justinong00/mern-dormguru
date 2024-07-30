@@ -185,7 +185,7 @@ function UniForm({ showUniForm, setShowUniForm, selectedUni, setSelectedUni, rel
           <Col xs={24} sm={12}>
             {" "}
             {/* This structure ensures that on smaller screens, each input field takes the full width of the row, but on larger screens, two input fields can be displayed side by side. */}
-            <Form.Item label="University Name" name="name" rules={validationRules["name"]}>
+            <Form.Item label="Name" name="name" rules={validationRules["name"]}>
               <Input type="text" />
             </Form.Item>
           </Col>
