@@ -55,6 +55,20 @@ function Dorms() {
     }
   };
 
+  // Generate filter options for dorm name
+  const dormNameFilters = Array.from(new Set(dorms.map((dorm) => dorm.name))).map((dormName) => ({
+    text: dormName,
+    value: dormName,
+  }));
+
+  // Generate filter options for parent university
+  const parentUniversityFilters = Array.from(
+    new Set(dorms.map((dorm) => dorm.parentUniversity?.name)),
+  ).map((parentUniversity) => ({
+    text: parentUniversity,
+    value: parentUniversity,
+  }));
+
   // Define columns for the Table component
   const columns = [
     {
@@ -78,7 +92,7 @@ function Dorms() {
       key: "name",
       fixed: "left",
       width: 100,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      /* filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div className="flex flex-col gap-2 p-2">
           <input
             placeholder="Enter keyword"
@@ -95,7 +109,10 @@ function Dorms() {
           </div>
         </div>
       ),
-      onFilter: (value, record) => record.name?.toLowerCase().includes(value.toLowerCase()),
+      onFilter: (value, record) => record.name?.toLowerCase().includes(value.toLowerCase()), */
+      filters: dormNameFilters,
+      filterSearch: true,
+      onFilter: (value, record) => record.name === value,
     },
     {
       title: "Description",
@@ -166,7 +183,7 @@ function Dorms() {
       dataIndex: ["parentUniversity", "name"],
       key: "parentUniversity",
       width: 100,
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      /* filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div className="flex flex-col gap-2 p-2">
           <input
             placeholder="Enter keyword"
@@ -184,7 +201,10 @@ function Dorms() {
         </div>
       ),
       onFilter: (value, record) =>
-        record.parentUniversity?.name?.toLowerCase().includes(value.toLowerCase()),
+        record.parentUniversity?.name?.toLowerCase().includes(value.toLowerCase()), */
+      filters: parentUniversityFilters,
+      filterSearch: true,
+      onFilter: (value, record) => record.parentUniversity?.name === value,
     },
     {
       title: "Dorm Type",
