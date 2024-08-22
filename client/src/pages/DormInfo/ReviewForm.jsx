@@ -176,7 +176,7 @@ function ReviewForm({
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item label="Title" name="title" rules={validationRules["title"]}>
-              <Input type="text" />
+              <Input type="text" placeholder="Enter title" />
             </Form.Item>
           </Col>
         </Row>
