@@ -103,7 +103,7 @@ function Unis() {
       render: (_, record) => (
         <div className="flex flex-col gap-y-1">
           <span
-            className={`malaysia-state-flag-icon h-5 w-10 malaysia-state-flag-icon-${getStateCode(record?.state)}`}
+            className={`malaysia-state-flag-icon h-5 w-10 malaysia-state-flag-icon-${getStateCode(record?.state)} shadow-md`}
           ></span>
           <span>{`${record?.address}, ${record?.postalCode}, ${record?.city}, ${record?.state}`}</span>
         </div>
