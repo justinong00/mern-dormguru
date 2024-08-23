@@ -319,6 +319,9 @@ function Dorms() {
             },
           };
         }}
+        pagination={{
+          pageSize: 4,
+        }}
       />
 
       {showDormForm && (

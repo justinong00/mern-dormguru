@@ -188,6 +188,9 @@ function Reviews() {
             },
           };
         }}
+        pagination={{
+          pageSize: 5,
+        }}
       />
 
       {/* Mobile view */}

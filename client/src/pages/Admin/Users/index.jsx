@@ -235,6 +235,9 @@ function Users() {
         rowKey={(record) => record._id}
         className="mt-5"
         scroll={{ x: 1500 }}
+        pagination={{
+          pageSize: 5,
+        }}
       />
     </div>
   );

@@ -243,6 +243,9 @@ function Unis() {
             },
           };
         }}
+        pagination={{
+          pageSize: 5,
+        }}
       />
 
       {showUniForm && (

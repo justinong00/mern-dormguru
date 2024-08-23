@@ -397,6 +397,9 @@ function Reviews() {
             },
           };
         }}
+        pagination={{
+          pageSize: 5,
+        }}
       />
     </div>
   );
